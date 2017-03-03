@@ -4,11 +4,11 @@
 #define MSG_TYPE_
 
 class Message {
-  int length;
-  
+  unsigned int length;
+  unsigned int type;
 
 public:
-  Message(); // Constructor
+  Message(unsigned int type); // Constructor
 }
 
 #endif
