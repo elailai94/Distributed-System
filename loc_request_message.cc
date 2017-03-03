@@ -22,7 +22,11 @@ int *LocRequestMessage::getArgTypes() const {
 
 // See interface (header file).
 void LocRequestMessage::send(int dataTransferSocket) {
+  unsigned int length = getLength();
   
+
+  unsigned int type = getType();
+
 }
 
 // See interface (header file).

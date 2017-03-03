@@ -9,3 +9,8 @@ RegisterSuccessMessage::RegisterSuccessMessage()
 
 // See interface (header file).
 RegisterSuccessMessage::~RegisterSuccessMessage() {} // Destructor
+
+// See interface (header file).
+int RegisterSuccessMessage::getReasonCode() const {
+  return reasonCode;
+}
