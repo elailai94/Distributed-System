@@ -9,3 +9,8 @@ LocFailureMessage::LocFailureMessage()
 
 // See interface (header file).
 LocFailureMessage::~LocFailureMessage() {} // Destructor
+
+// See interface (header file).
+int LocFailureMessage::getReasonCode() const {
+  return reasonCode;
+}
