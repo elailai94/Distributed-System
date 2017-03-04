@@ -1,4 +1,6 @@
+#include <cstdlib>
 #include <cstring>
+#include <vector>
 #include <netinet/in.h>
 #include <sys/param.h>
 #include <sys/socket.h>
@@ -135,7 +137,7 @@ int RegisterRequestMessage::receive(int dataTransferSocket,
     char argTypeBuffer[MAX_LENGTH_ARG_TYPE + 1] = {'\0'};
     memcpy(argTypeBuffer, messageBufferPointer, MAX_LENGTH_ARG_TYPE);
     int argType = atoi(argTypeBuffer);
-    argTypeBuffer.push_back(argType);
+    argTypesBuffer.push_back(argType);
     messageBufferPointer += MAX_LENGTH_ARG_TYPE;
 
     if (argType == 0) {
@@ -144,7 +146,7 @@ int RegisterRequestMessage::receive(int dataTransferSocket,
   }
 
   int *argTypes = new int[argTypesBuffer.size()];
-  for (int i = 0; i < argTypesBuffer.size(); i++) {
+  for (unsigned int i = 0; i < argTypesBuffer.size(); i++) {
     argTypes[i] = argTypesBuffer[i];
   }
 
