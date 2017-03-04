@@ -28,9 +28,13 @@ int RegisterRequestMessage::sendInteger(int dataTransferSocket,
 // See interface (header file).
 int RegisterRequestMessage::sendString(int dataTransferSocket, string text,
   unsigned int textLength) {
-  // Writes the text length out to the data transfer socket
-  sendInteger(dataTransferSocket, textLength);
+  // Writes the string length out to the data transfer socket
+  int result  = sendInteger(dataTransferSocket, textLength);
+  if (result < 0) {
+    return result;
+  }
 
+  // Writes the string text out to the data transfer socket
   char* convertedText = text.c_str();
   unsigned int totalNumOfBytesText = textLength;
   unsigned int numOfBytesLeft = totalNumOfBytesText;
@@ -52,7 +56,24 @@ int RegisterRequestMessage::sendString(int dataTransferSocket, string text,
 }
 
 // See interface (header file).
-int RegisterRequestMessage::sendIntegerArray()
+int RegisterRequestMessage::sendIntegerArray(int dataTransferSocket,
+  int *integerArray, unsigned int integerArrayLength) {
+  // Writes the integer array length out to the data transfer socket
+  int result = sendInteger(dataTransferSocket, integerArrayLength);
+  if (result < 0) {
+    return result;
+  }
+
+  // Writes the integer array elements out to the data transfer socket
+  for (unsigned int i = 0; i < integerArrayLength; i++) {
+    result = sendInteger(dataTransferSocket, integerArray[i]);
+    if (result < 0) {
+      return result;
+    }
+  }
+
+  return (4 * integerArrayLength);
+}
 
 // See interface (header file).
 RegisterRequestMessage::RegisterRequestMessage(string serverIdentifier,
@@ -138,4 +159,10 @@ int RegisterRequestMessage::send(int dataTransferSocket) {
   if (result < 0) {
     return result;
   }
+}
+
+// See interface (header file).
+int RegisterRequestMessage::receive(int dataTransferSocket,
+  Message &parsedMessage) {
+  // Read 
 }
