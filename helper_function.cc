@@ -15,6 +15,8 @@
 
 #include <netdb.h>
 #include <stdlib.h>
+#include "helperfunction.h"
+
 using namespace std;
 
 
@@ -116,7 +118,7 @@ int findLenOfArgTypes(int * array){
 }
 
 char * extractUnsignedInt(char * bufferP, int &i){
-  
+
     bufferP = copyBufferToConvertor(bufferP, sizeof(int));
     i= _convertor.ui;
     return bufferP;

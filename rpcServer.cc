@@ -17,12 +17,14 @@
 #include <netdb.h>
 #include <stdlib.h>
 
-#include <register_success_message.h>
-#include <register_failure_message.h>
-#include <register_request_message.h>
-#include <execute_success_message.h>
-#include <execute_failure_message.h>
-#include <execute_request_message.h>
+#include "helperfunction.cc"
+
+#include "register_success_message.h"
+#include "register_failure_message.h"
+#include "register_request_message.h"
+#include "execute_success_message.h"
+#include "execute_failure_message.h"
+#include "execute_request_message.h"
 
 using namespace std;
 

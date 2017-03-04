@@ -14,8 +14,16 @@
 #include <vector>
 #include <algorithm>
 
+#include "loc_success_message.h"
+#include "loc_failure_message.h"
+#include "loc_request_message.h"
+#include "execute_success_message.h"
+#include "execute_failure_message.h"
+#include "execute_request_message.h"
+
 #include <netdb.h>
 #include <stdlib.h>
+#include "helperfunction.cc"
 
 using namespace std;
 
