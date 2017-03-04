@@ -3,7 +3,7 @@
 using namespace std;
 
 // See interface (header file).
-LocRequestMessage::LocRequestMessage(char* name, int* argTypes)
+LocRequestMessage::LocRequestMessage(string name, int* argTypes)
   : Message(), name(name), argTypes(argTypes) {} //  Constructor
 
 // See interface (header file).
