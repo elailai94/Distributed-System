@@ -1,3 +1,4 @@
+#include <cstring>
 #include <netinet/in.h>
 #include <sys/param.h>
 #include <sys/socket.h>
@@ -62,7 +63,7 @@ int RegisterRequestMessage::send(int dataTransferSocket, unsigned int length) {
 
   // Writes the remote procedure name to the buffer
   memcpy(messageBuffer, name.c_str(), name.length());
-  messageBufferPointer += MAX_LENGTH_NAME
+  messageBufferPointer += MAX_LENGTH_NAME;
 
   // Writes the argument types out to the data transfer socket
   unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
