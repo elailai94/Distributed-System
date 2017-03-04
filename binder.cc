@@ -16,16 +16,16 @@
 #include <netdb.h>
 #include <stdlib.h>
 
-#include <register_success_message.h>
-#include <register_failure_message.h>
-#include <register_request_message.h>
-#include <location_success_message.h>
-#include <location_failure_message.h>
-#include <location_request_message.h>
+#include "register_success_message.h"
+#include "register_failure_message.h"
+#include "register_request_message.h"
+#include "loc_success_message.h"
+#include "loc_failure_message.h"
+#include "loc_request_message.h"
 
-#include <rpc.h>
-#include <constants.cc>
-#include <helperfunction.cc>
+#include "rpc.h"
+#include "constants.cc"
+#include "helperfunction.cc"
 
 using namespace std;
 

@@ -17,12 +17,14 @@
 #include <netdb.h>
 #include <stdlib.h>
 
-#include <register_success_message.h>
-#include <register_failure_message.h>
-#include <register_request_message.h>
-#include <execute_success_message.h>
-#include <execute_failure_message.h>
-#include <execute_request_message.h>
+#include "helperfunction.cc"
+
+#include "register_success_message.h"   
+#include "register_failure_message.h"
+#include "register_request_message.h"
+#include "execute_success_message.h"
+#include "execute_failure_message.h"
+#include "execute_request_message.h"
 
 using namespace std;
 
@@ -41,108 +43,41 @@ struct thread_data {
   vector<string> *buf;
 };
 
-void *SendToServer(void *threadarg) {
-  struct thread_data *my_data;
-  my_data = (struct thread_data *) threadarg;
-
-  vector<string> *dataQueue = my_data->buf;
-
-  while (true) {
-    if ((*dataQueue).size() > 0) {
-      string data = (*dataQueue)[0];
-      (*dataQueue).erase((*dataQueue).begin());
-
-      // send data to server
-      int len = data.length() + 1;
-      send(my_data->sock, &len, sizeof(len), 0);
-      send(my_data->sock, data.c_str(), len, 0);
-
-      // block on receive
-      string titleCasedData;
-      recv(my_data->sock, &len, sizeof(len), 0);
-
-      char *msg = new char[len];
-      recv(my_data->sock, msg, len, 0);
-      
-      //Printing the response from the server:
-      cout << "Server: " << msg << endl;
-
-      sleep(2);
-    }
-  }
-
-  pthread_exit(NULL);
-}
 
 void connect_to_binder() {
   char *serverAddress = getenv("BINDER_ADDRESS");
   char *port = getenv("BINDER_PORT");
-
-  if (serverAddress == NULL || port == NULL) {
-    cerr << "Missing SERVER_ADDRESS or SERVER_PORT environment variable" << endl;
-    cerr << *port << endl;
-    cerr << *serverAddress << endl;  
-    exit(1);
-  }
-
-  string data;
-  vector<string> buffer;
-
-  int sockfd, portno;
-  struct sockaddr_in serv_addr;
-  struct hostent *server;
-  portno = atoi(port);
-  sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  server = gethostbyname(serverAddress);
-
-  bzero((char *) &serv_addr, sizeof(serv_addr));
-
-  serv_addr.sin_family = AF_INET;
-  
-  bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
-
-  serv_addr.sin_port = htons(portno);
-
-  connect(sockfd,(struct sockaddr *)&serv_addr, sizeof(serv_addr));
-
-  struct thread_data td;
-  td.sock = sockfd;
-  td.buf = &buffer;
-
-  pthread_t thread;
-  
-  int val = pthread_create(&thread, NULL, SendToServer, (void *)&td);
-
-  binder_sock = sockfd;
+  binder_sock = createConnection(serverAddress, port);
+  return binder_sock;
 }
 
 
 int rpcRegister(char * name, int *argTypes, skeleton f){
 
-  connect_to_binder();
-  int status = RegisterRequestMessage request_message = new RegisterRequestMessage(serverIdentifier, port, name, argTypes);
-  success_message.send(sock);
+  int binder_sock = connect_to_binder();
   int retStatus;
+
+  RegisterRequestMessage request_message = new RegisterRequestMessage(serverIdentifier, port, name, argTypes);
+  int status = success_message.send(binder_sock);
 
   if(status == 0){
     //Success
     Message message; 
     Message::receive(binder_sock, message, retStatus);
 
-    if(message.type == 2){  
+    if(message.type == MSG_TYPE_REGISTER_SUCCESS){  
       struct procedure_signature k(string(name), argTypes);
       proc_skele_dict[k] = f;
-    }else if(message.type ==3){
-
+    }else if(message.type == MSG_TYPE_REGISTER_FAILURE){
+      return 0;
     }
-
   
   }else if( status > 0){
     //Warning
-
+    return -99;
   }else if( status < 0){
     //Error
-    return status;
+    return 99;
   }
 
 }
@@ -199,14 +134,23 @@ int rpcExecute(void){
           int tempConnection = *it;         
           if (FD_ISSET(tempConnection, &readfds)) {
 
+            int reasonCode = 0;
             Message message; 
             Message::receive(sock, message, status);
 
-            if (status < 0) {
-                RegisterFailureMessage failure_message = new RegisterFailureMessage(status);
-                failure_message.send(sock);
+            if(message.type == MSG_TYPE_EXECUTE_REQUEST){
+              procedure_signature ps = new procedure_signature(message.name, message.argTypes);       
+              skeleton skel = proc_skele_dict[ps];
+              
+              int result = skel(message.argTypes, message.args);
 
-                return errorMsg;
+              if(result == 0 ){
+                ExecuteSuccessMessage execute_success = new ExecuteSuccessMessage(name, message.argTypes, message.args);
+                int status = execute_success.send(sock);
+              }else{
+                ExecuteFailureMessage execute_failure = new ExecuteFailureMessage(reasoncode);
+                int status = execute_failure.send(sock);
+              }
             }
 
             if (status == 0) {
@@ -215,7 +159,6 @@ int rpcExecute(void){
               return errorMsg;
             }
 
-            request_handler(message, sock);
           }
         }
       }

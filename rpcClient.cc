@@ -14,123 +14,121 @@
 #include <vector>
 #include <algorithm>
 
+#include "loc_success_message.h"
+#include "loc_failure_message.h"
+#include "loc_request_message.h"
+#include "execute_success_message.h"
+#include "execute_failure_message.h"
+#include "execute_request_message.h"
+
 #include <netdb.h>
 #include <stdlib.h>
+#include "helperfunction.cc"
 
 using namespace std;
 
+bool connectedToBinder = false;
+int binder_sock;
 
-struct thread_data {
-  int sock;
-  vector<string> *buf;
-};
+int connectedToBinder(){
 
-void *SendToServer(void *threadarg) {
-  struct thread_data *my_data;
-  my_data = (struct thread_data *) threadarg;
+	if(connectedToBinder){
+		return 0;		
+	}
 
-  vector<string> *dataQueue = my_data->buf;
-
-  while (true) {
-    if ((*dataQueue).size() > 0) {
-      string data = (*dataQueue)[0];
-      (*dataQueue).erase((*dataQueue).begin());
-
-      int len = data.length() + 1;
-      send(my_data->sock, &len, sizeof(len), 0);
-      send(my_data->sock, data.c_str(), len, 0);
-
-      string titleCasedData;
-      recv(my_data->sock, &len, sizeof(len), 0);
-      char *msg = new char[len];
-      recv(my_data->sock, msg, len, 0);
-      
-      cout << "Server: " << msg << endl;
-
-      sleep(2);
-    }
-  }
-
-  pthread_exit(NULL);
-}
-
-int  send_LOC_REQUEST(string name, int argTypes[]){
-    int status = connect_Binder();
-
-    if (status == 0) {
-        Sender s(binderSocketFd);
-        status = s.sendLocRequestMessage(name, argTypes);
-    }
-
-    return status;
-}
-
-
-
-int connect_Binder() {
-    char * binderAddressString = getenv ("BINDER_ADDRESS");
+	char * binderAddressString = getenv ("BINDER_ADDRESS");
     char * binderPortString = getenv("BINDER_PORT");
+    
 
-    if(binderAddressString == NULL){
-
-        return INIT_UNSET_BINDER_ADDRESS;
+  	if(binderAddressString == NULL){
+        return 1;
     }
 
     if(binderPortString == NULL){
-        return INIT_UNSET_BINDER_PORT;
+        return 2;
     }
     
-    //binderSocketFd = setupSocketAndReturnDescriptor(binderAddressString, binderPortString);
+    binder_sock = create_connection(binderAddressString, binderPortString);
 
-    if (binderSocketFd < 0) {
-        return INIT_BINDER_SOCKET_FAILURE;
+    if (binder_sock < 0) {
+        return 3;
+    }else{
+    	connectedToBinder = true;
     }
-    return 0;
-}
-
-int main() {
-  char *serverAddress = getenv("SERVER_ADDRESS");
-  char *port = getenv("SERVER_PORT");
-
-  if (serverAddress == NULL || port == NULL) {
-    cerr << "Missing SERVER_ADDRESS or SERVER_PORT environment variable" << endl;
-    
-    cerr << *port << endl;
-    cerr << *serverAddress << endl;  
-    exit(1);
-  }
-
-  string data;
-  vector<string> buffer;
-
-  int sockfd, portno;
-  struct sockaddr_in serv_addr;
-  struct hostent *server;
-  portno = atoi(port);
-  sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  server = gethostbyname(serverAddress);
-
-  bzero((char *) &serv_addr, sizeof(serv_addr));
-  serv_addr.sin_family = AF_INET;
-  bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
-
-  serv_addr.sin_port = htons(portno);
-
-  connect(sockfd,(struct sockaddr *)&serv_addr, sizeof(serv_addr));
-  struct thread_data td;
-  td.sock = sockfd;
-  td.buf = &buffer;
-
-  pthread_t thread;
-  
-  val = pthread_create(&thread, NULL, SendToServer, (void *)&td);
-
-  while (true) {
-    getline(cin, data);
-    buffer.push_back(data);
-  }
-
 
 }
 
+int rpcCall(char * name, int * argTypes, void ** args) {
+
+	int returnVal;
+	char *serverAddress;
+	char *serverPort;
+	int server_socket
+
+	if(!connectedToBinder){
+		returnVal = connectedToBinder();
+	}
+	//do something with returnVal
+
+	LocRequestMessage loc_request = new LocRequestMessage(name, argTypes);
+  	int binder_status = loc_request.send(binder_sock); 
+  	//maybe error check with binder_status
+
+	//**Server stuff **/
+	if(status == 0){
+	  Message message; 
+	  Message::receive(sock, message, status);
+
+	  if(message.type == MSG_TYPE_LOC_SUCCESS) {
+	  	serverAddress = message.getServerIdentifier();
+	  	serverPort = message.getPort();
+	  }else if(message.type == MSG_TYPE_LOC_FAILURE){
+		//something bad happens
+	  	return 1;
+	  }
+	}
+
+    int server_sock = create_connection(serverAddress, serverPort);
+	int server_status = sendExecute(server_sock, name, argTypes, args);
+	
+	return server_status; 
+}
+
+
+int sendExecute(int sock, char* name, int* argTypes, void**args){
+    
+    ExecuteRequestMessage execute_request = new ExecuteRequestMessage(name, argTypes, args);
+    int status = execute_request.send(sock);	
+    int returnVal;
+
+	char* retName; 
+	int* retArgTypes;
+	void** retArgs
+
+    if(status == 0){
+	    Message message; 
+        Message::receive(sock, message, status);
+
+        if(message.type == MSG_TYPE_EXECUTE_SUCCESS) {
+			retName = message.getName(); 
+			retArgTypes = message.getArgTypes();
+			retArgs = message.getArgs();
+
+			if(strcmp(retName, name)){
+				//extractArgumentsMessage(replyMessageP, argTypes, args, argTypesLength, false);
+				returnVal = 0;
+			}else{
+				returnVal = 99;
+			}
+
+        }else if(message.type ==  MSG_TYPE_EXECUTE_FAILURE){
+        	returnVal = message.getReasonCode();	
+        }
+
+    }else{ //Something bad happened
+    	returnVal = 99;
+    }
+
+    return returnVal
+}
 
