@@ -2,7 +2,6 @@
 #include <sys/param.h>
 #include <sys/socket.h>
 #include "register_request_message.h"
-#include "message_types.h"
 
 using namespace std;
 

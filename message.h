@@ -18,7 +18,7 @@ public:
    * Creates a message to send data and writes it out to the data
    * transfer socket
    */
-  virtual int send(int dataTransferSocket) = 0;
+  virtual int send(int dataTransferSocket, unsigned int length) = 0;
 
   /*
    * Creates a message to receive data and reads into it from the data
