@@ -20,6 +20,7 @@
 using namespace std;
 
 bool connectedToBinder = false;
+int binder_sock;
 
 int connectedToBinder(){
 
@@ -29,7 +30,7 @@ int connectedToBinder(){
 
 	char * binderAddressString = getenv ("BINDER_ADDRESS");
     char * binderPortString = getenv("BINDER_PORT");
-    int binder_sock;
+    
 
   	if(binderAddressString == NULL){
         return 1;
@@ -57,20 +58,20 @@ int getServerSocket(){
 int rpcCall(char * name, int * argTypes, void ** args) {
 
 	int returnVal;
+	char *serverAddress;
+	char *serverPort;
+	int server_socket
 
 	if(!connectedToBinder){
 		returnVal = connectedToBinder();
 	}
 	//do something with returnVal
 
-	LocRequestMessage loc_request = new LocRequestMessage(name. argTypes);
-  	int binder_status = execute_request.send(binder_sock); 
+	LocRequestMessage loc_request = new LocRequestMessage(name, argTypes);
+  	int binder_status = loc_request.send(binder_sock); 
+  	//maybe error check with binder_status
 
 	//**Server stuff **/
-	char *serverAddress;
-	char *serverPort;
-	int server_socket
-
 	if(status == 0){
 	  Message message; 
 	  Message::receive(sock, message, status);

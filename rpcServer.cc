@@ -63,20 +63,19 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
     Message message; 
     Message::receive(binder_sock, message, retStatus);
 
-    if(message.type == 2){  
+    if(message.type == MSG_TYPE_REGISTER_SUCCESS){  
       struct procedure_signature k(string(name), argTypes);
       proc_skele_dict[k] = f;
-    }else if(message.type ==3){
-
+    }else if(message.type == MSG_TYPE_REGISTER_FAILURE){
+      return 0;
     }
-
   
   }else if( status > 0){
     //Warning
-
+    return -99;
   }else if( status < 0){
     //Error
-    return status;
+    return 99;
   }
 
 }
@@ -133,13 +132,23 @@ int rpcExecute(void){
           int tempConnection = *it;         
           if (FD_ISSET(tempConnection, &readfds)) {
 
+            int reasonCode = 0;
             Message message; 
             Message::receive(sock, message, status);
 
-            if (status < 0) {
-                RegisterFailureMessage failure_message = new RegisterFailureMessage(status);
-                failure_message.send(sock);
-                return errorMsg;
+            if(message.type == MSG_TYPE_EXECUTE_REQUEST){
+              procedure_signature ps = new procedure_signature(message.name, message.argTypes);       
+              skeleton skel = proc_skele_dict[ps];
+              
+              int result = skel(message.argTypes, message.args);
+
+              if(result == 0 ){
+                ExecuteSuccessMessage execute_success = new ExecuteSuccessMessage(name, message.argTypes, message.args);
+                int status = execute_success.send(sock);
+              }else{
+                ExecuteFailureMessage execute_failure = new ExecuteFailureMessage(reasoncode);
+                int status = execute_failure.send(sock);
+              }
             }
 
             if (status == 0) {
@@ -148,7 +157,6 @@ int rpcExecute(void){
               return errorMsg;
             }
 
-            request_handler(message, sock);
           }
         }
       }
