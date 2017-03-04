@@ -23,6 +23,8 @@
 
 #include <netdb.h>
 #include <stdlib.h>
+
+#include "constants.h"
 #include "helperfunction.h"
 
 using namespace std;

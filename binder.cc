@@ -24,7 +24,7 @@
 #include "loc_request_message.h"
 
 #include "rpc.h"
-#include "constants.cc"
+#include "constants.h"
 #include "helper_function.h"
 
 using namespace std;
