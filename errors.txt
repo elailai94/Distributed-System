@@ -1,0 +1,135 @@
+g++ -Wall -MMD   -c -o loc_failure_message.o loc_failure_message.cc
+loc_failure_message.cc: In constructor 'LocFailureMessage::LocFailureMessage()':
+loc_failure_message.cc:8:13: error: '_MSG_TYPE_LOC_FAILURE' was not declared in this scope
+   : Message(_MSG_TYPE_LOC_FAILURE) {} //  Constructor
+             ^
+g++ -Wall -MMD   -c -o loc_success_message.o loc_success_message.cc
+loc_success_message.cc: In constructor 'LocSuccessMessage::LocSuccessMessage(std::string, unsigned int)':
+loc_success_message.cc:8:32: error: '_MSG_TYPE_LOC_SUCCESS' was not declared in this scope
+   unsigned int port) : Message(_MSG_TYPE_LOC_SUCCESS) {} //  Constructor
+                                ^
+g++ -Wall -MMD   -c -o loc_request_message.o loc_request_message.cc
+In file included from loc_request_message.cc:1:0:
+loc_request_message.h:26:16: error: conflicting return type specified for 'virtual void LocRequestMessage::send(int)'
+   virtual void send(int dataTransferSocket);
+                ^
+In file included from loc_request_message.h:5:0,
+                 from loc_request_message.cc:1:
+message.h:21:15: error:   overriding 'virtual int Message::send(int)'
+   virtual int send(int dataTransferSocket) = 0;
+               ^
+loc_request_message.cc:7:1: error: prototype for 'LocRequestMessage::LocRequestMessage(char*, int*)' does not match any in class 'LocRequestMessage'
+ LocRequestMessage::LocRequestMessage(char* name, int* argTypes)
+ ^
+In file included from loc_request_message.cc:1:0:
+loc_request_message.h:8:7: error: candidates are: LocRequestMessage::LocRequestMessage(const LocRequestMessage&)
+ class LocRequestMessage: public Message {
+       ^
+loc_request_message.h:13:3: error:                 LocRequestMessage::LocRequestMessage()
+   LocRequestMessage();  // Constructor
+   ^
+loc_request_message.cc: In member function 'virtual void LocRequestMessage::send(int)':
+loc_request_message.cc:25:35: error: 'getLength' was not declared in this scope
+   unsigned int length = getLength();
+                                   ^
+loc_request_message.cc:28:31: error: 'getType' was not declared in this scope
+   unsigned int type = getType();
+                               ^
+loc_request_message.cc:25:16: warning: unused variable 'length' [-Wunused-variable]
+   unsigned int length = getLength();
+                ^
+loc_request_message.cc:28:16: warning: unused variable 'type' [-Wunused-variable]
+   unsigned int type = getType();
+                ^
+g++ -Wall -MMD   -c -o register_failure_message.o register_failure_message.cc
+register_failure_message.cc: In constructor 'RegisterFailureMessage::RegisterFailureMessage()':
+register_failure_message.cc:8:13: error: '_MSG_TYPE_REGISTER_FAILURE' was not declared in this scope
+   : Message(_MSG_TYPE_REGISTER_FAILURE) {} //  Constructor
+             ^
+g++ -Wall -MMD   -c -o register_success_message.o register_success_message.cc
+register_success_message.cc: In constructor 'RegisterSuccessMessage::RegisterSuccessMessage()':
+register_success_message.cc:8:13: error: '_MSG_TYPE_REGISTER_SUCCESS' was not declared in this scope
+   : Message(_MSG_TYPE_REGISTER_SUCCESS) {} //  Constructor
+             ^
+g++ -Wall -MMD   -c -o register_request_message.o register_request_message.cc
+register_request_message.cc:52:5: error: prototype for 'int RegisterRequestMessage::send(int, unsigned int)' does not match any in class 'RegisterRequestMessage'
+ int RegisterRequestMessage::send(int dataTransferSocket, unsigned int length) {
+     ^
+In file included from register_request_message.cc:4:0:
+register_request_message.h:41:16: error: candidate is: virtual int RegisterRequestMessage::send(int)
+    virtual int send(int dataTransferSocket);
+                ^
+register_request_message.cc:93:5: error: prototype for 'int RegisterRequestMessage::receive(int, Message*, unsigned int)' does not match any in class 'RegisterRequestMessage'
+ int RegisterRequestMessage::receive(int dataTransferSocket,
+     ^
+In file included from register_request_message.cc:4:0:
+register_request_message.h:47:15: error: candidate is: static int RegisterRequestMessage::receive(int, Message&, unsigned int)
+    static int receive(int dataTransferSocket, Message &parsedMessage,
+               ^
+g++ -Wall -MMD   -c -o binder.o binder.cc
+binder.cc:28:29: fatal error: helperfunction.cc: No such file or directory
+ #include "helperfunction.cc"
+                             ^
+compilation terminated.
+g++ -Wall -MMD   -c -o execute_failure_message.o execute_failure_message.cc
+execute_failure_message.cc: In constructor 'ExecuteFailureMessage::ExecuteFailureMessage()':
+execute_failure_message.cc:8:13: error: '_MSG_TYPE_EXECUTE_FAILURE' was not declared in this scope
+   : Message(_MSG_TYPE_EXECUTE_FAILURE) {} //  Constructor
+             ^
+g++ -Wall -MMD   -c -o execute_success_message.o execute_success_message.cc
+execute_success_message.cc:7:1: error: 'ExecuteSuccessMessage' does not name a type
+ ExecuteSuccessMessage::ExecuteSuccessMessage()
+ ^
+execute_success_message.cc:11:1: error: 'ExecuteSuccessMessage' does not name a type
+ ExecuteSuccessMessage::~ExecuteSuccessMessage() {} // Destructor
+ ^
+execute_success_message.cc:14:8: error: 'ExecuteSuccessMessage' has not been declared
+ string ExecuteSuccessMessage::getName() const {
+        ^
+execute_success_message.cc:14:41: error: non-member function 'std::string getName()' cannot have cv-qualifier
+ string ExecuteSuccessMessage::getName() const {
+                                         ^
+execute_success_message.cc: In function 'std::string getName()':
+execute_success_message.cc:15:10: error: 'name' was not declared in this scope
+   return name;
+          ^
+execute_success_message.cc: At global scope:
+execute_success_message.cc:19:6: error: 'ExecuteSuccessMessage' has not been declared
+ int *ExecuteSuccessMessage::getArgTypes() const {
+      ^
+execute_success_message.cc:19:43: error: non-member function 'int* getArgTypes()' cannot have cv-qualifier
+ int *ExecuteSuccessMessage::getArgTypes() const {
+                                           ^
+execute_success_message.cc: In function 'int* getArgTypes()':
+execute_success_message.cc:20:10: error: 'argTypes' was not declared in this scope
+   return argTypes;
+          ^
+execute_success_message.cc: At global scope:
+execute_success_message.cc:24:8: error: 'ExecuteSuccessMessage' has not been declared
+ void **ExecuteSuccessMessage::getArgs() const {
+        ^
+execute_success_message.cc:24:41: error: non-member function 'void** getArgs()' cannot have cv-qualifier
+ void **ExecuteSuccessMessage::getArgs() const {
+                                         ^
+execute_success_message.cc: In function 'void** getArgs()':
+execute_success_message.cc:25:10: error: 'args' was not declared in this scope
+   return args;
+          ^
+execute_success_message.cc: In function 'std::string getName()':
+execute_success_message.cc:16:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+execute_success_message.cc: In function 'int* getArgTypes()':
+execute_success_message.cc:21:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+execute_success_message.cc: In function 'void** getArgs()':
+execute_success_message.cc:26:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+g++ -Wall -MMD   -c -o execute_request_message.o execute_request_message.cc
+execute_request_message.cc: In constructor 'ExecuteRequestMessage::ExecuteRequestMessage()':
+execute_request_message.cc:8:13: error: '_MSG_TYPE_EXECUTE_REQUEST' was not declared in this scope
+   : Message(_MSG_TYPE_EXECUTE_REQUEST) {} //  Constructor
+             ^
+cc    -c -o server.o server.c
