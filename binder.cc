@@ -121,10 +121,9 @@ int location_request_handler(LocRequestMessage message, int sock){
 }
 
 string request_handler(Message message, int sock){
-	int retVal;
-
+	int retval;
 	if(message.type == 4){ //'LOC_REQUEST' 
-		retval = registration_request_handler(message, sock);
+		retVal = registration_request_handler(message, sock);
 	}else if (message.type == 1){ //'REGISTER'
     retval = location_request_handler(message, sock);
   }
