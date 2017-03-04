@@ -9,3 +9,13 @@ ExecuteRequestMessage::ExecuteRequestMessage()
 
 // See interface (header file).
 ExecuteRequestMessage::~ExecuteRequestMessage() {} // Destructor
+
+// See interface (header file).
+string ExecuteRequestMessage::getName() const {
+  return name;
+}
+
+// See interface (header file).
+int *ExecuteRequestMessage::getArgTypes() const {
+  return argTypes;
+}
