@@ -9,3 +9,8 @@ ExecuteFailureMessage::ExecuteFailureMessage()
 
 // See interface (header file).
 ExecuteFailureMessage::~ExecuteFailureMessage() {} // Destructor
+
+// See interface (header file).
+int ExecuteFailureMessage::getReasonCode() const {
+  return reasonCode;
+}
