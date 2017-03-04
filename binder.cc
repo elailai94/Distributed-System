@@ -51,7 +51,7 @@ void registration_request_handler(RegisterRequestMessage message, int sock){
 	char * name = message.getName();
   int * argTypes = message.getArgTypes();  
   string server_identifier = message.getServerIdentifier();
-  int port = message.getPort;
+  int port = message.getPort();
   
   procedure_signature key = new procedure_signature(name, argTypes);
 	
