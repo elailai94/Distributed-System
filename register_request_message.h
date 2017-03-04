@@ -20,6 +20,10 @@ class RegisterRequestMessage: public Message {
   // Writes a string out to the data transfer socket
   int sendString(int dataTransferSocket, std::string text);
 
+  // Writes an integer array to the data transfer socket
+  int sendIntegerArray(int dataTransferSocket, int *integerArray,
+    unsigned int integerArrayLength);
+
 public:
   RegisterRequestMessage(std::string serverIdentifier, unsigned int port,
     std::string name, int *argTypes);  // Constructor
@@ -45,6 +49,12 @@ public:
    * transfer socket
    */
    virtual int send(int dataTransferSocket);
+
+   /*
+    * Creates a message to receive data and reads into it from the data
+    * transfer socket
+    */
+   virtual int receive(int dataTransferSocket);
 };
 
 #endif
