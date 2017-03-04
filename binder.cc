@@ -1,8 +1,5 @@
 #include "server_functions.h"
-#include <create_server.cpp>
-
 #include <string.h>
-#include <rpc.h>
 
 #include <iostream>
 #include <sstream>
@@ -14,9 +11,20 @@
 #include <arpa/inet.h>
 #include <vector>
 #include <algorithm>
+#include <list>
 
 #include <netdb.h>
 #include <stdlib.h>
+
+#include <register_success_message.h>
+#include <register_failure_message.h>
+#include <register_request_message.h>
+#include <location_success_message.h>
+#include <location_failure_message.h>
+#include <location_request_message.h>
+
+#include <rpc.h>
+#include <constants.cc>
 
 using namespace std;
 
@@ -26,55 +34,105 @@ using namespace std;
 //DATABASE
 //ROUND ROBIN
 
-string do_stuff(){
 
+static map<procedure_signature, list<server_info *> * > proc_loc_dict;
+static list<server_function_info *> roundRobinList;
+
+/* 
+TODO:
+ADD FUNCTION TO MAP
+ADD FUNCTION TO ROUND ROBIN
+IF FUNCTION EXISTS IN ROUND ROBIN DELETE OLD REPLACE WITH NEW (where)
+*/
+void registration_request_handler(RegisterRequestMessage message, int sock){
+	name = message.name;
+  argTypes = message.argTypes;  
+  procedure_signature key = new procedure_signature(name, argTypes);
+	
+  string server_identifier = message.server_identifier;
+  int port = message.port;
+  server_info new_msg_loc = new server_info(server_identifier, port, sock);
+
+  int status = 0;
+
+  //if no key dosnt exist in map
+	if (proc_loc_dict.find(key) == proc_loc_dict.end()) {
+
+    //Adding theo map
+    int *memArgTypes = copyArgTypes(argTypes);
+    key = procedure_signature(name, memArgTypes);
+    proc_loc_dict[key] = new list<server_info *>();
+    server_info entry = new service_info(message.server_identifier, message.port, sock);
+
+    //Adding to roundRobinList
+    server_function_info info = new server_function_info(message.server_identifier, message.port, sock ,key);    
+    roundRobinList.push_back(info);
+
+  }else{	 	
+    
+    bool sameLoc = false;
+    list<service_info *> *hostList = proc_loc_dict.find[key]; 
+
+    for (list<service_info *>::iterator it = hostList->begin(); it != hostList->end(); it++) {
+      if(it == new_msg_loc){
+        //The same procedure signature already exists on the same location
+        //TODO: Move to end of round robin or something
+        sameLoc = true;
+      }
+    }
+    //Same procedure signature, different location
+  	if(!sameLoc){       
+       hostList.push_back(new_msg_loc);
+    }
+  }
+
+  RegisterSuccessMessage success_message = new RegisterSuccessMessage(status);
+  success_message.send(sock);
 }
 
-char * get_msg(int sock, vector<int>& myToRemove) {
-  int status;
-  char * errorMsg = "ERROR";
-  int msg_len = 0;
+/*
+TODO:
+USE ROUND ROBIN TO ACCESS THE CORRECT SERVER/FUNCTION FOR THE CLIENT
+*/
+int location_request_handler(LocRequestMessage message, int sock){
+ 
+  bool exist = false; 
+	for (list<server_function_info *>::iterator it = roundRobinList->begin(); it != roundRobinList->end(); it++){
+		//If the name are the same
+    if(it->ps->name == message->name &&   equal(arr1, arr1 + sizeof(arr1,)/4, arr2)){ 
+		  //When we have identified the correct procedure_signature use round robin and move that service to the end
+		  roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
+      exist = true;
+      break;
+ 		}
+	}
 
-  status = recv(sock, &msg_len, sizeof msg_len, 0);
-
-  if (status < 0) {
-    cerr << "ERROR: receive failed" << endl;
-    return errorMsg;
+  if(exist){
+    LocSuccessMessage success_message = new LocSuccessMessage(it->server_identifier, it->port);
+    success_message.send(sock);
+  }else{
+    LocFailureMessage failure_message = new LocFailureMessage(0);
+    failure_message.send(sock);    
   }
 
-  if (status == 0) {
-    myToRemove.push_back(sock);
-    return errorMsg;
-  }
-
-  char* msg = new char[msg_len];
-  status = recv(sock, msg, msg_len, 0);
-  if (status < 0) {
-    cerr << "ERROR: receive failed" << endl;
-    return errorMsg;
-  }
-  return msg;
+	return 0; //LOC_FAILURE
 }
 
-void send_result(int sock, string result) {
-  int status;
-  int msg_len;
-  
-  const char* to_send = result.c_str();
-  msg_len = strlen(to_send) + 1;
-  status = send(sock, &msg_len, sizeof msg_len, 0);
-  if (status < 0) {
-    cerr << "ERROR: send failed" << endl;
-    return;
+string request_handler(Message message, int sock){
+	int retVal;
+
+	if(message.type == 4){ //'LOC_REQUEST' 
+		retval = registration_request_handler(message, sock);
+	}else if (message.type == 1){ //'REGISTER'
+    retval = location_request_handler(message, sock);
   }
 
-  status = send(sock, to_send, msg_len, 0);
-  if (status < 0) {
-    cerr << "ERROR: send failed" << endl;
-    return;
-  }
+	return retval;
 }
 
+
+//TODO:
+//Create helper functions that can be used for rpcServer.cc
 int main(){
 
   vector<int> myConnections;
@@ -115,8 +173,8 @@ int main(){
   ss << ntohs(sin.sin_port);
   string ps = ss.str();
 
-  cout << "SERVER_ADDRESS " << hostname << endl;
-  cout << "SERVER_PORT " << ntohs(sin.sin_port) << endl;
+  cout << "BINDER_ADDRESS " << hostname << endl;
+  cout << "BINDER_PORT " << ntohs(sin.sin_port) << endl;
 
   fd_set readfds;
   int n;
@@ -160,16 +218,26 @@ int main(){
       } else {
 
         for (vector<int>::iterator it = myConnections.begin(); it != myConnections.end(); ++it) {   
-          int tempConnection = *it;
-          
+          int tempConnection = *it;         
           if (FD_ISSET(tempConnection, &readfds)) {
-            char * msg = get_msg(tempConnection, myToRemove);      
-            //string str(msg);
-            //string result = title_case(str);
-            string result = do_stuff();
-            send_result(tempConnection, result);
-            delete[] msg;
 
+            Message message; 
+            Message::receive(sock, message, status);
+
+            if (status < 0) {
+                RegisterFailureMessage failure_message = new RegisterFailureMessage(status);
+                failure_message.send(sock);
+
+                return errorMsg;
+            }
+
+            if (status == 0) {
+              // client has closed the connection
+              myToRemove.push_back(sock);
+              return errorMsg;
+            }
+
+            request_handler(message, sock);
           }
         }
       }
