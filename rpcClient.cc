@@ -19,46 +19,51 @@
 
 using namespace std;
 
-int  send_LOC_REQUEST(string name, int argTypes[]){
-    int status = connectToBinder();
+bool connectedToBinder = false;
 
-    if (status == 0) {
-        Sender s(binderSocketFd);
-        status = s.sendLocRequestMessage(name, argTypes);
-    }
+int connectedToBinder(){
 
-    return status;
-}
+	if(connectedToBinder){
+		return 0;		
+	}
 
-
-
-int connect_Binder() {
-    char * binderAddressString = getenv ("BINDER_ADDRESS");
+	char * binderAddressString = getenv ("BINDER_ADDRESS");
     char * binderPortString = getenv("BINDER_PORT");
+    int binder_sock;
 
-    if(binderAddressString == NULL){
-
-        return INIT_UNSET_BINDER_ADDRESS;
+  	if(binderAddressString == NULL){
+        return 1;
     }
 
     if(binderPortString == NULL){
-        return INIT_UNSET_BINDER_PORT;
+        return 2;
     }
     
-    if (binderSocketFd < 0) {
-        return INIT_BINDER_SOCKET_FAILURE;
+    binder_sock = create_connection(binderAddressString, binderPortString);
+
+    if (binder_sock < 0) {
+        return 3;
+    }else{
+    	connectedToBinder = true;
     }
-    return 0;
+
+}
+
+int getServerSocket(){
+
 }
 
 
-
 int rpcCall(char * name, int * argTypes, void ** args) {
-	char * binderAddressString = getenv ("BINDER_ADDRESS");
-    char * binderPortString = getenv("BINDER_PORT");
-    int binder_sock = create_connection(binderAddressString, binderPortString);
 
-  	LocRequestMessage loc_request = new LocRequestMessage(name. argTypes);
+	int returnVal;
+
+	if(!connectedToBinder){
+		returnVal = connectedToBinder();
+	}
+	//do something with returnVal
+
+	LocRequestMessage loc_request = new LocRequestMessage(name. argTypes);
   	int binder_status = execute_request.send(binder_sock); 
 
 	//**Server stuff **/
@@ -82,8 +87,9 @@ int rpcCall(char * name, int * argTypes, void ** args) {
     int server_sock = create_connection(serverAddress, serverPort);
 	int server_status = sendExecute(server_sock, name, argTypes, args);
 	
-	return 
+	return server_status; 
 }
+
 
 int sendExecute(int sock, char* name, int* argTypes, void**args){
     
@@ -103,14 +109,22 @@ int sendExecute(int sock, char* name, int* argTypes, void**args){
 			retName = message.getName(); 
 			retArgTypes = message.getArgTypes();
 			retArgs = message.getArgs();
-			//TODO Maybe we can double check these retVals are same as what we input
-        	return 0; 
+
+			if(strcmp(retName, name)){
+				//extractArgumentsMessage(replyMessageP, argTypes, args, argTypesLength, false);
+				returnVal = 0;
+			}else{
+				returnVal = 99;
+			}
+
         }else if(message.type ==  MSG_TYPE_EXECUTE_FAILURE){
-        	return message.getReasonCode();	
+        	returnVal = message.getReasonCode();	
         }
 
     }else{ //Something bad happened
-    	return 1;
+    	returnVal = 99;
     }
+
+    return returnVal
 }
 

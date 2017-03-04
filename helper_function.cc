@@ -91,13 +91,33 @@ int createConnection(char * address, char * port){
 
 
 bool compareArr(const int* array1, const int* array2){
-    while (*array1 != 0 || *array2 != 0){
-        if (*array1 != *array2){
-            return false;
-        }
-        *array1++;
-        *array2++;
-    }
+  while (*array1 != 0 || *array2 != 0){
+      if (*array1 != *array2){
+          return false;
+      }
+      *array1++;
+      *array2++;
+  }
 
-    return true;
+  return true;
+}
+
+int findLenOfArgTypes(int * array){
+  unsigned int counter = 0;
+  while(true){
+    counter++;
+
+    int type = *array;
+    array++;
+    if(type == 0){
+      break;
+    } 
+  }
+}
+
+char * extractUnsignedInt(char * bufferP, int &i){
+  
+    bufferP = copyBufferToConvertor(bufferP, sizeof(int));
+    i= _convertor.ui;
+    return bufferP;
 }
