@@ -5,9 +5,14 @@
 
 // Object definition
 class RegisterFailureMessage: public Message {
+  int reasonCode;
+
 public:
   RegisterFailureMessage();  // Constructor
   ~RegisterFailureMessage(); // Destructor
+
+  // Returns an integer indicating a specific failure condition
+  int getReasonCode() const;
 };
 
 #endif

@@ -9,3 +9,8 @@ RegisterFailureMessage::RegisterFailureMessage()
 
 // See interface (header file).
 RegisterFailureMessage::~RegisterFailureMessage() {} // Destructor
+
+// See interface (header file).
+int RegisterFailureMessage::getReasonCode() const {
+  return reasonCode;
+}
