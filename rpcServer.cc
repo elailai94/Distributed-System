@@ -1,7 +1,7 @@
 #include "server_functions.h"
 #include <stdio.h>
 #include <string.h>
-#include <rpc.h>
+#include "rpc.h"
 
 #include <iostream>
 #include <sstream>
@@ -17,8 +17,10 @@
 #include <netdb.h>
 #include <stdlib.h>
 
+#include "constants.h"
 #include "helperfunction.h"
 
+#include "message.h"
 #include "register_success_message.h"   
 #include "register_failure_message.h"
 #include "register_request_message.h"

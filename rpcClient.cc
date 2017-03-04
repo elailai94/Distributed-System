@@ -1,7 +1,7 @@
 #include "server_functions.h"
 #include <stdio.h>
 #include <string.h>
-#include <rpc.h>
+#include "rpc.h"
 
 #include <iostream>
 #include <sstream>
@@ -14,6 +14,7 @@
 #include <vector>
 #include <algorithm>
 
+#include "message.h"
 #include "loc_success_message.h"
 #include "loc_failure_message.h"
 #include "loc_request_message.h"
@@ -23,6 +24,7 @@
 
 #include <netdb.h>
 #include <stdlib.h>
+#include "constants.h"
 #include "helperfunction.h"
 
 using namespace std;

@@ -16,6 +16,7 @@
 #include <netdb.h>
 #include <stdlib.h>
 
+#include "message.h"
 #include "register_success_message.h"
 #include "register_failure_message.h"
 #include "register_request_message.h"
@@ -24,8 +25,8 @@
 #include "loc_request_message.h"
 
 #include "rpc.h"
-#include "constants.cc"
-#include "helperfunction.h"
+#include "constants.h"
+#include "helper_function.h"
 
 using namespace std;
 
@@ -120,10 +121,9 @@ int location_request_handler(LocRequestMessage message, int sock){
 }
 
 string request_handler(Message message, int sock){
-	int retVal;
-
+	int retval;
 	if(message.type == 4){ //'LOC_REQUEST' 
-		retval = registration_request_handler(message, sock);
+		retVal = registration_request_handler(message, sock);
 	}else if (message.type == 1){ //'REGISTER'
     retval = location_request_handler(message, sock);
   }
