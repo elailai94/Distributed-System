@@ -18,82 +18,10 @@ unsigned int RegisterRequestMessage::countNumOfArgTypes(int *argTypes) {
 }
 
 // See interface (header file).
-int RegisterRequestMessage::sendInteger(int dataTransferSocket,
-  unsigned int num) {
-  unsigned int orderedNum = htonl(num);
-  int result = ::send(dataTransferSocket, &orderedNum, sizeof(unsigned int), 0);
-  return result;
-}
-
-// See interface (header file).
-int RegisterRequestMessage::sendString(int dataTransferSocket, string text,
-  unsigned int textLength) {
-  // Writes the string length out to the data transfer socket
-  int result  = sendInteger(dataTransferSocket, textLength);
-  if (result < 0) {
-    return result;
-  }
-
-  // Writes the string text out to the data transfer socket
-  char* convertedText = text.c_str();
-  unsigned int totalNumOfBytesText = textLength;
-  unsigned int numOfBytesLeft = totalNumOfBytesText;
-  unsigned int totalNumOfBytesSent = 0;
-
-  while (totalNumOfBytesSent < totalNumOfBytesText) {
-    int numOfBytesSent =
-       ::send(dataTransferSocket, convertedText + totalNumOfBytesSent,
-         numOfBytesLeft, 0);
-    if (numOfBytesSent < 0) {
-      return numOfBytesSent;
-    }
-
-    totalNumOfBytesSent += numOfBytesSent;
-    numOfBytesLeft -= numOfBytesSent;
-  }
-
-  return totalNumOfBytesSent;
-}
-
-// See interface (header file).
-int RegisterRequestMessage::sendIntegerArray(int dataTransferSocket,
-  int *integerArray, unsigned int integerArrayLength) {
-  // Writes the integer array length out to the data transfer socket
-  int result = sendInteger(dataTransferSocket, integerArrayLength);
-  if (result < 0) {
-    return result;
-  }
-
-  // Writes the integer array elements out to the data transfer socket
-  for (unsigned int i = 0; i < integerArrayLength; i++) {
-    result = sendInteger(dataTransferSocket, integerArray[i]);
-    if (result < 0) {
-      return result;
-    }
-  }
-
-  return (4 * integerArrayLength);
-}
-
-// See interface (header file).
 RegisterRequestMessage::RegisterRequestMessage(string serverIdentifier,
   unsigned int port, string name, int *argTypes)
-  : Message(0, _MSG_TYPE_REGISTER_REQUEST),
-  serverIdentifier(serverIdentifier), port(port), name(name), argTypes(0) {
-    // Makes a new copy of the argument types
-    unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
-    this.argTypes = new int[numOfArgTypes]();
-    unsigned int argTypesLength = 4 * numOfArgTypes;
-    memcpy(this.argTypes, argTypes, argTypesLength);
-
-    // Calculates and sets the length of the message
-    unsigned int typeLength = 4;
-    unsigned int serverIdentifierLength = MAXHOSTNAMELEN + 1;
-    unsigned int portLength = 4;
-    unsigned int nameLength = 65;
-    unsigned int messageLength = typeLength + serverIdentifierLength +
-      portLength + nameLength + argTypesLength;
-    setLength(messageLength);
+  : Message(), serverIdentifier(serverIdentifier), port(port),
+  name(name), argTypes(argTypes) {
 } //  Constructor
 
 // See interface (header file).
@@ -122,30 +50,21 @@ int *RegisterRequestMessage::getArgTypes() const {
 }
 
 // See interface (header file).
-int RegisterRequestMessage::send(int dataTransferSocket) {
-  // Writes the length of the message out to the data transfer socket
-  int result = sendInteger(dataTransferSocket, getLength());
-  if (result < 0) {
-    return result;
-  }
+int RegisterRequestMessage::send(int dataTransferSocket, unsigned int length) {
+  char messageBuffer[length];
+  char *messageBufferPointer = messageBuffer;
 
-  // Writes the type of the message out to the data transfer socket
-  result = sendInteger(dataTransferSocket, getType());
-  if (result < 0) {
-    return result;
-  }
+  // Writes the server identifier to the buffer
+  memcpy(messageBuffer, , MAX_LENGTH_SERVER_IDENTIFIER);
+  messageBufferPointer += MAX_LENGTH_SERVER_IDENTIFIER;
 
-  // Writes the server identifier out to the data transfer socket
-  result = sendString(dataTransferSocket, serverIdentifier, MAXHOSTNAMELEN + 1);
-  if (result < 0) {
-    return result;
-  }
+  // Writes the port to the buffer
+  memcpy(messageBuffer, , MAX_LENGTH_PORT);
+  messageBufferPointer += MAX_LENGTH_PORT;
 
-  // Writes the server port out to the data transfer socket
-  result = sendInteger(dataTransferSocket, port);
-  if (result < 0) {
-    return result;
-  }
+  // Writes the remote procedure name to the buffer
+  memcpy(messageBuffer, , MAX_LENGTH_NAME);
+  messageBufferPointer += MAX_LENGTH_NAME
 
   // Writes the remote procedure name out to the data transfer socket
   result = sendString(dataTransferSocket, name, 65);
@@ -163,6 +82,64 @@ int RegisterRequestMessage::send(int dataTransferSocket) {
 
 // See interface (header file).
 int RegisterRequestMessage::receive(int dataTransferSocket,
-  Message &parsedMessage) {
-  // Read 
+  Message *parsedMessage, unsigned int length) {
+  // Reads the message into a buffer from the data transfer socket
+  char messageBuffer[length];
+  unsigned int totalNumOfBytesMessage = length;
+  unsigned int numOfBytesLeft = totalNumOfBytesMessage;
+  unsigned int totalNumOfBytesReceived = 0;
+
+  while (totalNumOfBytesReceived < totalNumOfBytesMessage) {
+    int numOfBytesReceived =
+      ::recv(dataTransferSocket, messageBuffer + totalNumOfBytesReceived,
+        numOfBytesLeft, 0);
+    if (numOfBytesReceived < 0 || numOfBytesReceived == 0) {
+      return numOfBytesReceived;
+    }
+
+    totalNumOfBytesReceived += numOfBytesReceived;
+    numOfBytesLeft -= numOfBytesReceived;
+  }
+
+  // Parses the server identifier from the buffer
+  char *messageBufferPointer = messageBuffer;
+  char serverIdentifierBuffer[MAX_LENGTH_SERVER_IDENTIFIER + 1] = {'\0'};
+  memcpy(serverIdentifierBuffer, messageBuffer, MAX_LENGTH_SERVER_IDENTIFIER);
+  string serverIdentifier = string(serverIdentifierBuffer);
+  messageBufferPointer += MAX_LENGTH_SERVER_IDENTIFIER;
+
+  // Parses the port from the buffer
+  char portBuffer[MAX_LENGTH_PORT + 1] = {'\0'};
+  memcpy(portBuffer, messageBuffer, MAX_LENGTH_PORT);
+  unsigned int port = atoi(portBuffer);
+  messageBufferPointer += MAX_LENGTH_PORT;
+
+  // Parses the remote procedure name from the buffer
+  char nameBuffer[MAX_LENGTH_NAME + 1] = {'\0'};
+  memcpy(nameBuffer, messageBuffer, MAX_LENGTH_NAME);
+  string name = string(nameBuffer);
+  messageBufferPointer += MAX_LENGTH_NAME;
+
+  // Parses the argument types from the buffer
+  vector<int> argTypesBuffer;
+  while (true) {
+    char argTypeBuffer[MAX_LENGTH_ARG_TYPE + 1] = {'\0'};
+    memcpy(argTypeBuffer, messageBufferPointer, MAX_LENGTH_ARG_TYPE);
+    int argType = atoi(argTypeBuffer);
+    argTypeBuffer.push_back(argType);
+    messageBufferPointer += MAX_LENGTH_ARG_TYPE;
+
+    if (argType == 0) {
+      break;
+    }
+  }
+
+  int *argTypes = new int[argTypesBuffer.size()];
+  for (int i = 0; i < argTypesBuffer.size(); i++) {
+    argTypes[i] = argTypesBuffer[i];
+  }
+
+  parsedMessage =
+    new RegisterRequestMessage(serverIdentifier, port, name, argTypes);
+  return length;
 }

@@ -1,5 +1,12 @@
 #include "segment.h"
 #include "message_types.h"
+#include "register_request_message.h"
+#include "register_success_message.h"
+#include "register_failure_message.h"
+#include "loc_request_message.h"
+#include "loc_success_message.h"
+#include "loc_failure_message.h"
+#include ""
 
 // See interface (header file).
 Segment::Segment(unsigned int length, unsigned int type, Message *message)
@@ -47,7 +54,7 @@ int Segment::send(int dataTransferSocket) {
 }
 
 // See interface (header file).
-int Segment::receive(int dataTransferSocket, Segment &parsedSegment) {
+int Segment::receive(int dataTransferSocket, Segment *parsedSegment) {
   // Reads the length of the message from the data transfer socket
   unsigned int length = 0;
   int result = ::recv(dataTransferSocket, length, sizeof(length), 0);
@@ -67,7 +74,8 @@ int Segment::receive(int dataTransferSocket, Segment &parsedSegment) {
   switch (type) {
     case MSG_TYPE_REGISTER_REQUEST:
       result =
-        RegisterRequestMessage::receive(dataTransferSocket, parsedMessage, length);
+        RegisterRequestMessage::receive(dataTransferSocket, parsedMessage,
+          length);
       if (result < 0 || result == 0) {
         return result;
       }
@@ -75,7 +83,8 @@ int Segment::receive(int dataTransferSocket, Segment &parsedSegment) {
 
     case MSG_TYPE_REGISTER_SUCCESS:
       result =
-        RegisterSuccessMessage::receive(dataTransferSocket, parsedMessage);
+        RegisterSuccessMessage::receive(dataTransferSocket, parsedMessage,
+          length);
       if (result < 0 || result == 0) {
         return result;
       }
@@ -83,56 +92,67 @@ int Segment::receive(int dataTransferSocket, Segment &parsedSegment) {
 
     case MSG_TYPE_REGISTER_FAILURE:
       result =
-        RegisterFailureMessage::receive(dataTransferSocket, parsedMessage);
+        RegisterFailureMessage::receive(dataTransferSocket, parsedMessage,
+          length);
       if (result < 0 || result == 0) {
         return result;
       }
       break;
 
     case MSG_TYPE_LOC_REQUEST:
-      result = LocRequestMessage::receive(dataTransferSocket, parsedMessage);
+      result = LocRequestMessage::receive(dataTransferSocket, parsedMessage,
+        length);
       if (result < 0 || result == 0) {
         return result;
       }
       break;
 
     case MSG_TYPE_LOC_SUCCESS:
-      result = LocSuccessMessage::receive(dataTransferSocket, parsedMessage);
+      result = LocSuccessMessage::receive(dataTransferSocket, parsedMessage,
+        length);
       if (result < 0 || result == 0) {
         return result;
       }
       break;
 
     case MSG_TYPE_LOC_FAILURE:
-      result = LocFailureMessage::receive(dataTransferSocket, parsedMessage);
+      result = LocFailureMessage::receive(dataTransferSocket, parsedMessage,
+        length);
       if (result < 0 || result == 0) {
         return result;
       }
       break;
 
     case MSG_TYPE_EXECUTE_REQUEST:
-      result = ExecuteRequestMessage::receive(dataTransferSocket, parsedMessage);
+      result =
+        ExecuteRequestMessage::receive(dataTransferSocket, parsedMessage,
+          length);
       if (result < 0 || result == 0) {
         return result;
       }
       break;
 
     case MSG_TYPE_EXECUTE_SUCCESS:
-      result = ExecuteRequestMessage::receive(dataTransferSocket, parsedMessage);
+      result =
+        ExecuteRequestMessage::receive(dataTransferSocket, parsedMessage,
+          length);
       if (result < 0 || result == 0) {
         return result;
       }
       break;
 
     case MSG_TYPE_EXECUTE_FAILURE:
-      result = ExecuteRequestMessage::receive(dataTransferSocket, parsedMessage);
+      result =
+        ExecuteRequestMessage::receive(dataTransferSocket, parsedMessage,
+          length);
       if (result < 0 || result == 0) {
         return result;
       }
       break;
 
     case MSG_TYPE_TERMINATE:
-      result = TerminateMessage::receive(dataTransferSocket, parsedMessage);
+      result = TerminateMessage::receive(dataTransferSocket, parsedMessage,
+        length);
       if (result < 0 || result == 0) {
         return result;
       }

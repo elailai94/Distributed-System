@@ -14,16 +14,6 @@ class RegisterRequestMessage: public Message {
   // Returns a count of the number of argument types
   unsigned int countNumOfArgTypes(int *argTypes);
 
-  // Writes an integer out to the data transfer socket
-  int sendInteger(int dataTransferSocket, unsigned int num);
-
-  // Writes a string out to the data transfer socket
-  int sendString(int dataTransferSocket, std::string text);
-
-  // Writes an integer array to the data transfer socket
-  int sendIntegerArray(int dataTransferSocket, int *integerArray,
-    unsigned int integerArrayLength);
-
 public:
   RegisterRequestMessage(std::string serverIdentifier, unsigned int port,
     std::string name, int *argTypes);  // Constructor
@@ -54,7 +44,8 @@ public:
     * Creates a message to receive data and reads into it from the data
     * transfer socket
     */
-   virtual int receive(int dataTransferSocket);
+   static int receive(int dataTransferSocket, Message &parsedMessage,
+     unsigned int length);
 };
 
 #endif
