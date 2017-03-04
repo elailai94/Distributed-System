@@ -15,7 +15,7 @@ int ExecuteFailureMessage::getReasonCode() const {
 }
 
 // See interface (header file).
-int ExecuteFailureMessage::send(int dataTransferSocket) {
+int ExecuteFailureMessage::send(int dataTransferSocket, unsigned int length) {
   return 1;
 }
 

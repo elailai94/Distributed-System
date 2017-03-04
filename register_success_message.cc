@@ -4,8 +4,8 @@
 using namespace std;
 
 // See interface (header file).
-RegisterSuccessMessage::RegisterSuccessMessage()
-  : Message() {} //  Constructor
+RegisterSuccessMessage::RegisterSuccessMessage(int reasonCode)
+  : Message(), reasonCode(reasonCode) {} //  Constructor
 
 // See interface (header file).
 RegisterSuccessMessage::~RegisterSuccessMessage() {} // Destructor
@@ -13,4 +13,15 @@ RegisterSuccessMessage::~RegisterSuccessMessage() {} // Destructor
 // See interface (header file).
 int RegisterSuccessMessage::getReasonCode() const {
   return reasonCode;
+}
+
+// See interface (header file).
+int RegisterSuccessMessage::send(int dataTransferSocket, unsigned int length) {
+  return 1;
+}
+
+// See interface (header file).
+int RegisterSuccessMessage::receive(int dataTransferSocket,
+  Message *parsedMessage, unsigned int length) {
+  return 1;
 }

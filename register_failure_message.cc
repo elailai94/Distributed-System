@@ -1,5 +1,4 @@
 #include "register_failure_message.h"
-#include "message_types.h"
 
 using namespace std;
 
@@ -16,7 +15,7 @@ int RegisterFailureMessage::getReasonCode() const {
 }
 
 // See interface (header file).
-int RegisterFailureMessage::send(int dataTransferSocket) {
+int RegisterFailureMessage::send(int dataTransferSocket, unsigned int length) {
   return 1;
 }
 

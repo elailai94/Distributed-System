@@ -15,7 +15,7 @@ int LocFailureMessage::getReasonCode() const {
 }
 
 // See interface (header file).
-int LocFailureMessage::send(int dataTransferSocket) {
+int LocFailureMessage::send(int dataTransferSocket, unsigned int length) {
   return 1;
 }
 

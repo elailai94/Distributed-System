@@ -26,7 +26,7 @@ void **ExecuteRequestMessage::getArgs() const {
 }
 
 // See interface (header file).
-int ExecuteRequestMessage::send(int dataTransferSocket) {
+int ExecuteRequestMessage::send(int dataTransferSocket, unsigned int length) {
   return 1;
 }
 

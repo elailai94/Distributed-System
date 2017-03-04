@@ -38,13 +38,13 @@ public:
    * Creates a message to send data and writes it out to the data
    * transfer socket
    */
-   virtual int send(int dataTransferSocket);
+   virtual int send(int dataTransferSocket, unsigned int length);
 
    /*
     * Creates a message to receive data and reads into it from the data
     * transfer socket
     */
-   static int receive(int dataTransferSocket, Message &parsedMessage,
+   static int receive(int dataTransferSocket, Message *parsedMessage,
      unsigned int length);
 };
 
