@@ -19,3 +19,8 @@ string ExecuteRequestMessage::getName() const {
 int *ExecuteRequestMessage::getArgTypes() const {
   return argTypes;
 }
+
+// See interface (header file).
+void **ExecuteRequestMessage::getArgs() const {
+  return args;
+}

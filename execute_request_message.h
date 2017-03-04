@@ -7,7 +7,8 @@
 // Object definition
 class ExecuteRequestMessage: public Message {
   std::string name;
-  int* argTypes;
+  int *argTypes;
+  void **args;
 
 public:
   ExecuteRequestMessage();  // Constructor
@@ -18,6 +19,9 @@ public:
 
   // Returns the types of the arguments
   int *getArgTypes() const;
+
+  // Returns the values of the arguments
+  void **getArgs() const;
 };
 
 #endif

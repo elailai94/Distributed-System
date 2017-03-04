@@ -9,7 +9,7 @@ class RegisterRequestMessage: public Message {
   std::string serverIdentifier;
   unsigned int port;
   std::string name;
-  int* argTypes;
+  int *argTypes;
 
 public:
   RegisterRequestMessage();  // Constructor

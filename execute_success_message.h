@@ -5,6 +5,9 @@
 
 // Object definition
 class ExecuteSuccessMessage: public Message {
+  std::string name;
+  int *argTypes;
+
 public:
   ExecuteSuccessMessage();  // Constructor
   ~ExecuteSuccessMessage(); // Destructor
