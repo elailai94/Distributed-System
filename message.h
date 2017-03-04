@@ -28,6 +28,6 @@ public:
    * transfer socket
    */
   virtual void receive(int dataTransferSocket);
-}
+};
 
 #endif
