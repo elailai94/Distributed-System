@@ -41,88 +41,22 @@ struct thread_data {
   vector<string> *buf;
 };
 
-void *SendToServer(void *threadarg) {
-  struct thread_data *my_data;
-  my_data = (struct thread_data *) threadarg;
-
-  vector<string> *dataQueue = my_data->buf;
-
-  while (true) {
-    if ((*dataQueue).size() > 0) {
-      string data = (*dataQueue)[0];
-      (*dataQueue).erase((*dataQueue).begin());
-
-      // send data to server
-      int len = data.length() + 1;
-      send(my_data->sock, &len, sizeof(len), 0);
-      send(my_data->sock, data.c_str(), len, 0);
-
-      // block on receive
-      string titleCasedData;
-      recv(my_data->sock, &len, sizeof(len), 0);
-
-      char *msg = new char[len];
-      recv(my_data->sock, msg, len, 0);
-      
-      //Printing the response from the server:
-      cout << "Server: " << msg << endl;
-
-      sleep(2);
-    }
-  }
-
-  pthread_exit(NULL);
-}
 
 void connect_to_binder() {
   char *serverAddress = getenv("BINDER_ADDRESS");
   char *port = getenv("BINDER_PORT");
-
-  if (serverAddress == NULL || port == NULL) {
-    cerr << "Missing SERVER_ADDRESS or SERVER_PORT environment variable" << endl;
-    cerr << *port << endl;
-    cerr << *serverAddress << endl;  
-    exit(1);
-  }
-
-  string data;
-  vector<string> buffer;
-
-  int sockfd, portno;
-  struct sockaddr_in serv_addr;
-  struct hostent *server;
-  portno = atoi(port);
-  sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  server = gethostbyname(serverAddress);
-
-  bzero((char *) &serv_addr, sizeof(serv_addr));
-
-  serv_addr.sin_family = AF_INET;
-  
-  bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
-
-  serv_addr.sin_port = htons(portno);
-
-  connect(sockfd,(struct sockaddr *)&serv_addr, sizeof(serv_addr));
-
-  struct thread_data td;
-  td.sock = sockfd;
-  td.buf = &buffer;
-
-  pthread_t thread;
-  
-  int val = pthread_create(&thread, NULL, SendToServer, (void *)&td);
-
-  binder_sock = sockfd;
+  binder_sock = createConnection(serverAddress, port);
+  return binder_sock;
 }
 
 
 int rpcRegister(char * name, int *argTypes, skeleton f){
 
-  connect_to_binder();
-  int status = RegisterRequestMessage request_message = new RegisterRequestMessage(serverIdentifier, port, name, argTypes);
-  success_message.send(sock);
+  int binder_sock = connect_to_binder();
   int retStatus;
+
+  RegisterRequestMessage request_message = new RegisterRequestMessage(serverIdentifier, port, name, argTypes);
+  int status = success_message.send(binder_sock);
 
   if(status == 0){
     //Success
@@ -205,7 +139,6 @@ int rpcExecute(void){
             if (status < 0) {
                 RegisterFailureMessage failure_message = new RegisterFailureMessage(status);
                 failure_message.send(sock);
-
                 return errorMsg;
             }
 
