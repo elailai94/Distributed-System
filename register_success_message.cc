@@ -5,7 +5,7 @@ using namespace std;
 
 // See interface (header file).
 RegisterSuccessMessage::RegisterSuccessMessage()
-  : Message(_MSG_TYPE_REGISTER_SUCCESS) {} //  Constructor
+  : Message() {} //  Constructor
 
 // See interface (header file).
 RegisterSuccessMessage::~RegisterSuccessMessage() {} // Destructor

@@ -17,7 +17,7 @@
 #include <netdb.h>
 #include <stdlib.h>
 
-#include "helperfunction.cc"
+#include "helperfunction.h"
 
 #include "register_success_message.h"   
 #include "register_failure_message.h"

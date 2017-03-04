@@ -23,7 +23,7 @@
 
 #include <netdb.h>
 #include <stdlib.h>
-#include "helperfunction.cc"
+#include "helperfunction.h"
 
 using namespace std;
 
