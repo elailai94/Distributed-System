@@ -14,6 +14,7 @@
 #include <vector>
 #include <algorithm>
 
+#include "message.h"
 #include "loc_success_message.h"
 #include "loc_failure_message.h"
 #include "loc_request_message.h"
@@ -23,7 +24,6 @@
 
 #include <netdb.h>
 #include <stdlib.h>
-
 #include "constants.h"
 #include "helperfunction.h"
 

@@ -16,6 +16,7 @@
 #include <netdb.h>
 #include <stdlib.h>
 
+#include "message.h"
 #include "register_success_message.h"
 #include "register_failure_message.h"
 #include "register_request_message.h"
