@@ -6,7 +6,6 @@
 
 using namespace std;
 
-
 // See interface (header file).
 unsigned int RegisterRequestMessage::countNumOfArgTypes(int *argTypes) {
   int count = 1;
@@ -55,29 +54,39 @@ int RegisterRequestMessage::send(int dataTransferSocket, unsigned int length) {
   char *messageBufferPointer = messageBuffer;
 
   // Writes the server identifier to the buffer
-  memcpy(messageBuffer, , MAX_LENGTH_SERVER_IDENTIFIER);
+  memcpy(messageBuffer, serverIdentifier.c_str(), serverIdentifier.length());
   messageBufferPointer += MAX_LENGTH_SERVER_IDENTIFIER;
 
   // Writes the port to the buffer
-  memcpy(messageBuffer, , MAX_LENGTH_PORT);
+  memcpy(messageBuffer, port, MAX_LENGTH_PORT);
   messageBufferPointer += MAX_LENGTH_PORT;
 
   // Writes the remote procedure name to the buffer
-  memcpy(messageBuffer, , MAX_LENGTH_NAME);
+  memcpy(messageBuffer, name.c_str(), name.length());
   messageBufferPointer += MAX_LENGTH_NAME
-
-  // Writes the remote procedure name out to the data transfer socket
-  result = sendString(dataTransferSocket, name, 65);
-  if (result < 0) {
-    return result;
-  }
 
   // Writes the argument types out to the data transfer socket
   unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
-  result = sendIntegerArray(dataTransferSocket, argTypes, numOfArgTypes);
-  if (result < 0) {
-    return result;
+  memcpy(messageBuffer, argTypes, numOfArgTypes * MAX_LENGTH_ARG_TYPE);
+
+  // Writes the message from the buffer out to the data transfer socket
+  unsigned int totalNumOfBytesMessage = length;
+  unsigned int numOfBytesLeft = totalNumOfBytesMessage;
+  unsigned int totalNumOfBytesSent = 0;
+
+  while (totalNumOfBytesSent < totalNumOfBytesMessage) {
+    int numOfBytesSent =
+      ::send(dataTransferSocket, messageBuffer + totalNumOfBytesSent,
+        numOfBytesLeft, 0);
+    if (numOfBytesSent < 0) {
+      return numOfBytesSent;
+    }
+
+    totalNumOfBytesSent += numOfBytesSent;
+    numOfBytesLeft += numOfBytesSent;
   }
+
+  return length;
 }
 
 // See interface (header file).
