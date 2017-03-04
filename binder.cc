@@ -25,7 +25,7 @@
 
 #include "rpc.h"
 #include "constants.cc"
-#include "helperfunction.h"
+#include "helper_function.h"
 
 using namespace std;
 
