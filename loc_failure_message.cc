@@ -4,8 +4,8 @@
 using namespace std;
 
 // See interface (header file).
-LocFailureMessage::LocFailureMessage()
-  : Message(_MSG_TYPE_LOC_FAILURE) {} //  Constructor
+LocFailureMessage::LocFailureMessage(int reasonCode)
+  : Message(), reasonCode(reasonCode) {} //  Constructor
 
 // See interface (header file).
 LocFailureMessage::~LocFailureMessage() {} // Destructor
@@ -13,4 +13,15 @@ LocFailureMessage::~LocFailureMessage() {} // Destructor
 // See interface (header file).
 int LocFailureMessage::getReasonCode() const {
   return reasonCode;
+}
+
+// See interface (header file).
+int LocFailureMessage::send(int dataTransferSocket) {
+  return 1;
+}
+
+// See interface (header file).
+int LocFailureMessage::receive(int dataTransferSocket,
+  Message *parsedMessage, unsigned int length) {
+  return 1;
 }

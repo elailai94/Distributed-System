@@ -5,7 +5,7 @@ using namespace std;
 
 // See interface (header file).
 LocRequestMessage::LocRequestMessage(char* name, int* argTypes)
-  : Message(_MSG_TYPE_LOC_REQUEST), name(name), argTypes(argTypes) {} //  Constructor
+  : Message(), name(name), argTypes(argTypes) {} //  Constructor
 
 // See interface (header file).
 LocRequestMessage::~LocRequestMessage() {} // Destructor
@@ -21,15 +21,12 @@ int *LocRequestMessage::getArgTypes() const {
 }
 
 // See interface (header file).
-void LocRequestMessage::send(int dataTransferSocket) {
-  unsigned int length = getLength();
-  
-
-  unsigned int type = getType();
-
+int LocRequestMessage::send(int dataTransferSocket) {
+  return 1;
 }
 
 // See interface (header file).
-void LocRequestMessage::receive(int dataTransferSocket) {
-
+int LocRequestMessage::receive(int dataTransferSocket,
+  Message *parsedMessage, unsigned int length) {
+  return 1;
 }

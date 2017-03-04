@@ -10,7 +10,7 @@ class LocRequestMessage: public Message {
   int *argTypes;
 
 public:
-  LocRequestMessage();  // Constructor
+  LocRequestMessage(std::string name, int *argTypes);  // Constructor
   ~LocRequestMessage(); // Destructor
 
   // Returns the name of the remote procedure to be executed
@@ -23,13 +23,14 @@ public:
    * Creates a message to send data and writes it out to the data
    * transfer socket
    */
-  virtual void send(int dataTransferSocket);
+  virtual int send(int dataTransferSocket);
 
   /*
    * Creates a message to receive data and reads into it from the data
    * transfer socket
    */
-  virtual void receive(int dataTransferSocket);
+  static int receive(int dataTransferSocket, Message *parsedMessage,
+    unsigned int length);
 };
 
 #endif
