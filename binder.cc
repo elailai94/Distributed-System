@@ -48,13 +48,13 @@ ADD FUNCTION TO ROUND ROBIN
 IF FUNCTION EXISTS IN ROUND ROBIN DELETE OLD REPLACE WITH NEW (where)
 */
 void registration_request_handler(RegisterRequestMessage message, int sock){
-	char * name = message.name;
-  int * argTypes = message.argTypes;  
-  string server_identifier = message.server_identifier;
+	char * name = message.getName();
+  int * argTypes = message.getArgTypes();  
+  string server_identifier = message.getServerIdentifier();
+  int port = message.getPort();
   
   procedure_signature key = new procedure_signature(name, argTypes);
 	
-  int port = message.port;
   server_info new_msg_loc = new server_info(server_identifier, port, sock);
 
   int status = 0;
@@ -62,14 +62,14 @@ void registration_request_handler(RegisterRequestMessage message, int sock){
   //if no key dosnt exist in map
 	if (proc_loc_dict.find(key) == proc_loc_dict.end()) {
 
-    //Adding theo map
+    //Adding to the map
     int *memArgTypes = copyArgTypes(argTypes);
     key = procedure_signature(name, memArgTypes);
     proc_loc_dict[key] = new list<server_info *>();
-    server_info entry = new service_info(message.server_identifier, message.port, sock);
+    server_info entry = new service_info(server_identifier, port, sock);
 
     //Adding to roundRobinList
-    server_function_info info = new server_function_info(message.server_identifier, message.port, sock ,key);    
+    server_function_info info = new server_function_info(server_identifier, port, sock ,key);    
     roundRobinList.push_back(info);
 
   }else{	 	
@@ -120,14 +120,14 @@ int location_request_handler(LocRequestMessage message, int sock){
   }
 
 	return 0; //LOC_FAILURE
-}
+}(
 
-int request_handler(Message message, int sock){
-	int retval;
-	if(message.type == 4){ //'LOC_REQUEST' 
-		retval = registration_request_handler(message, sock);
-	}else if (message.type == 1){ //'REGISTER'
-    retval = location_request_handler(message, sock);
+int request_handler(Segment segment, int sock){
+  int retval;
+  if(segment.getType() == MSG_TYPE_LOC_REQUEST){ //'LOC_REQUEST' 
+    retval = registration_request_handler(segment.getMessage(), sock);
+  }else if (segment.getType() == MSG_TYPE_REGISTER_REQUEST){ //'REGISTER'
+    retval = location_request_handler(segment.getMessage(), sock);
   }
 
 	return retval;
@@ -224,8 +224,8 @@ int main(){
           int tempConnection = *it;         
           if (FD_ISSET(tempConnection, &readfds)) {
 
-            Message message; 
-            Message::receive(sock, message, status);
+            Segment segment; 
+            Segment::receive(sock, segment, status);
 
             if (status < 0) {
                 RegisterFailureMessage failure_message = new RegisterFailureMessage(status);
@@ -239,7 +239,7 @@ int main(){
               return errorMsg;
             }
 
-            request_handler(message, sock);
+            request_handler(segment, sock);
           }
         }
       }
