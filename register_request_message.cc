@@ -1,4 +1,6 @@
+#include <cstdlib>
 #include <cstring>
+#include <vector>
 #include <netinet/in.h>
 #include <sys/param.h>
 #include <sys/socket.h>
