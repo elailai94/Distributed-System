@@ -1,5 +1,4 @@
 #include "loc_success_message.h"
-#include "message_types.h"
 
 using namespace std;
 
