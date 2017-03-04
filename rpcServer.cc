@@ -30,6 +30,7 @@ static map<procedure_signature, skeleton> proc_skele_dict;
 string serverIdentifier;
 unsigned int port;
 int binder_sock;
+int sock;
 
 	//TODO:
   // CREATE SERVER
@@ -147,52 +148,14 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
 }
 
 
-int rpcInit(void){
+int rpcExecute(void){
   //Create connection socket ot be used for accepting clients
-
   vector<int> myConnections;
   vector<int> myToRemove;
-
-  int status;
-  struct addrinfo hints;
-  struct addrinfo* servinfo;
-  struct addrinfo* p;
-
-  memset(&hints, 0, sizeof hints);
-  hints.ai_family = AF_UNSPEC;
-  hints.ai_socktype = SOCK_STREAM;
-  hints.ai_flags = AI_PASSIVE;
-
-  status = getaddrinfo(NULL, "0", &hints, &servinfo);
-
-  if (status != 0) {
-    fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));
-    return 0;
-  }
-
-  p = servinfo;
-  int sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
  
-  status = bind(sock, servinfo->ai_addr, servinfo->ai_addrlen);
-  status = listen(sock, 5);
- 
-  char hostname[256];
-  gethostname(hostname, 256);
-  
-  struct sockaddr_in sin;
-  socklen_t len = sizeof(sin);
-
-  getsockname(sock, (struct sockaddr *)&sin, &len);
-
-  stringstream ss;
-  ss << ntohs(sin.sin_port);
-  string ps = ss.str();
-
-  serverIdentifier = hostname;
-  port =  ntohs(sin.sin_port);
-
   fd_set readfds;
   int n;
+  int status;
   struct sockaddr_storage their_addr;
 
   while(true){
@@ -266,4 +229,45 @@ int rpcInit(void){
   }
 
   freeaddrinfo(servinfo);
+}
+
+int rpcInit(void){
+  int status;
+  struct addrinfo hints;
+  struct addrinfo* servinfo;
+  struct addrinfo* p;
+
+  memset(&hints, 0, sizeof hints);
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags = AI_PASSIVE;
+
+  status = getaddrinfo(NULL, "0", &hints, &servinfo);
+
+  if (status != 0) {
+    fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));
+    return 0;
+  }
+
+  p = servinfo;
+  sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+ 
+  status = bind(sock, servinfo->ai_addr, servinfo->ai_addrlen);
+  status = listen(sock, 5);
+ 
+  char hostname[256];
+  gethostname(hostname, 256);
+  
+  struct sockaddr_in sin;
+  socklen_t len = sizeof(sin);
+
+  getsockname(sock, (struct sockaddr *)&sin, &len);
+
+  stringstream ss;
+  ss << ntohs(sin.sin_port);
+  string ps = ss.str();
+
+  serverIdentifier = hostname;
+  port =  ntohs(sin.sin_port);
+
 }
