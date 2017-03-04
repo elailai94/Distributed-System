@@ -12,6 +12,7 @@
 #include <vector>
 #include <algorithm>
 #include <list>
+#include <map>
 
 #include <netdb.h>
 #include <stdlib.h>
@@ -47,11 +48,12 @@ ADD FUNCTION TO ROUND ROBIN
 IF FUNCTION EXISTS IN ROUND ROBIN DELETE OLD REPLACE WITH NEW (where)
 */
 void registration_request_handler(RegisterRequestMessage message, int sock){
-	name = message.name;
-  argTypes = message.argTypes;  
+	char * name = message.name;
+  int * argTypes = message.argTypes;  
+  string server_identifier = message.server_identifier;
+  
   procedure_signature key = new procedure_signature(name, argTypes);
 	
-  string server_identifier = message.server_identifier;
   int port = message.port;
   server_info new_msg_loc = new server_info(server_identifier, port, sock);
 
@@ -120,10 +122,10 @@ int location_request_handler(LocRequestMessage message, int sock){
 	return 0; //LOC_FAILURE
 }
 
-string request_handler(Message message, int sock){
+int request_handler(Message message, int sock){
 	int retval;
 	if(message.type == 4){ //'LOC_REQUEST' 
-		retVal = registration_request_handler(message, sock);
+		retval = registration_request_handler(message, sock);
 	}else if (message.type == 1){ //'REGISTER'
     retval = location_request_handler(message, sock);
   }
