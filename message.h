@@ -7,6 +7,10 @@ class Message {
   unsigned int length;
   unsigned int type;
 
+protected:
+  // Sets the length of the message
+  void setLength(unsigned int length);
+
 public:
   Message(unsigned int length, unsigned int type); // Constructor
   virtual ~Message() = 0;                          // Destructor
@@ -21,13 +25,14 @@ public:
    * Creates a message to send data and writes it out to the data
    * transfer socket
    */
-  virtual void send(int dataTransferSocket);
+  virtual int send(int dataTransferSocket) = 0;
 
   /*
    * Creates a message to receive data and reads into it from the data
    * transfer socket
    */
-  virtual void receive(int dataTransferSocket);
+
+  virtual void receive(int dataTransferSocket) = 0;
 };
 
 #endif
