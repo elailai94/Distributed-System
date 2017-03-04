@@ -58,11 +58,6 @@ int connectedToBinder(){
 
 }
 
-int getServerSocket(){
-
-}
-
-
 int rpcCall(char * name, int * argTypes, void ** args) {
 
 	int returnVal;
