@@ -25,6 +25,7 @@
 
 #include <rpc.h>
 #include <constants.cc>
+#include <helperfunction.cc>
 
 using namespace std;
 
@@ -99,7 +100,7 @@ int location_request_handler(LocRequestMessage message, int sock){
   bool exist = false; 
 	for (list<server_function_info *>::iterator it = roundRobinList->begin(); it != roundRobinList->end(); it++){
 		//If the name are the same
-    if(it->ps->name == message->name &&   equal(arr1, arr1 + sizeof(arr1,)/4, arr2)){ 
+    if(it->ps->name == message->name && compareArr(it->ps->arrTypes, message->arrTypes)){ 
 		  //When we have identified the correct procedure_signature use round robin and move that service to the end
 		  roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
       exist = true;
@@ -190,7 +191,7 @@ int main(){
     for (vector<int>::iterator it = myConnections.begin();it != myConnections.end(); ++it) {
       int connection = *it;
       FD_SET(connection, &readfds);
-      if (connection > n){
+       if (connection > n){
         n = connection;
       }
     } 
@@ -227,7 +228,6 @@ int main(){
             if (status < 0) {
                 RegisterFailureMessage failure_message = new RegisterFailureMessage(status);
                 failure_message.send(sock);
-
                 return errorMsg;
             }
 

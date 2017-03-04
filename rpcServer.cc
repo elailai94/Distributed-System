@@ -17,14 +17,24 @@
 #include <netdb.h>
 #include <stdlib.h>
 
+#include <register_success_message.h>
+#include <register_failure_message.h>
+#include <register_request_message.h>
+#include <execute_success_message.h>
+#include <execute_failure_message.h>
+#include <execute_request_message.h>
+
 using namespace std;
 
-int rpcInit(){
-  	
+static map<procedure_signature, skeleton> proc_skele_dict;
+string serverIdentifier;
+unsigned int port;
+int binder_sock;
+int sock;
+
 	//TODO:
   // CREATE SERVER
   // CONNECT TO BINDER
-}
 
 struct thread_data {
   int sock;
@@ -45,16 +55,11 @@ void *SendToServer(void *threadarg) {
       // send data to server
       int len = data.length() + 1;
       send(my_data->sock, &len, sizeof(len), 0);
-      //The send() call may be used only when the socket is in a connected state 
-
       send(my_data->sock, data.c_str(), len, 0);
 
       // block on receive
       string titleCasedData;
       recv(my_data->sock, &len, sizeof(len), 0);
-      // The recv() call is normally used only on a connected socket 
-      // Recv() calls are used to receive messages from a socket, and may be used to receive 
-      // data on a socket whether or not it is connection-oriented.
 
       char *msg = new char[len];
       recv(my_data->sock, msg, len, 0);
@@ -70,12 +75,11 @@ void *SendToServer(void *threadarg) {
 }
 
 void connect_to_binder() {
-  char *serverAddress = getenv("SERVER_ADDRESS");
-  char *port = getenv("SERVER_PORT");
+  char *serverAddress = getenv("BINDER_ADDRESS");
+  char *port = getenv("BINDER_PORT");
 
   if (serverAddress == NULL || port == NULL) {
     cerr << "Missing SERVER_ADDRESS or SERVER_PORT environment variable" << endl;
-    
     cerr << *port << endl;
     cerr << *serverAddress << endl;  
     exit(1);
@@ -92,18 +96,14 @@ void connect_to_binder() {
   server = gethostbyname(serverAddress);
 
   bzero((char *) &serv_addr, sizeof(serv_addr));
-  //The bzero() function sets the first  sizeof(serv_addr) bytes of the area starting at &serv_addr
 
   serv_addr.sin_family = AF_INET;
   
   bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
-  //The bcopy() function copies  server->h_length bytes from server->h_addr to serv_addr.sin_addr.s_addr.  The result is correct, even when both areas overlap.
 
   serv_addr.sin_port = htons(portno);
 
   connect(sockfd,(struct sockaddr *)&serv_addr, sizeof(serv_addr));
-  //The connect() system call connects the socket referred to by the file descriptor sockfd to the address specified by &serv_addr. 
-  //The sizeof(serv_addr) argument specifies the size of addr.
 
   struct thread_data td;
   td.sock = sockfd;
@@ -112,11 +112,162 @@ void connect_to_binder() {
   pthread_t thread;
   
   int val = pthread_create(&thread, NULL, SendToServer, (void *)&td);
-  //int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *), void *arg);
 
-  while (true) {
-    getline(cin, data);
-    buffer.push_back(data);
-  }
+  binder_sock = sockfd;
 }
 
+
+int rpcRegister(char * name, int *argTypes, skeleton f){
+
+  connect_to_binder();
+  int status = RegisterRequestMessage request_message = new RegisterRequestMessage(serverIdentifier, port, name, argTypes);
+  success_message.send(sock);
+  int retStatus;
+
+  if(status == 0){
+    //Success
+    Message message; 
+    Message::receive(binder_sock, message, retStatus);
+
+    if(message.type == 2){  
+      struct procedure_signature k(string(name), argTypes);
+      proc_skele_dict[k] = f;
+    }else if(message.type ==3){
+
+    }
+
+  
+  }else if( status > 0){
+    //Warning
+
+  }else if( status < 0){
+    //Error
+    return status;
+  }
+
+}
+
+
+int rpcExecute(void){
+  //Create connection socket ot be used for accepting clients
+  vector<int> myConnections;
+  vector<int> myToRemove;
+ 
+  fd_set readfds;
+  int n;
+  int status;
+  struct sockaddr_storage their_addr;
+
+  while(true){
+    //CONNECTIONS VECTOR    
+    FD_ZERO(&readfds); 
+    FD_SET(sock, &readfds); 
+
+    n = sock;
+
+    for (vector<int>::iterator it = myConnections.begin();it != myConnections.end(); ++it) {
+      int connection = *it;
+      FD_SET(connection, &readfds);
+       if (connection > n){
+        n = connection;
+      }
+    } 
+    
+    n = n+1;
+
+    status = select(n, &readfds, NULL, NULL, NULL);
+    
+    if (status == -1) {
+      cerr << "ERROR: select failed." << endl;
+    } else {
+      
+      if (FD_ISSET(sock, &readfds)) {       
+        socklen_t addr_size = sizeof their_addr;
+        int new_sock = accept(sock, (struct sockaddr*)&their_addr, &addr_size);
+
+        if (new_sock < 0) {
+          cerr << "ERROR: while accepting connection" << endl;
+          close(new_sock);
+          continue;
+        }
+
+        myConnections.push_back(new_sock);
+
+      } else {
+
+        for (vector<int>::iterator it = myConnections.begin(); it != myConnections.end(); ++it) {   
+          int tempConnection = *it;         
+          if (FD_ISSET(tempConnection, &readfds)) {
+
+            Message message; 
+            Message::receive(sock, message, status);
+
+            if (status < 0) {
+                RegisterFailureMessage failure_message = new RegisterFailureMessage(status);
+                failure_message.send(sock);
+
+                return errorMsg;
+            }
+
+            if (status == 0) {
+              // client has closed the connection
+              myToRemove.push_back(sock);
+              return errorMsg;
+            }
+
+            request_handler(message, sock);
+          }
+        }
+      }
+
+      for (vector<int>::iterator it = myToRemove.begin(); it != myToRemove.end(); ++it) {
+        myConnections.erase(remove(myConnections.begin(), myConnections.end(), *it), myConnections.end());
+        close(*it);
+      }
+      myToRemove.clear();
+    }
+  }
+
+  freeaddrinfo(servinfo);
+}
+
+int rpcInit(void){
+  int status;
+  struct addrinfo hints;
+  struct addrinfo* servinfo;
+  struct addrinfo* p;
+
+  memset(&hints, 0, sizeof hints);
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags = AI_PASSIVE;
+
+  status = getaddrinfo(NULL, "0", &hints, &servinfo);
+
+  if (status != 0) {
+    fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));
+    return 0;
+  }
+
+  p = servinfo;
+  sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+ 
+  status = bind(sock, servinfo->ai_addr, servinfo->ai_addrlen);
+  status = listen(sock, 5);
+ 
+  char hostname[256];
+  gethostname(hostname, 256);
+  
+  struct sockaddr_in sin;
+  socklen_t len = sizeof(sin);
+
+  getsockname(sock, (struct sockaddr *)&sin, &len);
+
+  stringstream ss;
+  ss << ntohs(sin.sin_port);
+  string ps = ss.str();
+
+  serverIdentifier = hostname;
+  port =  ntohs(sin.sin_port);
+
+}
