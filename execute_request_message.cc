@@ -4,8 +4,9 @@
 using namespace std;
 
 // See interface (header file).
-ExecuteRequestMessage::ExecuteRequestMessage()
-  : Message(_MSG_TYPE_EXECUTE_REQUEST) {} //  Constructor
+ExecuteRequestMessage::ExecuteRequestMessage(string name, int *argTypes,
+  void **args)
+  : Message(), name(name), argTypes(argTypes), args(args) {} //  Constructor
 
 // See interface (header file).
 ExecuteRequestMessage::~ExecuteRequestMessage() {} // Destructor
@@ -23,4 +24,15 @@ int *ExecuteRequestMessage::getArgTypes() const {
 // See interface (header file).
 void **ExecuteRequestMessage::getArgs() const {
   return args;
+}
+
+// See interface (header file).
+int ExecuteRequestMessage::send(int dataTransferSocket) {
+  return 1;
+}
+
+// See interface (header file).
+int ExecuteRequestMessage::receive(int dataTransferSocket,
+  Message *parsedMessage, unsigned int length) {
+  return 1;
 }

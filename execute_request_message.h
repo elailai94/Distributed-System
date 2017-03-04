@@ -11,7 +11,7 @@ class ExecuteRequestMessage: public Message {
   void **args;
 
 public:
-  ExecuteRequestMessage();  // Constructor
+  ExecuteRequestMessage(std::string name, int *argTypes, void **args);  // Constructor
   ~ExecuteRequestMessage(); // Destructor
 
   // Returns the name of the remote procedure to be executed
@@ -22,6 +22,19 @@ public:
 
   // Returns the values of the arguments
   void **getArgs() const;
+
+  /*
+   * Creates a message to send data and writes it out to the data
+   * transfer socket
+   */
+  virtual int send(int dataTransferSocket);
+
+  /*
+   * Creates a message to receive data and reads into it from the data
+   * transfer socket
+   */
+  static int receive(int dataTransferSocket, Message *parsedMessage,
+    unsigned int length);
 };
 
 #endif

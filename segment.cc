@@ -6,7 +6,6 @@
 #include "loc_request_message.h"
 #include "loc_success_message.h"
 #include "loc_failure_message.h"
-#include ""
 
 // See interface (header file).
 Segment::Segment(unsigned int length, unsigned int type, Message *message)
