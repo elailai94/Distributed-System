@@ -60,7 +60,7 @@ int RegisterRequestMessage::send(int dataTransferSocket, unsigned int length) {
   messageBufferPointer += MAX_LENGTH_SERVER_IDENTIFIER;
 
   // Writes the port to the buffer
-  memcpy(messageBuffer, port, MAX_LENGTH_PORT);
+  memcpy(messageBuffer, &port, MAX_LENGTH_PORT);
   messageBufferPointer += MAX_LENGTH_PORT;
 
   // Writes the remote procedure name to the buffer
