@@ -1,7 +1,5 @@
 #include "register_failure_message.h"
 
-using namespace std;
-
 // See interface (header file).
 RegisterFailureMessage::RegisterFailureMessage(int reasonCode)
   : Message(), reasonCode(reasonCode) {} //  Constructor

@@ -137,7 +137,7 @@ int request_handler(Segment * segment, int sock){
   int retval = 0;
   if(segment->getType() == MSG_TYPE_REGISTER_REQUEST){ //'LOC_REQUEST'
     Message * cast1 = segment->getMessage();
-    RegistrationRequestMessage * rrm = dynamic_cast<LocRequestMessage*>(cast1);
+    RegisterRequestMessage * rrm = dynamic_cast<RegisterRequestMessage*>(cast1);
     registration_request_handler(rrm, sock);
 
   }else if (segment->getType() == MSG_TYPE_LOC_REQUEST){ //'REGISTER'
@@ -198,7 +198,7 @@ int main(){
   int sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
 
   status = bind(sock, servinfo->ai_addr, servinfo->ai_addrlen);
-  status = listen(sock, 5);
+  status = listen(sock, SOMAXCONN);
 
   cout << "BINDER_ADDRESS " << getBinderAddress() << endl;
   cout << "BINDER_PORT " << getBinderPort(sock) << endl;

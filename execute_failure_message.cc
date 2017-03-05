@@ -1,7 +1,5 @@
 #include "execute_failure_message.h"
 
-using namespace std;
-
 // See interface (header file).
 ExecuteFailureMessage::ExecuteFailureMessage(int reasonCode)
   : Message(), reasonCode(reasonCode) {} //  Constructor

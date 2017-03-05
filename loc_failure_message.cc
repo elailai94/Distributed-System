@@ -1,7 +1,5 @@
 #include "loc_failure_message.h"
 
-using namespace std;
-
 // See interface (header file).
 LocFailureMessage::LocFailureMessage(int reasonCode)
   : Message(), reasonCode(reasonCode) {} //  Constructor
