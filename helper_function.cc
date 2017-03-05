@@ -123,3 +123,18 @@ char * extractUnsignedInt(char * bufferP, int &i){
     i= _convertor.ui;
     return bufferP;
 }
+
+int *copyArgTypes(int argTypes[]) {
+    unsigned int argTypesLength = 0;
+    while (argTypes[argTypesLength++]);
+    int *memArgTypes = new int[argTypesLength];
+
+    unsigned int i = 0;
+    while (argTypes[i] != 0) {
+        memArgTypes[i] = argTypes[i];
+        i++;
+    }
+    memArgTypes[i] = 0;
+
+    return memArgTypes;
+}
