@@ -83,7 +83,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     list<server_info *> hostList = proc_loc_dict[key];
     //list<server_info *> *hostList = proc_loc_dict.find(key);
 
-    for (list<server_info *>::iterator it = hostList->begin(); it != hostList->end(); it++) {
+    for (list<server_info *>::iterator it = hostList.begin(); it != hostList.end(); it++) {
       if((*it)->socket == sock){ //if they have the same socket, then must be same server_address/port
         //The same procedure signature already exists on the same location
         //TODO: Move to end of round robin or something, maybe we should keep
@@ -93,7 +93,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
 
   	if(!sameLoc){ //same procedure different socket
        server_info * new_msg_loc = new server_info(server_identifier, port, sock);  
-       hostList->push_back(new_msg_loc);
+       hostList.push_back(new_msg_loc);
     }
   }
 
