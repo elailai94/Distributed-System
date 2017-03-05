@@ -116,7 +116,7 @@ int location_request_handler(LocRequestMessage * message, int sock){
 	}
 
   if(exist){
-    LocSuccessMessage * success_message = new LocSuccessMessage(it.server_identifier, it.port);
+    LocSuccessMessage * success_message = new LocSuccessMessage(it->server_info->server_identifier, it->server_info->port);
     success_message->send(sock);
   }else{
     int reasoncode = 0;
