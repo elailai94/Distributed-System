@@ -35,13 +35,13 @@ Message *Segment::getMessage() const {
 // See interface (header file).
 int Segment::send(int dataTransferSocket) {
   // Writes the length of the message out to the data transfer socket
-  int result = ::send(dataTransferSocket, length, sizeof(length), 0);
+  int result = ::send(dataTransferSocket, &length, sizeof(length), 0);
   if (result < 0) {
     return result;
   }
 
   // Writes the type of the message out to the data transfer socket
-  result = ::send(dataTransferSocket, type, sizeof(type), 0);
+  result = ::send(dataTransferSocket, &type, sizeof(type), 0);
   if (result < 0) {
     return result;
   }
