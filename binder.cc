@@ -53,9 +53,9 @@ void registration_request_handler(RegisterRequestMessage message, int sock){
   string server_identifier = message.getServerIdentifier();
   int port = message.getPort();
   
-  procedure_signature key = new procedure_signature(name, argTypes);
+  procedure_signature * key = new procedure_signature(name, argTypes);
 	
-  server_info new_msg_loc = new server_info(server_identifier, port, sock);
+  server_info * new_msg_loc = new server_info(server_identifier, port, sock);
 
   int status = 0;
 
@@ -66,10 +66,11 @@ void registration_request_handler(RegisterRequestMessage message, int sock){
     int *memArgTypes = copyArgTypes(argTypes);
     key = procedure_signature(name, memArgTypes);
     proc_loc_dict[key] = new list<server_info *>();
-    server_info entry = new service_info(server_identifier, port, sock);
+    server_info * entry = new server_info(server_identifier, port, sock);
 
     //Adding to roundRobinList
-    server_function_info info = new server_function_info(server_identifier, port, sock ,key);    
+
+    server_function_info * info = new server_function_info(entry, key);    
     roundRobinList.push_back(info);
 
   }else{	 	
@@ -112,10 +113,10 @@ int location_request_handler(LocRequestMessage message, int sock){
 	}
 
   if(exist){
-    LocSuccessMessage success_message = new LocSuccessMessage(it->server_identifier, it->port);
+    LocSuccessMessage * success_message = new LocSuccessMessage(it->server_identifier, it->port);
     success_message.send(sock);
   }else{
-    LocFailureMessage failure_message = new LocFailureMessage(0);
+    LocFailureMessage * failure_message = new LocFailureMessage(0);
     failure_message.send(sock);    
   }
 
