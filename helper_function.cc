@@ -16,7 +16,7 @@
 
 #include <netdb.h>
 #include <stdlib.h>
-#include "helperfunction.h"
+#include "helper_function.h"
 
 using namespace std;
 
@@ -43,7 +43,7 @@ void *SendToServer(void *threadarg) {
 
       char *msg = new char[len];
       recv(my_data->sock, msg, len, 0);
-      
+
       //Printing the response from the server:
       cout << "Server: " << msg << endl;
 
@@ -60,7 +60,7 @@ int createConnection(string address, unsigned int port){
   if (address == NULL || port == NULL) {
     cerr << "Missing address or port environment variable" << endl;
     cerr << port << endl;
-    cerr << *address << endl;  
+    cerr << *address << endl;
     exit(1);
   }
 
@@ -86,7 +86,7 @@ int createConnection(string address, unsigned int port){
   td.buf = &buffer;
 
   pthread_t thread;
-  
+
   val = pthread_create(&thread, NULL, SendToServer, (void *)&td);
 
   return sockfd;
@@ -114,7 +114,7 @@ int findLenOfArgTypes(int * array){
     array++;
     if(type == 0){
       break;
-    } 
+    }
   }
 }
 
