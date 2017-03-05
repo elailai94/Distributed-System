@@ -1,8 +1,6 @@
 #include "server_functions.h"
 #include <stdio.h>
 #include <string.h>
-#include "rpc.h"
-
 #include <iostream>
 #include <sstream>
 
@@ -14,6 +12,10 @@
 #include <vector>
 #include <algorithm>
 
+#include <netdb.h>
+#include <stdlib.h>
+
+#include "segment.h"
 #include "message.h"
 #include "loc_success_message.h"
 #include "loc_failure_message.h"
@@ -22,10 +24,11 @@
 #include "execute_failure_message.h"
 #include "execute_request_message.h"
 
-#include <netdb.h>
-#include <stdlib.h>
+#include "rpc.h"
 #include "constants.h"
-#include "helperfunction.h"
+#include "helper_function.h"
+#include "message_types.h"
+#include "message_results.h"
 
 using namespace std;
 

@@ -31,6 +31,7 @@
 #include "constants.h"
 #include "helper_function.h"
 #include "message_types.h"
+#include "message_results.h"
 
 using namespace std;
 
