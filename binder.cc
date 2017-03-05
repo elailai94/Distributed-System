@@ -111,14 +111,13 @@ int location_request_handler(LocRequestMessage * message, int sock){
 		  //When we have identified the correct procedure_signature use round robin and move that service to the end
 		  roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
       exist = true;
+      LocSuccessMessage * success_message = new LocSuccessMessage(it->server_info->server_identifier, it->server_info->port);
+      success_message->send(sock);
       break;
  		}
 	}
 
-  if(exist){
-    LocSuccessMessage * success_message = new LocSuccessMessage(it->server_info->server_identifier, it->server_info->port);
-    success_message->send(sock);
-  }else{
+  if(!exist){
     int reasoncode = 0;
     LocFailureMessage * failure_message = new LocFailureMessage(reasoncode);
     failure_message->send(sock);    
