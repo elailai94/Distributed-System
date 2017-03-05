@@ -2,8 +2,13 @@
 
 using namespace std;
 
-// Constants used for binder.cc
 
+struct thread_data {
+  int sock;
+  vector<string> *buf;
+};
+
+// Constants used for binder.cc
 struct server_info {
 	string server_identifier;
 	int port;

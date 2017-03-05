@@ -17,11 +17,6 @@
 #include <stdlib.h>
 using namespace std;
 
-struct thread_data {
-  int sock;
-  vector<string> *buf;
-};
-
 void *SendToServer(void *threadarg);
 int createConnection(char * address, char * port);
 bool compareArr(const int* array1, const int* array2);

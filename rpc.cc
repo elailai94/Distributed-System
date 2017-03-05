@@ -11,6 +11,8 @@
 #include <arpa/inet.h>
 #include <vector>
 #include <algorithm>
+#include <list>
+#include <map>
 
 #include <netdb.h>
 #include <stdlib.h>
@@ -106,30 +108,29 @@ int sendExecute(int sock, char* name, int* argTypes, void**args){
     	returnVal = 99;
     }
 
-    return returnVal
+    return returnVal;
 }
 
 
 int rpcCall(char * name, int * argTypes, void ** args) {
 
 	int returnVal;
-	char *serverAddress;
-	char *serverPort;
-	int server_socket
-
+	string serverAddress;
+	unsigned int serverPort;
+	
 	if(!connectedToBinder){
 		returnVal = connectToBinder();
 	}
 	//do something with returnVal
 
-	LocRequestMessage loc_request = new LocRequestMessage(name, argTypes);
+	LocRequestMessage * loc_request = new LocRequestMessage(name, argTypes);
   	int binder_status = loc_request->send(binder_sock);
   	//maybe error check with binder_status
 
 	/**Server stuff **/
-	if(status == 0){
+	if(binder_status == 0){
 		Segment * segment = 0;
-        status = Segment::receive(sock, segment);
+        status = Segment::receive(binder_sock, segment);
 
 		if(segment->getType() == MSG_TYPE_LOC_SUCCESS){ //'LOC_REQUEST'
     		Message * cast = segment->getMessage();
@@ -156,17 +157,12 @@ unsigned int port;
 //int binder_sock; //only one binder socket variable
 int sock;
 
-	//TODO:
+  //TODO:
   // CREATE SERVER
   // CONNECT TO BINDER
 
-struct thread_data {
-  int sock;
-  vector<string> *buf;
-};
 
-
-void connect_to_binder() {
+int connect_to_binder() {
   char *serverAddress = getenv("BINDER_ADDRESS");
   char *port = getenv("BINDER_PORT");
   binder_sock = createConnection(serverAddress, port);
@@ -179,8 +175,8 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
   int binder_sock = connect_to_binder();
   int retStatus;
 
-  RegisterRequestMessage request_message = new RegisterRequestMessage(serverIdentifier, port, name, argTypes);
-  int status = success_message->send(binder_sock);
+  RegisterRequestMessage * request_message = new RegisterRequestMessage(serverIdentifier, port, name, argTypes);
+  int status = request_message->send(binder_sock);
 
   if(status == 0){
     //Success
@@ -268,16 +264,16 @@ int rpcExecute(void){
               Message * cast = segment->getMessage();
               ExecuteRequestMessage * eqm = dynamic_cast<ExecuteRequestMessage*>(cast);
 
-              procedure_signature ps = new procedure_signature(eqm->getName(), eqm->getArgTypes());
+              procedure_signature * ps = new procedure_signature(eqm->getName(), eqm->getArgTypes());
               skeleton skel = proc_skele_dict[ps];
 
               int result = skel(eqm->getArgTypes(), eqm->getArgs());
 
               if(result == 0 ){
-                ExecuteSuccessMessage execute_success = new ExecuteSuccessMessage(name, eqm->getArgTypes(), eqm->getArgs());
+                ExecuteSuccessMessage * execute_success = new ExecuteSuccessMessage(eqm->getName(), eqm->getArgTypes(), eqm->getArgs());
                 int status = execute_success->send(sock);
               }else{
-                ExecuteFailureMessage execute_failure = new ExecuteFailureMessage(reasoncode);
+                ExecuteFailureMessage * execute_failure = new ExecuteFailureMessage(reasonCode);
                 int status = execute_failure->send(sock);
               }
             }
@@ -285,7 +281,7 @@ int rpcExecute(void){
             if (status == 0) {
               // client has closed the connection
               myToRemove.push_back(sock);
-              return errorMsg;
+              return status;
             }
 
           }
