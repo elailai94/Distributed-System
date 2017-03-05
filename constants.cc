@@ -1,12 +1,13 @@
 #include "constants.h"
 #include <cstring>
-
+#include <vector>
 #include <iostream>
 
 using namespace std;
 
 bool operator == (const server_function_info &l, const server_function_info &r) {
-    return (l.si.server_identifier == r.si.server_identifier && l.si.port == r.si.port && (!(*(l.ps) < *(r.ps)) && !(*(r.ps) < *(l.ps))));
+    //return (l.si->server_identifier == r.si->server_identifier && l.si->port == r.si->port && (!(*(l.ps) < *(r.ps)) && !(*(r.ps) < *(l.ps))));
+	return (l.si->server_identifier == r.si->server_identifier && l.si->port == r.si->port);
 }
 
 bool operator == (const server_info &l, const server_function_info &r) {
