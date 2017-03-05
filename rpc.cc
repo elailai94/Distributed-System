@@ -42,7 +42,8 @@ int binder_sock;
 
 //Global Variables for server
 struct addrinfo* servinfo;
-static map<procedure_signature, skeleton> proc_skele_dict;
+static map<procedure_signature, skeleton, ps_compare> proc_skele_dict;
+
 string serverIdentifier;
 unsigned int port;
 int sock;
