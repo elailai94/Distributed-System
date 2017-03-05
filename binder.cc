@@ -29,6 +29,7 @@
 #include "rpc.h"
 #include "constants.h"
 #include "helper_function.h"
+#include "message_types.h"
 
 using namespace std;
 
@@ -126,9 +127,13 @@ int location_request_handler(LocRequestMessage * message, int sock){
 }
 
 int request_handler(Segment * segment, int sock){
-  int retval;
-  if(segment.getType() == MSG_TYPE_LOC_REQUEST){ //'LOC_REQUEST' 
-    retval = registration_request_handler(segment->getMessage(), sock);
+  int retval = 0;
+  if(segment->getType() == MSG_TYPE_LOC_REQUEST){ //'LOC_REQUEST' 
+    Message * myMessage = segment->getMessage();
+    //Cat*    catPtr2 = dynamic_cast<Cat*>(AnimalPtr2);  // Works
+    LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(myMessage);
+
+    registration_request_handler(, sock);
   }else if (segment.getType() == MSG_TYPE_REGISTER_REQUEST){ //'REGISTER'
     retval = location_request_handler(segment->getMessage(), sock);
   }
