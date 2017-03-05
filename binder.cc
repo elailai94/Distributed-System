@@ -29,6 +29,7 @@
 #include "rpc.h"
 #include "constants.h"
 #include "helper_function.h"
+#include "message_types.h"
 
 using namespace std;
 
@@ -104,9 +105,9 @@ USE ROUND ROBIN TO ACCESS THE CORRECT SERVER/FUNCTION FOR THE CLIENT
 int location_request_handler(LocRequestMessage * message, int sock){
  
   bool exist = false; 
-	for (list<server_function_info *>::iterator it = roundRobinList->begin(); it != roundRobinList->end(); it++){
+	for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
 		//If the name are the same
-    if(it->ps->name == message->getName() && compareArr(it->ps->argTypes, message->getArgTypes() )){ 
+    if(it.ps->name == message->getName() && compareArr(it.ps->argTypes, message->getArgTypes() )){ 
 		  //When we have identified the correct procedure_signature use round robin and move that service to the end
 		  roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
       exist = true;
@@ -126,11 +127,16 @@ int location_request_handler(LocRequestMessage * message, int sock){
 }
 
 int request_handler(Segment * segment, int sock){
-  int retval;
-  if(segment.getType() == MSG_TYPE_LOC_REQUEST){ //'LOC_REQUEST' 
-    retval = registration_request_handler(segment->getMessage(), sock);
-  }else if (segment.getType() == MSG_TYPE_REGISTER_REQUEST){ //'REGISTER'
-    retval = location_request_handler(segment->getMessage(), sock);
+  int retval = 0;
+  if(segment->getType() == MSG_TYPE_LOC_REQUEST){ //'LOC_REQUEST' 
+    Message * cast1 = segment->getMessage();
+    LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(cast1);
+    registration_request_handler(lqm, sock);
+
+  }else if (segment->getType() == MSG_TYPE_REGISTER_REQUEST){ //'REGISTER'
+    Message * cast2 = segment->getMessage();
+    LocRequestMessage * rrm = dynamic_cast<LocRequestMessage*>(cast2);
+    retval = location_request_handler(rrm, sock);
   }
 
 	return retval;
@@ -227,7 +233,7 @@ int main(){
           int tempConnection = *it;         
           if (FD_ISSET(tempConnection, &readfds)) {
 
-            Segment * segment = null; 
+            Segment * segment = 0; 
             Segment::receive(sock, segment, status);
 
             if (status < 0) {
