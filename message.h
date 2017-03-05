@@ -14,11 +14,14 @@ public:
   Message();              // Constructor
   virtual ~Message() = 0; // Destructor
 
+  // Calculates the length of the message
+  virtual unsigned int getLength() const = 0;
+
   /*
    * Creates a message to send data and writes it out to the data
    * transfer socket
    */
-  virtual int send(int dataTransferSocket, unsigned int length) = 0;
+  virtual int send(int dataTransferSocket) = 0;
 
   /*
    * Creates a message to receive data and reads into it from the data
