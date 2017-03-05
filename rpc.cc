@@ -47,7 +47,7 @@ int connectToBinder(){
 	}
 
 	char * binderAddressString = getenv("BINDER_ADDRESS");
-  char * binderPortString = getenv("BINDER_PORT");
+  	char * binderPortString = getenv("BINDER_PORT");
 
   	if(binderAddressString == NULL){
         return 1;
@@ -68,7 +68,7 @@ int connectToBinder(){
 }
 
 
-int sendExecute(int sock, char* name, int* argTypes, void**args){
+int sendExecute(int sock, string * name, int* argTypes, void**args){
 
     ExecuteRequestMessage *execute_request = new ExecuteRequestMessage(name, argTypes, args);
     int status = execute_request->send(sock);
@@ -91,7 +91,7 @@ int sendExecute(int sock, char* name, int* argTypes, void**args){
 			retArgTypes = esm->getArgTypes();
 			retArgs = esm->getArgs();
 
-			if(strcmp(retName, name)){
+			if(retName == name){
 				//extractArgumentsMessage(replyMessageP, argTypes, args, argTypesLength, false);
 				returnVal = 0;
 			}else{
@@ -146,7 +146,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	}
 
     int server_sock = createConnection(serverAddress, serverPort);
-	int server_status = sendExecute(server_sock, name, argTypes, args);
+	int server_status = sendExecute(server_sock, string(name), argTypes, args);
 
 	return server_status;
 }
@@ -162,18 +162,9 @@ struct addrinfo* servinfo;
   // CREATE SERVER
   // CONNECT TO BINDER
 
-
-int connect_to_binder() {
-  char *serverAddress = getenv("BINDER_ADDRESS");
-  char *port = getenv("BINDER_PORT");
-  binder_sock = createConnection(serverAddress, port);
-  return binder_sock;
-}
-
-
 int rpcRegister(char * name, int *argTypes, skeleton f){
 
-  int binder_sock = connect_to_binder();
+  int binder_sock = connectToBinder();
   int retStatus;
 
   RegisterRequestMessage * request_message = new RegisterRequestMessage(serverIdentifier, port, name, argTypes);
@@ -266,7 +257,7 @@ int rpcExecute(void){
               ExecuteRequestMessage * eqm = dynamic_cast<ExecuteRequestMessage*>(cast);
 
               procedure_signature * ps = new procedure_signature(eqm->getName(), eqm->getArgTypes());
-              skeleton skel = proc_skele_dict[ps];
+              skeleton skel = proc_skele_dict[*ps];
 
               int result = skel(eqm->getArgTypes(), eqm->getArgs());
 
