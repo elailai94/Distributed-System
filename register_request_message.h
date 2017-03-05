@@ -34,11 +34,14 @@ public:
   // Returns the types of the arguments
   int *getArgTypes() const;
 
+  // Calculates the length of the message
+  virtual unsigned int getLength() const;
+
   /*
    * Creates a message to send data and writes it out to the data
    * transfer socket
    */
-   virtual int send(int dataTransferSocket, unsigned int length);
+   virtual int send(int dataTransferSocket);
 
    /*
     * Creates a message to receive data and reads into it from the data

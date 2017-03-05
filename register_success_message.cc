@@ -1,5 +1,4 @@
 #include "register_success_message.h"
-#include "message_types.h"
 
 using namespace std;
 
@@ -16,7 +15,12 @@ int RegisterSuccessMessage::getReasonCode() const {
 }
 
 // See interface (header file).
-int RegisterSuccessMessage::send(int dataTransferSocket, unsigned int length) {
+unsigned int RegisterSuccessMessage::getLength() const {
+  return MAX_LENGTH_REASON_CODE;
+}
+
+// See interface (header file).
+int RegisterSuccessMessage::send(int dataTransferSocket) {
   return 1;
 }
 

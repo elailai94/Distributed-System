@@ -15,7 +15,12 @@ int RegisterFailureMessage::getReasonCode() const {
 }
 
 // See interface (header file).
-int RegisterFailureMessage::send(int dataTransferSocket, unsigned int length) {
+unsigned int RegisterFailureMessage::getLength() const {
+  return MAX_LENGTH_REASON_CODE;
+}
+
+// See interface (header file).
+int RegisterFailureMessage::send(int dataTransferSocket) {
   return 1;
 }
 

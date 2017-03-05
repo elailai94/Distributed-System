@@ -51,8 +51,15 @@ int *RegisterRequestMessage::getArgTypes() const {
 }
 
 // See interface (header file).
-int RegisterRequestMessage::send(int dataTransferSocket, unsigned int length) {
-  char messageBuffer[length];
+unsigned int RegisterRequestMessage::getLength() const {
+  unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
+  return MAX_LENGTH_SERVER_IDENTIFIER + MAX_LENGTH_PORT + MAX_LENGTH_NAME +
+    (numOfArgTypes * MAX_LENGTH_ARG_TYPE);
+}
+
+// See interface (header file).
+int RegisterRequestMessage::send(int dataTransferSocket) {
+  char messageBuffer[getLength()];
   char *messageBufferPointer = messageBuffer;
 
   // Writes the server identifier to the buffer
@@ -72,7 +79,7 @@ int RegisterRequestMessage::send(int dataTransferSocket, unsigned int length) {
   memcpy(messageBuffer, argTypes, numOfArgTypes * MAX_LENGTH_ARG_TYPE);
 
   // Writes the message from the buffer out to the data transfer socket
-  unsigned int totalNumOfBytesMessage = length;
+  unsigned int totalNumOfBytesMessage = getLength();
   unsigned int numOfBytesLeft = totalNumOfBytesMessage;
   unsigned int totalNumOfBytesSent = 0;
 
@@ -88,7 +95,7 @@ int RegisterRequestMessage::send(int dataTransferSocket, unsigned int length) {
     numOfBytesLeft += numOfBytesSent;
   }
 
-  return length;
+  return totalNumOfBytesSent;
 }
 
 // See interface (header file).
