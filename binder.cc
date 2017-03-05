@@ -91,7 +91,7 @@ void registration_request_handler(RegisterRequestMessage message, int sock){
     }
   }
 
-  RegisterSuccessMessage success_message = new RegisterSuccessMessage(status);
+  RegisterSuccessMessage * success_message = new RegisterSuccessMessage(status);
   success_message.send(sock);
 }
 
@@ -114,10 +114,10 @@ int location_request_handler(LocRequestMessage message, int sock){
 
   if(exist){
     LocSuccessMessage * success_message = new LocSuccessMessage(it->server_identifier, it->port);
-    success_message.send(sock);
+    success_message->send(sock);
   }else{
     LocFailureMessage * failure_message = new LocFailureMessage(0);
-    failure_message.send(sock);    
+    failure_message->send(sock);    
   }
 
 	return 0; //LOC_FAILURE
@@ -229,7 +229,7 @@ int main(){
             Segment::receive(sock, segment, status);
 
             if (status < 0) {
-                RegisterFailureMessage failure_message = new RegisterFailureMessage(status);
+                RegisterFailureMessage * failure_message = new RegisterFailureMessage(status);
                 failure_message.send(sock);
                 return errorMsg;
             }
