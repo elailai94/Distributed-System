@@ -18,6 +18,8 @@
 #include <stdlib.h>
 #include "helper_function.h"
 
+#include "constants.h"
+
 using namespace std;
 
 
@@ -57,13 +59,6 @@ void *SendToServer(void *threadarg) {
 
 int createConnection(string address, unsigned int port){
 
-  if (address == NULL || port == NULL) {
-    cerr << "Missing address or port environment variable" << endl;
-    cerr << port << endl;
-    cerr << *address << endl;
-    exit(1);
-  }
-
   string data;
   vector<string> buffer;
 
@@ -72,7 +67,7 @@ int createConnection(string address, unsigned int port){
   struct hostent *server;
   portno = port;
   sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  server = gethostbyname(address);
+  server = gethostbyname(address.c_str());
 
   bzero((char *) &serv_addr, sizeof(serv_addr));
   serv_addr.sin_family = AF_INET;
@@ -87,7 +82,7 @@ int createConnection(string address, unsigned int port){
 
   pthread_t thread;
 
-  val = pthread_create(&thread, NULL, SendToServer, (void *)&td);
+  pthread_create(&thread, NULL, SendToServer, (void *)&td);
 
   return sockfd;
 }
@@ -119,7 +114,6 @@ int findLenOfArgTypes(int * array){
 }
 
 char * extractUnsignedInt(char * bufferP, int &i){
-
     bufferP = copyBufferToConvertor(bufferP, sizeof(int));
     i= _convertor.ui;
     return bufferP;
@@ -139,3 +133,4 @@ int *copyArgTypes(int argTypes[]) {
 
     return memArgTypes;
 }
+
