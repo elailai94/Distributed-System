@@ -1,20 +1,4 @@
-#include <stdio.h>
-#include <string.h>
-#include "rpc.h"
-
-#include <iostream>
-#include <sstream>
-
-#include <netinet/in.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <vector>
-#include <algorithm>
-
-#include <netdb.h>
-#include <stdlib.h>
+#include <string>
 
 using namespace std;
 
