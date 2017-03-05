@@ -6,8 +6,8 @@ using namespace std;
 
 struct server_info {     
 	string server_identifier;
-	int port;
-	int socket;
+	unsigned int port;
+	unsigned int socket;
 	
 	server_info(string server_identifier, int port, int socket) : server_identifier(server_identifier), port(port), socker(socket){}
 }; 

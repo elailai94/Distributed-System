@@ -109,11 +109,14 @@ int location_request_handler(LocRequestMessage * message, int sock){
 		
     //If the name are the same
     if((*it)->ps->name == message->getName() && compareArr((*it)->ps->argTypes, message->getArgTypes() )){ 
-		  //When we have identified the correct procedure_signature use round robin and move that service to the end
-		  roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
+		
       exist = true;
       LocSuccessMessage * success_message = new LocSuccessMessage((*it)->si->server_identifier, (*it)->si->port);
       success_message->send(sock);
+    
+      //When we have identified the correct procedure_signature use round robin and move that service to the end
+      roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
+    
       break;
  		}
 	}
