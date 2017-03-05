@@ -21,7 +21,7 @@ unsigned int LocSuccessMessage::getPort() const {
 }
 
 // See interface (header file).
-int LocSuccessMessage::send(int dataTransferSocket, unsigned int length) {
+int LocSuccessMessage::send(int dataTransferSocket) {
   return 1;
 }
 
