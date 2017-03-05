@@ -20,8 +20,9 @@ struct procedure_signature {
 }; 
 
 struct server_function_info {     
-	server_info si;
-	procedure_signature ps;
+	struct server_info *si;
+	struct procedure_signature *ps;
 
-	server_function_info(server_info si, procedure_signature ps): si(si), ps(ps){}
+	server_function_info(struct server_info *si, struct procedure_signature *ps): si(si), ps(ps){}
+    
 };

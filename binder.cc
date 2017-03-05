@@ -63,15 +63,15 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
 
   //if no key dosnt exist in map
 	if (proc_loc_dict.find(key) == proc_loc_dict.end()) {
-
     //Adding to the map
-    int *memArgTypes = copyArgTypes(argTypes);
-    key = procedure_signature(name, memArgTypes);
+    
+    //int *memArgTypes = copyArgTypes(argTypes);
+    //key = procedure_signature(name, memArgTypes);
+    
     proc_loc_dict[key] = new list<server_info *>();
     server_info * entry = new server_info(server_identifier, port, sock);
 
     //Adding to roundRobinList
-
     server_function_info * info = new server_function_info(entry, key);    
     roundRobinList.push_back(info);
 
