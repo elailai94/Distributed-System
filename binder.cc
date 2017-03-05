@@ -85,7 +85,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     key = procedure_signature(name, memArgTypes);
     proc_loc_dict[key] = new list<server_info *>();
     
-    procedure_signature * new newKey = procedure_signature(name, argTypes);
+    procedure_signature * newKey = new procedure_signature(name, argTypes);
     server_info * entry = new server_info(server_identifier, port, sock);
 
     //Adding to roundRobinList
