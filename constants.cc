@@ -11,7 +11,7 @@ bool operator == (const server_function_info &l, const server_function_info &r) 
 }
 
 bool operator == (const server_info &l, const server_function_info &r) {
-    return (l.server_identifier == r.server_identifier && l.port == r.port);
+    return (l.server_identifier == r.si->server_identifier && l.port == r.si->port);
 }
 
 bool operator == (const server_info &l, const server_info &r) {
