@@ -9,6 +9,9 @@ class LocRequestMessage: public Message {
   std::string name; // NOTE: this field shouldn't execeed 64 characters in size
   int *argTypes;
 
+  // Returns a count of the number of argument types
+  unsigned int countNumOfArgTypes(int *argTypes);
+
 public:
   LocRequestMessage(std::string name, int *argTypes);  // Constructor
   ~LocRequestMessage(); // Destructor

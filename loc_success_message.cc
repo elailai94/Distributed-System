@@ -21,6 +21,11 @@ unsigned int LocSuccessMessage::getPort() const {
 }
 
 // See interface (header file).
+unsigned int LocSuccessMessage::getLength() const {
+  return MAX_LENGTH_SERVER_IDENTIFIER + MAX_LENGTH_PORT;
+}
+
+// See interface (header file).
 int LocSuccessMessage::send(int dataTransferSocket) {
   return 1;
 }
