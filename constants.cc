@@ -5,8 +5,6 @@
 
 using namespace std;
 
-
-
 server_info::server_info(string server_identifier, int port, int socket): server_identifier(server_identifier), port(port), socket(socket){}
 
 procedure_signature::procedure_signature(string name, int *argTypes): name(name), argTypes(argTypes){}

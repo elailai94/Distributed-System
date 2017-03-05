@@ -189,11 +189,6 @@ int main(){
 
   status = getaddrinfo(NULL, "0", &hints, &servinfo);
 
-  if (status != 0) {
-    fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));
-    return 0;
-  }
-
   p = servinfo;
   int sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
 
