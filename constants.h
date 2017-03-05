@@ -9,7 +9,7 @@ struct server_info {
 	int port;
 	int socket;
 	
-	server_info(string server_identifier, int port) : server_identifier(server_identifier), port(port){}
+	server_info(string server_identifier, int port, int socket) : server_identifier(server_identifier), port(port), socker(socket){}
 }; 
 
 struct procedure_signature {     
