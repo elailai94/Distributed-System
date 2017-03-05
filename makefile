@@ -41,4 +41,6 @@ all:
 	chmod u+x ${EXECS}
 
 clean:
-	rm -f *.d *.o ${EXECS}
+	find . -name ${EXECS} -delete
+	find . -name ${OBJECTS} -delete
+	find . -name ${DEPENDS} -delete

@@ -40,7 +40,6 @@ int connectedToBinder(){
 
 	char * binderAddressString = getenv ("BINDER_ADDRESS");
     char * binderPortString = getenv("BINDER_PORT");
-    
 
   	if(binderAddressString == NULL){
         return 1;
@@ -64,7 +63,7 @@ int connectedToBinder(){
 int sendExecute(int sock, char* name, int* argTypes, void**args){
     
     ExecuteRequestMessage execute_request = new ExecuteRequestMessage(name, argTypes, args);
-    int status = execute_request.send(sock);	
+    int status = execute_request->send(sock);	
     int returnVal;
 
 	char* retName; 
@@ -72,13 +71,17 @@ int sendExecute(int sock, char* name, int* argTypes, void**args){
 	void** retArgs
 
     if(status == 0){
-	    Message message; 
-        Message::receive(sock, message, status);
-
-        if(message.type == MSG_TYPE_EXECUTE_SUCCESS) {
-			retName = message.getName(); 
-			retArgTypes = message.getArgTypes();
-			retArgs = message.getArgs();
+		Segment * segment = 0;
+        status = Segment::receive(sock, segment);
+	
+        if(segment->getType() == MSG_TYPE_EXECUTE_SUCCESS) {
+	
+			Message * cast = segment->getMessage();
+			ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(cast);
+    
+			retName = esm->getName(); 
+			retArgTypes = esm->getArgTypes();
+			retArgs = esm->getArgs();
 
 			if(strcmp(retName, name)){
 				//extractArgumentsMessage(replyMessageP, argTypes, args, argTypesLength, false);
@@ -87,8 +90,10 @@ int sendExecute(int sock, char* name, int* argTypes, void**args){
 				returnVal = 99;
 			}
 
-        }else if(message.type ==  MSG_TYPE_EXECUTE_FAILURE){
-        	returnVal = message.getReasonCode();	
+        }else if(segment->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
+			Message * cast = segment->getMessage();
+			ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
+        	returnVal = efm->getReasonCode();	
         }
 
     }else{ //Something bad happened
@@ -112,21 +117,25 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	//do something with returnVal
 
 	LocRequestMessage loc_request = new LocRequestMessage(name, argTypes);
-  	int binder_status = loc_request.send(binder_sock); 
+  	int binder_status = loc_request->send(binder_sock); 
   	//maybe error check with binder_status
 
-	//**Server stuff **/
+	/**Server stuff **/
 	if(status == 0){
-	  Message message; 
-	  Message::receive(sock, message, status);
+		Segment * segment = 0;
+        status = Segment::receive(sock, segment);
 
-	  if(message.type == MSG_TYPE_LOC_SUCCESS) {
-	  	serverAddress = message.getServerIdentifier();
-	  	serverPort = message.getPort();
-	  }else if(message.type == MSG_TYPE_LOC_FAILURE){
-		//something bad happens
-	  	return 1;
-	  }
+		if(segment->getType() == MSG_TYPE_LOC_SUCCESS){ //'LOC_REQUEST'
+    		Message * cast = segment->getMessage();
+    		LocSuccessMessage * lcm = dynamic_cast<LocSuccessMessage*>(cast);
+		  	
+		  	serverAddress = lcm->getServerIdentifier();
+		  	serverPort = lcm->getPort();
+
+	  	}else if(segment->getType() == MSG_TYPE_LOC_FAILURE){
+			//something bad happens
+	  		return 1;
+	  	}
 	}
 
     int server_sock = create_connection(serverAddress, serverPort);

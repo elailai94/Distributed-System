@@ -60,17 +60,21 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
   int retStatus;
 
   RegisterRequestMessage request_message = new RegisterRequestMessage(serverIdentifier, port, name, argTypes);
-  int status = success_message.send(binder_sock);
+  int status = success_message->send(binder_sock);
 
   if(status == 0){
     //Success
-    Message message; 
-    Message::receive(binder_sock, message, retStatus);
+    Segment * segment = 0;
+    status = Segment::receive(binder_sock, segment);
 
-    if(message.type == MSG_TYPE_REGISTER_SUCCESS){  
+    if(segment->getType() == MSG_TYPE_REGISTER_SUCCESS){  
+      Message * cast = segment->getMessage();
+      RegisterSuccessMessage * rsm = dynamic_cast<RegisterSuccessMessage*>(cast);
+    
       struct procedure_signature k(string(name), argTypes);
       proc_skele_dict[k] = f;
-    }else if(message.type == MSG_TYPE_REGISTER_FAILURE){
+    
+    }else if(segment->getType() == MSG_TYPE_REGISTER_FAILURE){
       return 0;
     }
   
@@ -137,21 +141,24 @@ int rpcExecute(void){
           if (FD_ISSET(tempConnection, &readfds)) {
 
             int reasonCode = 0;
-            Message message; 
-            Message::receive(sock, message, status);
+            Segment * segment = 0;
+            status = Segment::receive(sock, segment);
 
-            if(message.type == MSG_TYPE_EXECUTE_REQUEST){
-              procedure_signature ps = new procedure_signature(message.name, message.argTypes);       
+            if(segment->getType() == MSG_TYPE_EXECUTE_REQUEST){
+              Message * cast = segment->getMessage();
+              ExecuteRequestMessage * eqm = dynamic_cast<ExecuteRequestMessage*>(cast);
+    
+              procedure_signature ps = new procedure_signature(eqm->getName(), eqm->getArgTypes());       
               skeleton skel = proc_skele_dict[ps];
               
-              int result = skel(message.argTypes, message.args);
+              int result = skel(eqm->getArgTypes(), eqm->getArgs());
 
               if(result == 0 ){
-                ExecuteSuccessMessage execute_success = new ExecuteSuccessMessage(name, message.argTypes, message.args);
-                int status = execute_success.send(sock);
+                ExecuteSuccessMessage execute_success = new ExecuteSuccessMessage(name, eqm->getArgTypes(), eqm->getArgs());
+                int status = execute_success->send(sock);
               }else{
                 ExecuteFailureMessage execute_failure = new ExecuteFailureMessage(reasoncode);
-                int status = execute_failure.send(sock);
+                int status = execute_failure->send(sock);
               }
             }
 
