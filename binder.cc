@@ -79,9 +79,9 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   }else{	 	
     
     bool sameLoc = false;
-    list<server_info *> *hostList = proc_loc_dict.find[key]; 
+    list<server_function_info *> *hostList = proc_loc_dict.find[key]; 
 
-    for (list<server_info *>::iterator it = hostList->begin(); it != hostList->end(); it++) {
+    for (list<server_function_info *>::iterator it = hostList->begin(); it != hostList->end(); it++) {
       if(it == new_msg_loc){
         //The same procedure signature already exists on the same location
         //TODO: Move to end of round robin or something
