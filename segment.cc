@@ -7,6 +7,10 @@
 #include "loc_request_message.h"
 #include "loc_success_message.h"
 #include "loc_failure_message.h"
+#include "execute_request_message.h"
+#include "execute_success_message.h"
+#include "execute_failure_message.h"
+#include "terminate_message.h"
 
 // See interface (header file).
 Segment::Segment(unsigned int length, unsigned int type, Message *message)
@@ -59,14 +63,14 @@ int Segment::send(int dataTransferSocket) {
 int Segment::receive(int dataTransferSocket, Segment *parsedSegment) {
   // Reads the length of the message from the data transfer socket
   unsigned int length = 0;
-  int result = ::recv(dataTransferSocket, length, sizeof(length), 0);
+  int result = ::recv(dataTransferSocket, &length, sizeof(length), 0);
   if (result < 0 || result == 0) {
     return result;
   }
 
   // Reads the type of the message from the data transfer socket
   unsigned int type = 0;
-  result = ::recv(dataTransferSocket, type, sizeof(type), 0);
+  result = ::recv(dataTransferSocket, &type, sizeof(type), 0);
   if (result < 0 || result == 0) {
     return result;
   }
