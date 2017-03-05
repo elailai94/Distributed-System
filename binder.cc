@@ -107,10 +107,10 @@ USE ROUND ROBIN TO ACCESS THE CORRECT SERVER/FUNCTION FOR THE CLIENT
 int location_request_handler(LocRequestMessage * message, int sock){
 
   bool exist = false;
-	for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
+	for (list<server_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
 
     //If the name are the same
-    if((*it)->ps->name == message->getName() && compareArr((*it)->ps->argTypes, message->getArgTypes() )){
+    if((*it)->name == message->getName() && compareArr((*it)->argTypes, message->getArgTypes() )){
 
       exist = true;
 
