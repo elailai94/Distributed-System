@@ -58,7 +58,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   
   procedure_signature * key = new procedure_signature(name, argTypes);
 	
-  server_info * new_msg_loc = new server_info(server_identifier, port, sock);
+  //server_info * new_msg_loc = new server_info(server_identifier, port, sock);
 
   int status = 0;
 
@@ -79,14 +79,16 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   }else{	 	
     
     bool sameLoc = false;
-    list<server_function_info *> *hostList = proc_loc_dict.find[key]; 
+    list<server_info *> *hostList = proc_loc_dict.find[key]; 
 
-    for (list<server_function_info *>::iterator it = hostList->begin(); it != hostList->end(); it++) {
-      if(it == new_msg_loc){
+    for (list<server_info *>::iterator it = hostList->begin(); it != hostList->end(); it++) {
+      // IF THEY ARE AT THE SAME PLACE, THEY SHOULD HAVE TEH SAME SOCKET
+      if((*it)->socket == sock){
         //The same procedure signature already exists on the same location
         //TODO: Move to end of round robin or something
         sameLoc = true;
       }
+    
     }
     //Same procedure signature, different location
   	if(!sameLoc){       
