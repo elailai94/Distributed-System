@@ -107,19 +107,19 @@ int location_request_handler(LocRequestMessage * message, int sock){
   bool exist = false; 
 	for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
 		//If the name are the same
-    if(it.ps->name == message->getName() && compareArr(it.ps->argTypes, message->getArgTypes() )){ 
+    if(it->ps->name == message->getName() && compareArr(it->ps->argTypes, message->getArgTypes() )){ 
 		  //When we have identified the correct procedure_signature use round robin and move that service to the end
 		  roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
       exist = true;
+      LocSuccessMessage * success_message = new LocSuccessMessage((*it)->si->server_identifier, (*it)->si->port);
+      success_message->send(sock);
       break;
  		}
 	}
 
-  if(exist){
-    LocSuccessMessage * success_message = new LocSuccessMessage(it->server_identifier, it->port);
-    success_message->send(sock);
-  }else{
-    LocFailureMessage * failure_message = new LocFailureMessage(0);
+  if(!exist){
+    int reasoncode = 0;
+    LocFailureMessage * failure_message = new LocFailureMessage(reasoncode);
     failure_message->send(sock);    
   }
 
@@ -128,15 +128,15 @@ int location_request_handler(LocRequestMessage * message, int sock){
 
 int request_handler(Segment * segment, int sock){
   int retval = 0;
-  if(segment->getType() == MSG_TYPE_LOC_REQUEST){ //'LOC_REQUEST' 
+  if(segment->getType() == MSG_TYPE_REGISTER_REQUEST){ //'LOC_REQUEST' 
     Message * cast1 = segment->getMessage();
-    LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(cast1);
-    registration_request_handler(lqm, sock);
+    RegistrationRequestMessage * rrm = dynamic_cast<LocRequestMessage*>(cast1);
+    registration_request_handler(rrm, sock);
 
-  }else if (segment->getType() == MSG_TYPE_REGISTER_REQUEST){ //'REGISTER'
+  }else if (segment->getType() == MSG_TYPE_LOC_REQUEST){ //'REGISTER'
     Message * cast2 = segment->getMessage();
-    LocRequestMessage * rrm = dynamic_cast<LocRequestMessage*>(cast2);
-    retval = location_request_handler(rrm, sock);
+    LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(cast2);
+    retval = location_request_handler(lqm, sock);
   }
 
 	return retval;
