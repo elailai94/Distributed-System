@@ -1,6 +1,3 @@
-#ifdef __HELPER_FUNCTION_H__
-#define __HELPER_FUNCTION_H__
-
 #include <stdio.h>
 #include <string.h>
 #include "rpc.h"
@@ -30,4 +27,3 @@ int findLenOfArgTypes(int * array);
 char * extractUnsignedInt(char * bufferP, int &i);
 int *copyArgTypes(int argTypes[]);
 
-#endif
