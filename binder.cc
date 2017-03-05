@@ -43,7 +43,7 @@ using namespace std;
 static map<procedure_signature, list<server_info *> * > proc_loc_dict;
 //static map<rpcFunctionKey, list<service_info *> * > servicesDictionary;
 
-static list<server_info *> roundRobinList;
+static list<server_function_info *> roundRobinList;
 
 /*
 TODO:
@@ -72,7 +72,8 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     server_info * entry = new server_info(server_identifier, port, sock);
 
     //Adding to roundRobinList
-    roundRobinList.push_back(entry);
+    server_function_info * info = new server_function_info(entry, key);
+    roundRobinList.push_back(info);
 
   }else{
 
@@ -107,10 +108,10 @@ USE ROUND ROBIN TO ACCESS THE CORRECT SERVER/FUNCTION FOR THE CLIENT
 int location_request_handler(LocRequestMessage * message, int sock){
 
   bool exist = false;
-	for (list<server_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
+	for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
 
     //If the name are the same
-    if((*it)->name == message->getName() && compareArr((*it)->argTypes, message->getArgTypes() )){
+    if((*it)->ps->name == message->getName() && compareArr((*it)->ps->argTypes, message->getArgTypes() )){
 
       exist = true;
 
