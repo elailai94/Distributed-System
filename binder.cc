@@ -112,11 +112,7 @@ int location_request_handler(LocRequestMessage * message, int sock){
 		
       exist = true;
       
-      string strval= 'hello';
-      unsigned int i = 1;
-
-      //LocSuccessMessage * success_message = new LocSuccessMessage((*it)->si->server_identifier, (*it)->si->port);
-      LocSuccessMessage * success_message = new LocSuccessMessage(strval, i);
+      LocSuccessMessage * success_message = new LocSuccessMessage((*it)->si->server_identifier, (*it)->si->port);
       
       success_message->send(sock);
     
