@@ -38,11 +38,11 @@ int binder_sock;
 int connectedToBinder(){
 
 	if(connectedToBinder){
-		return 0;		
+		return 0;
 	}
 
-	char * binderAddressString = getenv ("BINDER_ADDRESS");
-    char * binderPortString = getenv("BINDER_PORT");
+	char * binderAddressString = getenv("BINDER_ADDRESS");
+  char * binderPortString = getenv("BINDER_PORT");
 
   	if(binderAddressString == NULL){
         return 1;
@@ -51,8 +51,8 @@ int connectedToBinder(){
     if(binderPortString == NULL){
         return 2;
     }
-    
-    binder_sock = create_connection(binderAddressString, binderPortString);
+
+    binder_sock = createConnection(binderAddressString, binderPortString);
 
     if (binder_sock < 0) {
         return 3;
@@ -64,25 +64,25 @@ int connectedToBinder(){
 
 
 int sendExecute(int sock, char* name, int* argTypes, void**args){
-    
-    ExecuteRequestMessage execute_request = new ExecuteRequestMessage(name, argTypes, args);
-    int status = execute_request->send(sock);	
+
+    ExecuteRequestMessage *execute_request = new ExecuteRequestMessage(name, argTypes, args);
+    int status = execute_request->send(sock);
     int returnVal;
 
-	char* retName; 
+	char* retName;
 	int* retArgTypes;
 	void** retArgs
 
     if(status == 0){
 		Segment * segment = 0;
         status = Segment::receive(sock, segment);
-	
+
         if(segment->getType() == MSG_TYPE_EXECUTE_SUCCESS) {
-	
+
 			Message * cast = segment->getMessage();
 			ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(cast);
-    
-			retName = esm->getName(); 
+
+			retName = esm->getName();
 			retArgTypes = esm->getArgTypes();
 			retArgs = esm->getArgs();
 
@@ -96,7 +96,7 @@ int sendExecute(int sock, char* name, int* argTypes, void**args){
         }else if(segment->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
 			Message * cast = segment->getMessage();
 			ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
-        	returnVal = efm->getReasonCode();	
+        	returnVal = efm->getReasonCode();
         }
 
     }else{ //Something bad happened
@@ -120,7 +120,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	//do something with returnVal
 
 	LocRequestMessage loc_request = new LocRequestMessage(name, argTypes);
-  	int binder_status = loc_request->send(binder_sock); 
+  	int binder_status = loc_request->send(binder_sock);
   	//maybe error check with binder_status
 
 	/**Server stuff **/
@@ -131,7 +131,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 		if(segment->getType() == MSG_TYPE_LOC_SUCCESS){ //'LOC_REQUEST'
     		Message * cast = segment->getMessage();
     		LocSuccessMessage * lcm = dynamic_cast<LocSuccessMessage*>(cast);
-		  	
+
 		  	serverAddress = lcm->getServerIdentifier();
 		  	serverPort = lcm->getPort();
 
@@ -143,8 +143,8 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 
     int server_sock = create_connection(serverAddress, serverPort);
 	int server_status = sendExecute(server_sock, name, argTypes, args);
-	
-	return server_status; 
+
+	return server_status;
 }
 
 static map<procedure_signature, skeleton> proc_skele_dict;
@@ -184,17 +184,17 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
     Segment * segment = 0;
     status = Segment::receive(binder_sock, segment);
 
-    if(segment->getType() == MSG_TYPE_REGISTER_SUCCESS){  
+    if(segment->getType() == MSG_TYPE_REGISTER_SUCCESS){
       Message * cast = segment->getMessage();
       RegisterSuccessMessage * rsm = dynamic_cast<RegisterSuccessMessage*>(cast);
-    
+
       struct procedure_signature k(string(name), argTypes);
       proc_skele_dict[k] = f;
-    
+
     }else if(segment->getType() == MSG_TYPE_REGISTER_FAILURE){
       return 0;
     }
-  
+
   }else if( status > 0){
     //Warning
     return -99;
@@ -210,16 +210,16 @@ int rpcExecute(void){
   //Create connection socket ot be used for accepting clients
   vector<int> myConnections;
   vector<int> myToRemove;
- 
+
   fd_set readfds;
   int n;
   int status;
   struct sockaddr_storage their_addr;
 
   while(true){
-    //CONNECTIONS VECTOR    
-    FD_ZERO(&readfds); 
-    FD_SET(sock, &readfds); 
+    //CONNECTIONS VECTOR
+    FD_ZERO(&readfds);
+    FD_SET(sock, &readfds);
 
     n = sock;
 
@@ -229,17 +229,17 @@ int rpcExecute(void){
        if (connection > n){
         n = connection;
       }
-    } 
-    
+    }
+
     n = n+1;
 
     status = select(n, &readfds, NULL, NULL, NULL);
-    
+
     if (status == -1) {
       cerr << "ERROR: select failed." << endl;
     } else {
-      
-      if (FD_ISSET(sock, &readfds)) {       
+
+      if (FD_ISSET(sock, &readfds)) {
         socklen_t addr_size = sizeof their_addr;
         int new_sock = accept(sock, (struct sockaddr*)&their_addr, &addr_size);
 
@@ -253,8 +253,8 @@ int rpcExecute(void){
 
       } else {
 
-        for (vector<int>::iterator it = myConnections.begin(); it != myConnections.end(); ++it) {   
-          int tempConnection = *it;         
+        for (vector<int>::iterator it = myConnections.begin(); it != myConnections.end(); ++it) {
+          int tempConnection = *it;
           if (FD_ISSET(tempConnection, &readfds)) {
 
             int reasonCode = 0;
@@ -264,10 +264,10 @@ int rpcExecute(void){
             if(segment->getType() == MSG_TYPE_EXECUTE_REQUEST){
               Message * cast = segment->getMessage();
               ExecuteRequestMessage * eqm = dynamic_cast<ExecuteRequestMessage*>(cast);
-    
-              procedure_signature ps = new procedure_signature(eqm->getName(), eqm->getArgTypes());       
+
+              procedure_signature ps = new procedure_signature(eqm->getName(), eqm->getArgTypes());
               skeleton skel = proc_skele_dict[ps];
-              
+
               int result = skel(eqm->getArgTypes(), eqm->getArgs());
 
               if(result == 0 ){
@@ -320,13 +320,13 @@ int rpcInit(void){
 
   p = servinfo;
   sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
- 
+
   status = bind(sock, servinfo->ai_addr, servinfo->ai_addrlen);
   status = listen(sock, 5);
- 
+
   char hostname[256];
   gethostname(hostname, 256);
-  
+
   struct sockaddr_in sin;
   socklen_t len = sizeof(sin);
 
