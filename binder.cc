@@ -43,7 +43,7 @@ using namespace std;
 static map<procedure_signature, list<server_info *> * > proc_loc_dict;
 //static map<rpcFunctionKey, list<service_info *> * > servicesDictionary;
 
-static list<server_function_info *> roundRobinList;
+static list<server_info *> roundRobinList;
 
 /*
 TODO:
@@ -57,7 +57,6 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   string server_identifier = message->getServerIdentifier();
   int port = message->getPort();
 
-  //procedure_signature *  key = new procedure_signature(name, argTypes);
   procedure_signature key(name, argTypes);
   
   int status = 0;
@@ -73,8 +72,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     server_info * entry = new server_info(server_identifier, port, sock);
 
     //Adding to roundRobinList
-    server_function_info * info = new server_function_info(entry, key);
-    roundRobinList.push_back(info);
+    roundRobinList.push_back(entry);
 
   }else{
 
