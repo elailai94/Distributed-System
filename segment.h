@@ -34,7 +34,7 @@ public:
    * Creates a segment to receive data and reads into it from the data
    * transfer socket
    */
-  static int receive(int dataTransferSocket, Segment &parsedSegment);
+  static int receive(int dataTransferSocket, Segment *parsedSegment);
 };
 
 #endif

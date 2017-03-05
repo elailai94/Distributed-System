@@ -1,3 +1,4 @@
+#include <sys/socket.h>
 #include "segment.h"
 #include "message_types.h"
 #include "register_request_message.h"
@@ -27,7 +28,7 @@ unsigned int Segment::getType() const {
 }
 
 // See interface (header file).
-unsigned int Segment::getMessage() const {
+Message *Segment::getMessage() const {
   return message;
 }
 
@@ -50,6 +51,8 @@ int Segment::send(int dataTransferSocket) {
   if (result < 0) {
     return result;
   }
+
+  return length;
 }
 
 // See interface (header file).
