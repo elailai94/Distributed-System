@@ -59,8 +59,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
 
   procedure_signature * key = new procedure_signature(name, argTypes);
 	
-  //server_info * new_msg_loc = new server_info(server_identifier, port, sock);
-
+  
   int status = 0;
 
   //if no key dosnt exist in map
@@ -93,6 +92,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     }
     //Same procedure signature, different location
   	if(!sameLoc){
+       server_info * new_msg_loc = new server_info(server_identifier, port, sock);
        hostList.push_back(new_msg_loc);
     }
   }
@@ -139,7 +139,7 @@ int request_handler(Segment * segment, int sock){
   int retval = 0;
   if(segment->getType() == MSG_TYPE_REGISTER_REQUEST){ //'LOC_REQUEST'
     Message * cast1 = segment->getMessage();
-    RegistrationRequestMessage * rrm = dynamic_cast<LocRequestMessage*>(cast1);
+    RegisterRequestMessage * rrm = dynamic_cast<RegisterRequestMessage*>(cast1);
     registration_request_handler(rrm, sock);
 
   }else if (segment->getType() == MSG_TYPE_LOC_REQUEST){ //'REGISTER'
@@ -256,13 +256,13 @@ int main(){
             if (status < 0) {
                 RegisterFailureMessage * failure_message = new RegisterFailureMessage(status);
                 failure_message->send(sock);
-                return errorMsg;
+                return status;
             }
 
             if (status == 0) {
               // client has closed the connection
               myToRemove.push_back(sock);
-              return errorMsg;
+              return status;
             }
 
             request_handler(segment, sock);
