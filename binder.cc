@@ -63,15 +63,16 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   
   int status = 0;
 
-  //if no key dosnt exist in map
+  //if 'key' dosnt exist in map, add it to the map and round robin
 	if (proc_loc_dict.find(key) == proc_loc_dict.end()) {
-    //Adding to the map
-
+    //The purpose of this function is so we can have copy of the argTypes that not the original
     int *memArgTypes = copyArgTypes(argTypes);
-    proc_loc_dict[key] = new list<server_info *>();
-
-    key = procedure_signature(name, memArgTypes);
     
+    key = procedure_signature(name, memArgTypes);
+    proc_loc_dict[key] = new list<server_info *>();
+    
+    //This is bad we shouldn't need a newKey and we should be able to use the key above
+    //due to &* reasones I made a variable newKey for the 'info' object
     procedure_signature * newKey = new procedure_signature(name, memArgTypes);
     server_info * entry = new server_info(server_identifier, port, sock);
 
@@ -79,23 +80,20 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     server_function_info * info = new server_function_info(entry, newKey);
     roundRobinList.push_back(info);
 
-  }else{
-
+  } else {
     bool sameLoc = false;
     list<server_info *> *hostList = proc_loc_dict[key];
     //list<server_info *> *hostList = proc_loc_dict.find(key);
 
     for (list<server_info *>::iterator it = hostList->begin(); it != hostList->end(); it++) {
-      // IF THEY ARE AT THE SAME PLACE, THEY SHOULD HAVE TEH SAME SOCKET
-      if((*it)->socket == sock){
+      if((*it)->socket == sock){ //if they have the same socket, then must be same server_address/port
         //The same procedure signature already exists on the same location
-        //TODO: Move to end of round robin or something
+        //TODO: Move to end of round robin or something, maybe we should keep
         sameLoc = true;
-      }
-    
+      }   
     }
-    //Same procedure signature, different location
-  	if(!sameLoc){
+
+  	if(!sameLoc){ //same procedure different socket
        server_info * new_msg_loc = new server_info(server_identifier, port, sock);  
        hostList->push_back(new_msg_loc);
     }
@@ -116,16 +114,12 @@ int location_request_handler(LocRequestMessage * message, int sock){
 
     //If the name are the same
     if((*it)->ps->name == message->getName() && compareArr((*it)->ps->argTypes, message->getArgTypes() )){
-
       exist = true;
-
       LocSuccessMessage * success_message = new LocSuccessMessage((*it)->si->server_identifier, (*it)->si->port);
-
       success_message->send(sock);
 
       //When we have identified the correct procedure_signature use round robin and move that service to the end
       roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
-
       break;
  		}
 	}
