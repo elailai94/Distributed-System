@@ -75,6 +75,7 @@ int connectToBinder(){
     	connectedToBinder = true;
     }
 
+    return 0;
 }
 
 
@@ -124,12 +125,12 @@ int sendExecute(int sock, string name, int* argTypes, void**args){
 
 int rpcCall(char * name, int * argTypes, void ** args) {
 
-	int returnVal;
 	string serverAddress;
 	unsigned int serverPort;
-	
+	int status;
+
 	if(!connectedToBinder){
-		returnVal = connectToBinder();
+		status = connectToBinder();
 	}
 	//do something with returnVal
 
@@ -140,7 +141,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	/**Server stuff **/
 	if(binder_status == 0){
 		Segment * segment = 0;
-        int status = Segment::receive(binder_sock, segment);
+        status = Segment::receive(binder_sock, segment);
 
 		if(segment->getType() == MSG_TYPE_LOC_SUCCESS){ //'LOC_REQUEST'
     		Message * cast = segment->getMessage();
@@ -170,7 +171,6 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 int rpcRegister(char * name, int *argTypes, skeleton f){
 
   int binder_sock = connectToBinder();
-  int retStatus;
 
   RegisterRequestMessage * request_message = new RegisterRequestMessage(serverIdentifier, port, name, argTypes);
   int status = request_message->send(binder_sock);
@@ -181,8 +181,10 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
     status = Segment::receive(binder_sock, segment);
 
     if(segment->getType() == MSG_TYPE_REGISTER_SUCCESS){
-      Message * cast = segment->getMessage();
-      RegisterSuccessMessage * rsm = dynamic_cast<RegisterSuccessMessage*>(cast);
+      
+      // IF NEEDED
+      //Message * cast = segment->getMessage();
+      //RegisterSuccessMessage * rsm = dynamic_cast<RegisterSuccessMessage*>(cast);
 
       struct procedure_signature k(string(name), argTypes);
       proc_skele_dict[k] = f;
@@ -199,6 +201,8 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
     return 99;
   }
 
+
+  return 1;
 }
 
 
@@ -268,10 +272,10 @@ int rpcExecute(void){
 
               if(result == 0 ){
                 ExecuteSuccessMessage * execute_success = new ExecuteSuccessMessage(eqm->getName(), eqm->getArgTypes(), eqm->getArgs());
-                int status = execute_success->send(sock);
+                status = execute_success->send(sock);
               }else{
                 ExecuteFailureMessage * execute_failure = new ExecuteFailureMessage(reasonCode);
-                int status = execute_failure->send(sock);
+                status = execute_failure->send(sock);
               }
             }
 
@@ -294,6 +298,7 @@ int rpcExecute(void){
   }
 
   freeaddrinfo(servinfo);
+  return 0;
 }
 
 int rpcInit(void){
@@ -334,4 +339,5 @@ int rpcInit(void){
   serverIdentifier = hostname;
   port =  ntohs(sin.sin_port);
 
+  return 0;
 }
