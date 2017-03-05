@@ -1,4 +1,3 @@
-#include "server_functions.h"
 #include <stdio.h>
 #include <string.h>
 #include <iostream>
@@ -37,8 +36,17 @@
 
 using namespace std;
 
+//Global Variables for client
 bool connectedToBinder = false;
 int binder_sock;
+
+//Global Variables for server
+struct addrinfo* servinfo;
+static map<procedure_signature, skeleton> proc_skele_dict;
+string serverIdentifier;
+unsigned int port;
+int sock;
+
 
 int connectToBinder(){
 
@@ -153,12 +161,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	return server_status;
 }
 
-static map<procedure_signature, skeleton> proc_skele_dict;
-string serverIdentifier;
-unsigned int port;
-//int binder_sock; //only one binder socket variable
-int sock;
-struct addrinfo* servinfo;
+
 
   //TODO:
   // CREATE SERVER

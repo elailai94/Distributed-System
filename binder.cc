@@ -1,4 +1,3 @@
-#include "server_functions.h"
 #include <string.h>
 
 #include <iostream>
