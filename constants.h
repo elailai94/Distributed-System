@@ -3,7 +3,7 @@
 
 struct thread_data {
   int sock;
-  vector<std::string> *buf;
+  std::vector<std::string> *buf;
 };
 
 // Constants used for binder.cc

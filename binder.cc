@@ -67,7 +67,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     int *memArgTypes = copyArgTypes(argTypes);
     
     key = procedure_signature(name, memArgTypes);
-    proc_loc_dict[key] = new list<server_info *>();
+    proc_loc_dict[key] = list<server_info *>();
     
     //This is bad we shouldn't need a newKey and we should be able to use the key above
     //due to &* reasones I made a variable newKey for the 'info' object
@@ -80,7 +80,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
 
   } else {
     bool sameLoc = false;
-    list<server_info *> *hostList = proc_loc_dict[key];
+    list<server_info *> hostList = proc_loc_dict[key];
     //list<server_info *> *hostList = proc_loc_dict.find(key);
 
     for (list<server_info *>::iterator it = hostList->begin(); it != hostList->end(); it++) {
