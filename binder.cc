@@ -84,10 +84,12 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     int *memArgTypes = copyArgTypes(argTypes);
     key = procedure_signature(name, memArgTypes);
     proc_loc_dict[key] = new list<server_info *>();
+    
+    procedure_signature * new newKey = procedure_signature(name, argTypes);
     server_info * entry = new server_info(server_identifier, port, sock);
 
     //Adding to roundRobinList
-    server_function_info * info = new server_function_info(entry, key);
+    server_function_info * info = new server_function_info(entry, newKey);
     roundRobinList.push_back(info);
 
   }else{
