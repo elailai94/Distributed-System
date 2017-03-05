@@ -60,42 +60,6 @@ int connectedToBinder(){
 
 }
 
-int rpcCall(char * name, int * argTypes, void ** args) {
-
-	int returnVal;
-	char *serverAddress;
-	char *serverPort;
-	int server_socket
-
-	if(!connectedToBinder){
-		returnVal = connectedToBinder();
-	}
-	//do something with returnVal
-
-	LocRequestMessage loc_request = new LocRequestMessage(name, argTypes);
-  	int binder_status = loc_request.send(binder_sock); 
-  	//maybe error check with binder_status
-
-	//**Server stuff **/
-	if(status == 0){
-	  Message message; 
-	  Message::receive(sock, message, status);
-
-	  if(message.type == MSG_TYPE_LOC_SUCCESS) {
-	  	serverAddress = message.getServerIdentifier();
-	  	serverPort = message.getPort();
-	  }else if(message.type == MSG_TYPE_LOC_FAILURE){
-		//something bad happens
-	  	return 1;
-	  }
-	}
-
-    int server_sock = create_connection(serverAddress, serverPort);
-	int server_status = sendExecute(server_sock, name, argTypes, args);
-	
-	return server_status; 
-}
-
 
 int sendExecute(int sock, char* name, int* argTypes, void**args){
     
@@ -132,5 +96,42 @@ int sendExecute(int sock, char* name, int* argTypes, void**args){
     }
 
     return returnVal
+}
+
+
+int rpcCall(char * name, int * argTypes, void ** args) {
+
+	int returnVal;
+	char *serverAddress;
+	char *serverPort;
+	int server_socket
+
+	if(!connectedToBinder){
+		returnVal = connectedToBinder();
+	}
+	//do something with returnVal
+
+	LocRequestMessage loc_request = new LocRequestMessage(name, argTypes);
+  	int binder_status = loc_request.send(binder_sock); 
+  	//maybe error check with binder_status
+
+	//**Server stuff **/
+	if(status == 0){
+	  Message message; 
+	  Message::receive(sock, message, status);
+
+	  if(message.type == MSG_TYPE_LOC_SUCCESS) {
+	  	serverAddress = message.getServerIdentifier();
+	  	serverPort = message.getPort();
+	  }else if(message.type == MSG_TYPE_LOC_FAILURE){
+		//something bad happens
+	  	return 1;
+	  }
+	}
+
+    int server_sock = create_connection(serverAddress, serverPort);
+	int server_status = sendExecute(server_sock, name, argTypes, args);
+	
+	return server_status; 
 }
 
