@@ -13,6 +13,9 @@
 *.dylib
 *.dll
 
+# Dependency files
+*.d
+
 # Fortran module files
 *.mod
 *.smod

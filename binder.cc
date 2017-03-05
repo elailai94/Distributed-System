@@ -7,6 +7,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/param.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <vector>
@@ -44,18 +45,18 @@ using namespace std;
 static map<procedure_signature, list<server_info *> * > proc_loc_dict;
 static list<server_function_info *> roundRobinList;
 
-/* 
+/*
 TODO:
 ADD FUNCTION TO MAP
 ADD FUNCTION TO ROUND ROBIN
 IF FUNCTION EXISTS IN ROUND ROBIN DELETE OLD REPLACE WITH NEW (where)
 */
 void registration_request_handler(RegisterRequestMessage * message, int sock){
-	char * name = message->getName();
-  int * argTypes = message->getArgTypes();  
+	const char * name = message->getName().c_str();
+  int * argTypes = message->getArgTypes();
   string server_identifier = message->getServerIdentifier();
   int port = message->getPort();
-  
+
   procedure_signature * key = new procedure_signature(name, argTypes);
 	
   //server_info * new_msg_loc = new server_info(server_identifier, port, sock);
@@ -65,21 +66,21 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   //if no key dosnt exist in map
 	if (proc_loc_dict.find(key) == proc_loc_dict.end()) {
     //Adding to the map
-    
+
     //int *memArgTypes = copyArgTypes(argTypes);
     //key = procedure_signature(name, memArgTypes);
-    
+
     proc_loc_dict[key] = new list<server_info *>();
     server_info * entry = new server_info(server_identifier, port, sock);
 
     //Adding to roundRobinList
-    server_function_info * info = new server_function_info(entry, key);    
+    server_function_info * info = new server_function_info(entry, key);
     roundRobinList.push_back(info);
 
-  }else{	 	
-    
+  }else{
+
     bool sameLoc = false;
-    list<server_info *> *hostList = proc_loc_dict.find[key]; 
+    list<server_info *> *hostList = proc_loc_dict.find[key];
 
     for (list<server_info *>::iterator it = hostList->begin(); it != hostList->end(); it++) {
       // IF THEY ARE AT THE SAME PLACE, THEY SHOULD HAVE TEH SAME SOCKET
@@ -91,7 +92,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     
     }
     //Same procedure signature, different location
-  	if(!sameLoc){       
+  	if(!sameLoc){
        hostList.push_back(new_msg_loc);
     }
   }
@@ -105,22 +106,22 @@ TODO:
 USE ROUND ROBIN TO ACCESS THE CORRECT SERVER/FUNCTION FOR THE CLIENT
 */
 int location_request_handler(LocRequestMessage * message, int sock){
- 
-  bool exist = false; 
+
+  bool exist = false;
 	for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
-		
+
     //If the name are the same
-    if((*it)->ps->name == message->getName() && compareArr((*it)->ps->argTypes, message->getArgTypes() )){ 
-		
+    if((*it)->ps->name == message->getName() && compareArr((*it)->ps->argTypes, message->getArgTypes() )){
+
       exist = true;
-      
+
       LocSuccessMessage * success_message = new LocSuccessMessage((*it)->si->server_identifier, (*it)->si->port);
-      
+
       success_message->send(sock);
-    
+
       //When we have identified the correct procedure_signature use round robin and move that service to the end
       roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
-    
+
       break;
  		}
 	}
@@ -128,7 +129,7 @@ int location_request_handler(LocRequestMessage * message, int sock){
   if(!exist){
     int reasoncode = 0;
     LocFailureMessage * failure_message = new LocFailureMessage(reasoncode);
-    failure_message->send(sock);    
+    failure_message->send(sock);
   }
 
 	return 0; //LOC_FAILURE
@@ -136,7 +137,7 @@ int location_request_handler(LocRequestMessage * message, int sock){
 
 int request_handler(Segment * segment, int sock){
   int retval = 0;
-  if(segment->getType() == MSG_TYPE_REGISTER_REQUEST){ //'LOC_REQUEST' 
+  if(segment->getType() == MSG_TYPE_REGISTER_REQUEST){ //'LOC_REQUEST'
     Message * cast1 = segment->getMessage();
     RegistrationRequestMessage * rrm = dynamic_cast<LocRequestMessage*>(cast1);
     registration_request_handler(rrm, sock);
@@ -150,6 +151,26 @@ int request_handler(Segment * segment, int sock){
 	return retval;
 }
 
+// Returns the binder address
+string getBinderAddress() {
+   char hostname[MAXHOSTNAMELEN + 1] = {'\0'};
+   gethostname(hostname, sizeof(hostname));
+   return string(hostname);
+}
+
+// Returns the binder port
+int getBinderPort(int welcomeSocket) {
+   struct sockaddr_in binderAddress;
+   socklen_t binderAddressLength = sizeof(binderAddress);
+
+   int result = getsockname(welcomeSocket, (struct sockaddr*) &binderAddress,
+      &binderAddressLength);
+   if (result < 0) {
+      exit(-1);
+   } // if
+
+   return ntohs(binderAddress.sin_port);
+}
 
 //TODO:
 //Create helper functions that can be used for rpcServer.cc
@@ -177,33 +198,21 @@ int main(){
 
   p = servinfo;
   int sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
- 
+
   status = bind(sock, servinfo->ai_addr, servinfo->ai_addrlen);
   status = listen(sock, 5);
- 
-  char hostname[256];
-  gethostname(hostname, 256);
-  
-  struct sockaddr_in sin;
-  socklen_t len = sizeof(sin);
 
-  getsockname(sock, (struct sockaddr *)&sin, &len);
-  
-  stringstream ss;
-  ss << ntohs(sin.sin_port);
-  string ps = ss.str();
-
-  cout << "BINDER_ADDRESS " << hostname << endl;
-  cout << "BINDER_PORT " << ntohs(sin.sin_port) << endl;
+  cout << "BINDER_ADDRESS " << getBinderAddress() << endl;
+  cout << "BINDER_PORT " << getBinderPort(sock) << endl;
 
   fd_set readfds;
   int n;
   struct sockaddr_storage their_addr;
 
   while(true){
-    //CONNECTIONS VECTOR    
-    FD_ZERO(&readfds); 
-    FD_SET(sock, &readfds); 
+    //CONNECTIONS VECTOR
+    FD_ZERO(&readfds);
+    FD_SET(sock, &readfds);
 
     n = sock;
 
@@ -213,17 +222,17 @@ int main(){
        if (connection > n){
         n = connection;
       }
-    } 
-    
+    }
+
     n = n+1;
 
     status = select(n, &readfds, NULL, NULL, NULL);
-    
+
     if (status == -1) {
       cerr << "ERROR: select failed." << endl;
     } else {
-      
-      if (FD_ISSET(sock, &readfds)) {       
+
+      if (FD_ISSET(sock, &readfds)) {
         socklen_t addr_size = sizeof their_addr;
         int new_sock = accept(sock, (struct sockaddr*)&their_addr, &addr_size);
 
@@ -237,12 +246,12 @@ int main(){
 
       } else {
 
-        for (vector<int>::iterator it = myConnections.begin(); it != myConnections.end(); ++it) {   
-          int tempConnection = *it;         
+        for (vector<int>::iterator it = myConnections.begin(); it != myConnections.end(); ++it) {
+          int tempConnection = *it;
           if (FD_ISSET(tempConnection, &readfds)) {
 
-            Segment * segment = 0; 
-            Segment::receive(sock, segment, status);
+            Segment * segment = 0;
+            status = Segment::receive(sock, segment);
 
             if (status < 0) {
                 RegisterFailureMessage * failure_message = new RegisterFailureMessage(status);
