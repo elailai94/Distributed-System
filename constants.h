@@ -1,31 +1,26 @@
-
 #include <string>
 #include <vector>
 
-using namespace std;
-
-
 struct thread_data {
   int sock;
-  vector<string> *buf;
+  vector<std::string> *buf;
 };
 
 // Constants used for binder.cc
 struct server_info {
-	string server_identifier;
+	std::string server_identifier;
 	int port;
 	int socket;
 
-	server_info(string server_identifier, int port, int socket);
+	server_info(std::string server_identifier, int port, int socket);
 };
 
 struct procedure_signature {
-	string name;
-    int *argTypes;
+	std::string name;
+  int *argTypes;
 
-	procedure_signature(string name, int *argTypes);
-
-    procedure_signature(const struct procedure_signature & r);
+	procedure_signature(std::string name, int *argTypes);
+  procedure_signature(const struct procedure_signature & r);
 };
 
 struct server_function_info {
