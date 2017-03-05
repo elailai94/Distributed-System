@@ -52,20 +52,6 @@ ADD FUNCTION TO ROUND ROBIN
 IF FUNCTION EXISTS IN ROUND ROBIN DELETE OLD REPLACE WITH NEW (where)
 */
 
-int *copyArgTypes(int argTypes[]) {
-    unsigned int argTypesLength = 0;
-    while (argTypes[argTypesLength++]);
-    int *memArgTypes = new int[argTypesLength];
-
-    unsigned int i = 0;
-    while (argTypes[i] != 0) {
-        memArgTypes[i] = argTypes[i];
-        i++;
-    }
-    memArgTypes[i] = 0;
-
-    return memArgTypes;
-}
 
 void registration_request_handler(RegisterRequestMessage * message, int sock){
 	const char * name = message->getName().c_str();
@@ -82,10 +68,11 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     //Adding to the map
 
     int *memArgTypes = copyArgTypes(argTypes);
-    key = procedure_signature(name, memArgTypes);
     proc_loc_dict[key] = new list<server_info *>();
+
+    key = procedure_signature(name, memArgTypes);
     
-    procedure_signature * newKey = new procedure_signature(name, argTypes);
+    procedure_signature * newKey = new procedure_signature(name, memArgTypes);
     server_info * entry = new server_info(server_identifier, port, sock);
 
     //Adding to roundRobinList
