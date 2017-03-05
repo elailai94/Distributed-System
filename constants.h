@@ -1,3 +1,6 @@
+#ifdef __CONSTANTS_H__
+#define __CONSTANTS_H__
+
 #include <string>
 #include <vector>
 
@@ -44,3 +47,5 @@ bool operator == (const server_info &l, const struct server_function_info  &r);
 bool operator == (const server_function_info &l, const server_function_info &r);
 bool operator == (const server_info &l, const server_info &r);
 bool operator < (const procedure_signature &l, const procedure_signature &r);
+
+#endif
