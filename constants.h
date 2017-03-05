@@ -19,6 +19,11 @@ struct procedure_signature {
 
 	procedure_signature(string name, int *argTypes)
 	  : name(name), argTypes(argTypes){}
+
+    procedure_signature(const struct procedure_signature & r) {
+        name = r.name;
+        argTypes = r.argTypes;
+    }
 };
 
 struct server_function_info {

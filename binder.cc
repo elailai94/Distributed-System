@@ -57,8 +57,8 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   string server_identifier = message->getServerIdentifier();
   int port = message->getPort();
 
-  procedure_signature * key = new procedure_signature(name, argTypes);
-	
+  //procedure_signature *  key = new procedure_signature(name, argTypes);
+  procedure_signature key(name, argTypes);
   
   int status = 0;
 
