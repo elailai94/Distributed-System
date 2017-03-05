@@ -1,6 +1,7 @@
 #include <sys/socket.h>
 #include "segment.h"
 #include "message_types.h"
+#include "message.h"
 #include "register_request_message.h"
 #include "register_success_message.h"
 #include "register_failure_message.h"
