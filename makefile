@@ -10,13 +10,13 @@ BINDEROBJECTS = binder.o segment.o register_request_message.o \
 register_success_message.o register_failure_message.o loc_request_message.o \
 loc_success_message.o loc_failure_message.o terminate.o
 RPCOBJECTS = rpc.o
-OBJECTS = ${SERVEROBJECTS} ${BINDEROBJECTS}
+OBJECTS = ${SERVEROBJECTS} ${BINDEROBJECTS} ${RPCOBJECTS}
 DEPENDS = ${OBJECTS: .o=.d}
 CLIENTEXEC = client
 SERVEREXEC = server
 BINDEREXEC = binder
 RPCEXEC = librpc.a
-EXECS = ${SERVEREXEC} ${BINDEREXEC}
+EXECS = ${SERVEREXEC} ${BINDEREXEC} ${RPCEXEC}
 
 ${CLIENTEXEC}: ${CLIENTOBJECTS}
 	${CXX} ${CXXFLAGS} ${CLIENTOBJECTS} -o ${CLIENTEXEC}
