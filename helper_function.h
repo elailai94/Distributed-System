@@ -16,8 +16,6 @@
 #include <netdb.h>
 #include <stdlib.h>
 
-#include "constants.h"
-
 using namespace std;
 
 void *SendToServer(void *threadarg);
