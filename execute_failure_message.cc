@@ -20,7 +20,7 @@ unsigned int ExecuteFailureMessage::getLength() const {
 }
 
 // See interface (header file).
-int ExecuteFailureMessage::send(int dataTransferSocket, unsigned int length) {
+int ExecuteFailureMessage::send(int dataTransferSocket) {
   return 1;
 }
 

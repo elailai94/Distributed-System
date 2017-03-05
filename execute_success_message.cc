@@ -3,7 +3,7 @@
 using namespace std;
 
 // See interface (header file).
-unsigned int ExecuteSuccessMessage::countNumOfArgTypes(int *argTypes) {
+unsigned int ExecuteSuccessMessage::countNumOfArgTypes(int *argTypes) const {
   int count = 1;
   while (argTypes[(count - 1)] != 0) {
     count += 1;
@@ -44,7 +44,7 @@ unsigned int ExecuteSuccessMessage::getLength() const {
 }
 
 // See interface (header file).
-int ExecuteSuccessMessage::send(int dataTransferSocket, unsigned int length) {
+int ExecuteSuccessMessage::send(int dataTransferSocket) {
   return 1;
 }
 

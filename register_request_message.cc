@@ -9,7 +9,7 @@
 using namespace std;
 
 // See interface (header file).
-unsigned int RegisterRequestMessage::countNumOfArgTypes(int *argTypes) {
+unsigned int RegisterRequestMessage::countNumOfArgTypes(int *argTypes) const {
   int count = 1;
   while (argTypes[(count - 1)] != 0) {
     count += 1;

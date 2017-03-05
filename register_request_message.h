@@ -12,7 +12,7 @@ class RegisterRequestMessage: public Message {
   int *argTypes;
 
   // Returns a count of the number of argument types
-  unsigned int countNumOfArgTypes(int *argTypes);
+  unsigned int countNumOfArgTypes(int *argTypes) const;
 
 public:
   RegisterRequestMessage(std::string serverIdentifier, unsigned int port,
