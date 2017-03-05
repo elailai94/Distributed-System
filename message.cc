@@ -1,4 +1,3 @@
-#include <sys/socket.h>
 #include "message.h"
 
 using namespace std;
