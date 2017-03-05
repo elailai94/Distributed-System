@@ -156,6 +156,7 @@ string serverIdentifier;
 unsigned int port;
 //int binder_sock; //only one binder socket variable
 int sock;
+struct addrinfo* servinfo;
 
   //TODO:
   // CREATE SERVER
@@ -302,7 +303,6 @@ int rpcExecute(void){
 int rpcInit(void){
   int status;
   struct addrinfo hints;
-  struct addrinfo* servinfo;
   struct addrinfo* p;
 
   memset(&hints, 0, sizeof hints);
