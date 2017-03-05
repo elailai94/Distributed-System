@@ -1,7 +1,6 @@
 #include <sys/socket.h>
 #include "segment.h"
 #include "message_types.h"
-#include "message.h"
 #include "register_request_message.h"
 #include "register_success_message.h"
 #include "register_failure_message.h"
@@ -52,7 +51,7 @@ int Segment::send(int dataTransferSocket) {
   }
 
   // Writes the message out to the data transfer socket
-  result = message->send(dataTransferSocket, length);
+  result = message->send(dataTransferSocket);
   if (result < 0) {
     return result;
   }
