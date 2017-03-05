@@ -9,6 +9,9 @@ public:
   TerminateMessage();  // Constructor
   ~TerminateMessage(); // Destructor
 
+  // Calculates the length of the message
+  virtual unsigned int getLength() const;
+
   /*
    * Creates a message to send data and writes it out to the data
    * transfer socket
