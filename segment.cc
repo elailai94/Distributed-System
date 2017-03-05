@@ -51,7 +51,7 @@ int Segment::send(int dataTransferSocket) {
   }
 
   // Writes the message out to the data transfer socket
-  result = message->send(int dataTransferSocket, length);
+  result = message->send(dataTransferSocket, length);
   if (result < 0) {
     return result;
   }
