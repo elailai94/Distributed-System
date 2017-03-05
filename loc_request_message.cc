@@ -20,7 +20,7 @@ int *LocRequestMessage::getArgTypes() const {
 }
 
 // See interface (header file).
-int LocRequestMessage::send(int dataTransferSocket, unsigned int length) {
+int LocRequestMessage::send(int dataTransferSocket) {
   return 1;
 }
 
