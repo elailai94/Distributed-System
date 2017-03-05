@@ -23,6 +23,9 @@
 #include "execute_success_message.h"
 #include "execute_failure_message.h"
 #include "execute_request_message.h"
+#include "register_success_message.h"
+#include "register_failure_message.h"
+#include "register_request_message.h"
 
 #include "rpc.h"
 #include "constants.h"
@@ -35,7 +38,7 @@ using namespace std;
 bool connectedToBinder = false;
 int binder_sock;
 
-int connectedToBinder(){
+int connectToBinder(){
 
 	if(connectedToBinder){
 		return 0;		
@@ -52,7 +55,7 @@ int connectedToBinder(){
         return 2;
     }
     
-    binder_sock = create_connection(binderAddressString, binderPortString);
+    binder_sock = createConnection(binderAddressString, binderPortString);
 
     if (binder_sock < 0) {
         return 3;
@@ -71,7 +74,7 @@ int sendExecute(int sock, char* name, int* argTypes, void**args){
 
 	char* retName; 
 	int* retArgTypes;
-	void** retArgs
+	void** retArgs;
 
     if(status == 0){
 		Segment * segment = 0;
@@ -115,7 +118,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	int server_socket
 
 	if(!connectedToBinder){
-		returnVal = connectedToBinder();
+		returnVal = connectToBinder();
 	}
 	//do something with returnVal
 
@@ -141,7 +144,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	  	}
 	}
 
-    int server_sock = create_connection(serverAddress, serverPort);
+    int server_sock = createConnection(serverAddress, serverPort);
 	int server_status = sendExecute(server_sock, name, argTypes, args);
 	
 	return server_status; 
