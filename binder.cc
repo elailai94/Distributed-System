@@ -79,7 +79,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   }else{
 
     bool sameLoc = false;
-    list<server_info *> *hostList = proc_loc_dict.find[key];
+    list<server_info *> *hostList = proc_loc_dict[key]; // proc_loc_dict.find[key]
 
     for (list<server_info *>::iterator it = hostList->begin(); it != hostList->end(); it++) {
       // IF THEY ARE AT THE SAME PLACE, THEY SHOULD HAVE TEH SAME SOCKET
@@ -92,8 +92,8 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     }
     //Same procedure signature, different location
   	if(!sameLoc){
-       server_info * new_msg_loc = new server_info(server_identifier, port, sock);
-       hostList.push_back(new_msg_loc);
+       server_info * new_msg_loc = new server_info(server_identifier, port, sock);  
+       hostList->push_back(new_msg_loc);
     }
   }
 
