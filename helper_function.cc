@@ -113,12 +113,6 @@ int findLenOfArgTypes(int * array){
   }
 }
 
-char * extractUnsignedInt(char * bufferP, int &i){
-    bufferP = copyBufferToConvertor(bufferP, sizeof(int));
-    i= _convertor.ui;
-    return bufferP;
-}
-
 int *copyArgTypes(int *argTypes) {
     unsigned int argTypesLength = 0;
     
