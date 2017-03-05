@@ -198,7 +198,7 @@ int main(){
   int sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
 
   status = bind(sock, servinfo->ai_addr, servinfo->ai_addrlen);
-  status = listen(sock, 5);
+  status = listen(sock, SOMAXCONN);
 
   cout << "BINDER_ADDRESS " << getBinderAddress() << endl;
   cout << "BINDER_PORT " << getBinderPort(sock) << endl;

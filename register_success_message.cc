@@ -1,7 +1,5 @@
 #include "register_success_message.h"
 
-using namespace std;
-
 // See interface (header file).
 RegisterSuccessMessage::RegisterSuccessMessage(int reasonCode)
   : Message(), reasonCode(reasonCode) {} //  Constructor
