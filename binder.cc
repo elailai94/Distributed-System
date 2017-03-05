@@ -129,13 +129,14 @@ int location_request_handler(LocRequestMessage * message, int sock){
 int request_handler(Segment * segment, int sock){
   int retval = 0;
   if(segment->getType() == MSG_TYPE_LOC_REQUEST){ //'LOC_REQUEST' 
-    Message * myMessage = segment->getMessage();
-    //Cat*    catPtr2 = dynamic_cast<Cat*>(AnimalPtr2);  // Works
-    LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(myMessage);
+    Message * cast1 = segment->getMessage();
+    LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(cast1);
+    registration_request_handler(lqm, sock);
 
-    registration_request_handler(, sock);
-  }else if (segment.getType() == MSG_TYPE_REGISTER_REQUEST){ //'REGISTER'
-    retval = location_request_handler(segment->getMessage(), sock);
+  }else if (segment->getType() == MSG_TYPE_REGISTER_REQUEST){ //'REGISTER'
+    Message * cast2 = segment->getMessage();
+    LocRequestMessage * rrm = dynamic_cast<LocRequestMessage*>(cast2);
+    retval = location_request_handler(rrm, sock);
   }
 
 	return retval;
@@ -232,7 +233,7 @@ int main(){
           int tempConnection = *it;         
           if (FD_ISSET(tempConnection, &readfds)) {
 
-            Segment * segment = null; 
+            Segment * segment = 0; 
             Segment::receive(sock, segment, status);
 
             if (status < 0) {
