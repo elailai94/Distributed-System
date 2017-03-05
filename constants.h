@@ -34,8 +34,3 @@ struct server_function_info {
 
 	server_function_info(struct server_info *si, struct procedure_signature *ps);
 };
-
-bool operator == (const server_info &l, const struct server_function_info  &r);
-bool operator == (const server_function_info &l, const server_function_info &r);
-bool operator == (const server_info &l, const server_info &r);
-
