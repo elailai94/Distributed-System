@@ -7,6 +7,7 @@
 #include <netinet/in.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/param.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <vector>
@@ -51,7 +52,7 @@ ADD FUNCTION TO ROUND ROBIN
 IF FUNCTION EXISTS IN ROUND ROBIN DELETE OLD REPLACE WITH NEW (where)
 */
 void registration_request_handler(RegisterRequestMessage * message, int sock){
-	char * name = message->getName();
+	const char * name = message->getName().c_str();
   int * argTypes = message->getArgTypes();
   string server_identifier = message->getServerIdentifier();
   int port = message->getPort();
