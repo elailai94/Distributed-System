@@ -106,7 +106,7 @@ int location_request_handler(LocRequestMessage * message, int sock){
   bool exist = false; 
 	for (list<server_function_info *>::iterator it = roundRobinList->begin(); it != roundRobinList->end(); it++){
 		//If the name are the same
-    if(it->ps->name == message->name && compareArr(it->ps->arrTypes, message->arrTypes)){ 
+    if(it->ps->name == message->getName() && compareArr(it->ps->argTypes, message->getArgTypes() )){ 
 		  //When we have identified the correct procedure_signature use round robin and move that service to the end
 		  roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
       exist = true;
