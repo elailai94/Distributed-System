@@ -40,7 +40,7 @@ using namespace std;
 //DATABASE
 //ROUND ROBIN
 
-static map<procedure_signature, list<server_info *> * > proc_loc_dict;
+static map<procedure_signature, list<server_info *>, ps_compare> proc_loc_dict;
 static list<server_function_info *> roundRobinList;
 
 /*
