@@ -40,9 +40,9 @@ using namespace std;
 //DATABASE
 //ROUND ROBIN
 
-
-
 static map<procedure_signature, list<server_info *> * > proc_loc_dict;
+//static map<rpcFunctionKey, list<service_info *> * > servicesDictionary;
+
 static list<server_function_info *> roundRobinList;
 
 /*
@@ -52,7 +52,7 @@ ADD FUNCTION TO ROUND ROBIN
 IF FUNCTION EXISTS IN ROUND ROBIN DELETE OLD REPLACE WITH NEW (where)
 */
 void registration_request_handler(RegisterRequestMessage * message, int sock){
-	char * name = message->getName().c_str();
+	const char * name = message->getName().c_str();
   int * argTypes = message->getArgTypes();
   string server_identifier = message->getServerIdentifier();
   int port = message->getPort();
