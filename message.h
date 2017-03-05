@@ -7,6 +7,7 @@
 #define MAX_LENGTH_PORT              sizeof(unsigned int)
 #define MAX_LENGTH_NAME              64
 #define MAX_LENGTH_ARG_TYPE          sizeof(int)
+#define MAX_LENGTH_ARG               sizeof(void *)
 #define MAX_LENGTH_REASON_CODE       sizeof(int)
 
 class Message {

@@ -3,6 +3,16 @@
 using namespace std;
 
 // See interface (header file).
+unsigned int ExecuteRequestMessage::countNumOfArgTypes(int *argTypes) {
+  int count = 1;
+  while (argTypes[(count - 1)] != 0) {
+    count += 1;
+  }
+
+  return count;
+}
+
+// See interface (header file).
 ExecuteRequestMessage::ExecuteRequestMessage(string name, int *argTypes,
   void **args)
   : Message(), name(name), argTypes(argTypes), args(args) {} //  Constructor
@@ -26,7 +36,15 @@ void **ExecuteRequestMessage::getArgs() const {
 }
 
 // See interface (header file).
-int ExecuteRequestMessage::send(int dataTransferSocket, unsigned int length) {
+unsigned int ExecuteRequestMessage::getLength() const {
+  unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
+  unsigned int numOfArgs = numOfArgTypes - 1;
+  return MAX_LENGTH_NAME + (numOfArgTypes * MAX_LENGTH_ARG_TYPE) +
+    (numOfArgs * MAX_LENGTH_ARG);
+}
+
+// See interface (header file).
+int ExecuteRequestMessage::send(int dataTransferSocket) {
   return 1;
 }
 

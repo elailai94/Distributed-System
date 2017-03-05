@@ -15,6 +15,11 @@ int ExecuteFailureMessage::getReasonCode() const {
 }
 
 // See interface (header file).
+unsigned int ExecuteFailureMessage::getLength() const {
+  return MAX_LENGTH_REASON_CODE;
+}
+
+// See interface (header file).
 int ExecuteFailureMessage::send(int dataTransferSocket, unsigned int length) {
   return 1;
 }

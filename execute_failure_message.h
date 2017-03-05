@@ -14,6 +14,9 @@ public:
   // Returns an integer indicating a specific failure condition
   int getReasonCode() const;
 
+  // Calculates the length of the message
+  virtual unsigned int getLength() const;
+
   /*
    * Creates a message to send data and writes it out to the data
    * transfer socket
