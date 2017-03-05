@@ -10,6 +10,9 @@ class ExecuteSuccessMessage: public Message {
   int *argTypes;
   void **args;
 
+  // Returns a count of the number of argument types
+  unsigned int countNumOfArgTypes(int *argTypes);
+
 public:
   ExecuteSuccessMessage(std::string name, int *argTypes, void **args);  // Constructor
   ~ExecuteSuccessMessage(); // Destructor
@@ -23,11 +26,14 @@ public:
   // Returns the values of the arguments
   void **getArgs() const;
 
+  // Calculates the length of the message
+  virtual unsigned int getLength() const;
+
   /*
    * Creates a message to send data and writes it out to the data
    * transfer socket
    */
-  virtual int send(int dataTransferSocket, unsigned int length);
+  virtual int send(int dataTransferSocket);
 
   /*
    * Creates a message to receive data and reads into it from the data
