@@ -57,7 +57,9 @@ int connectToBinder(){
         return 2;
     }
 
-    binder_sock = createConnection(binderAddressString, binderPortString);
+    unsigned int portInt = atoi(binderPortString);
+
+    binder_sock = createConnection(string(binderAddressString), portInt);
 
     if (binder_sock < 0) {
         return 3;
@@ -68,7 +70,7 @@ int connectToBinder(){
 }
 
 
-int sendExecute(int sock, string * name, int* argTypes, void**args){
+int sendExecute(int sock, string name, int* argTypes, void**args){
 
     ExecuteRequestMessage *execute_request = new ExecuteRequestMessage(name, argTypes, args);
     int status = execute_request->send(sock);
