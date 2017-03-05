@@ -74,7 +74,7 @@ int sendExecute(int sock, char* name, int* argTypes, void**args){
     int status = execute_request->send(sock);
     int returnVal;
 
-	char* retName;
+	string retName;
 	int* retArgTypes;
 	void** retArgs;
 
@@ -130,7 +130,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	/**Server stuff **/
 	if(binder_status == 0){
 		Segment * segment = 0;
-        status = Segment::receive(binder_sock, segment);
+        int status = Segment::receive(binder_sock, segment);
 
 		if(segment->getType() == MSG_TYPE_LOC_SUCCESS){ //'LOC_REQUEST'
     		Message * cast = segment->getMessage();

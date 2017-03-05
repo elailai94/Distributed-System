@@ -12,6 +12,7 @@
 #include <arpa/inet.h>
 #include <vector>
 #include <algorithm>
+#include <string>
 
 #include <netdb.h>
 #include <stdlib.h>
@@ -54,11 +55,11 @@ void *SendToServer(void *threadarg) {
 }
 
 
-int createConnection(char * address, char * port){
+int createConnection(string address, unsigned int port){
 
   if (address == NULL || port == NULL) {
     cerr << "Missing address or port environment variable" << endl;
-    cerr << *port << endl;
+    cerr << port << endl;
     cerr << *address << endl;  
     exit(1);
   }
@@ -69,7 +70,7 @@ int createConnection(char * address, char * port){
   int sockfd, portno;
   struct sockaddr_in serv_addr;
   struct hostent *server;
-  portno = atoi(port);
+  portno = port;
   sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
   server = gethostbyname(address);
 
