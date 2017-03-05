@@ -38,6 +38,7 @@ using namespace std;
 //ROUND ROBIN
 
 
+
 static map<procedure_signature, list<server_info *> * > proc_loc_dict;
 static list<server_function_info *> roundRobinList;
 
@@ -47,11 +48,11 @@ ADD FUNCTION TO MAP
 ADD FUNCTION TO ROUND ROBIN
 IF FUNCTION EXISTS IN ROUND ROBIN DELETE OLD REPLACE WITH NEW (where)
 */
-void registration_request_handler(RegisterRequestMessage message, int sock){
-	char * name = message.getName();
-  int * argTypes = message.getArgTypes();  
-  string server_identifier = message.getServerIdentifier();
-  int port = message.getPort();
+void registration_request_handler(RegisterRequestMessage * message, int sock){
+	char * name = message->getName();
+  int * argTypes = message->getArgTypes();  
+  string server_identifier = message->getServerIdentifier();
+  int port = message->getPort();
   
   procedure_signature * key = new procedure_signature(name, argTypes);
 	
@@ -92,14 +93,14 @@ void registration_request_handler(RegisterRequestMessage message, int sock){
   }
 
   RegisterSuccessMessage * success_message = new RegisterSuccessMessage(status);
-  success_message.send(sock);
+  success_message->send(sock);
 }
 
 /*
 TODO:
 USE ROUND ROBIN TO ACCESS THE CORRECT SERVER/FUNCTION FOR THE CLIENT
 */
-int location_request_handler(LocRequestMessage message, int sock){
+int location_request_handler(LocRequestMessage * message, int sock){
  
   bool exist = false; 
 	for (list<server_function_info *>::iterator it = roundRobinList->begin(); it != roundRobinList->end(); it++){
@@ -121,14 +122,14 @@ int location_request_handler(LocRequestMessage message, int sock){
   }
 
 	return 0; //LOC_FAILURE
-}(
+}
 
-int request_handler(Segment segment, int sock){
+int request_handler(Segment * segment, int sock){
   int retval;
   if(segment.getType() == MSG_TYPE_LOC_REQUEST){ //'LOC_REQUEST' 
-    retval = registration_request_handler(segment.getMessage(), sock);
+    retval = registration_request_handler(segment->getMessage(), sock);
   }else if (segment.getType() == MSG_TYPE_REGISTER_REQUEST){ //'REGISTER'
-    retval = location_request_handler(segment.getMessage(), sock);
+    retval = location_request_handler(segment->getMessage(), sock);
   }
 
 	return retval;
@@ -225,12 +226,12 @@ int main(){
           int tempConnection = *it;         
           if (FD_ISSET(tempConnection, &readfds)) {
 
-            Segment segment; 
+            Segment * segment = null; 
             Segment::receive(sock, segment, status);
 
             if (status < 0) {
                 RegisterFailureMessage * failure_message = new RegisterFailureMessage(status);
-                failure_message.send(sock);
+                failure_message->send(sock);
                 return errorMsg;
             }
 
