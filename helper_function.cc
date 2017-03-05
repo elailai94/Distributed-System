@@ -119,9 +119,13 @@ char * extractUnsignedInt(char * bufferP, int &i){
     return bufferP;
 }
 
-int *copyArgTypes(int argTypes[]) {
+int *copyArgTypes(int *argTypes) {
     unsigned int argTypesLength = 0;
-    while (argTypes[argTypesLength++]);
+    
+    while (argTypes[argTypesLength]){
+      argTypesLength++;
+    }
+
     int *memArgTypes = new int[argTypesLength];
 
     unsigned int i = 0;

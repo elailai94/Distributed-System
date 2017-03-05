@@ -41,8 +41,6 @@ using namespace std;
 //ROUND ROBIN
 
 static map<procedure_signature, list<server_info *> * > proc_loc_dict;
-//static map<rpcFunctionKey, list<service_info *> * > servicesDictionary;
-
 static list<server_function_info *> roundRobinList;
 
 /*

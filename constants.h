@@ -34,3 +34,9 @@ struct server_function_info {
 
 	server_function_info(struct server_info *si, struct procedure_signature *ps);
 };
+
+struct ps_compare {
+
+  	bool operator() (const procedure_signature& lhs, const procedure_signature& rhs) const;
+
+};
