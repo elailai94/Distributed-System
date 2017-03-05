@@ -79,9 +79,9 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   }else{	 	
     
     bool sameLoc = false;
-    list<service_info *> *hostList = proc_loc_dict.find[key]; 
+    list<server_info *> *hostList = proc_loc_dict.find[key]; 
 
-    for (list<service_info *>::iterator it = hostList->begin(); it != hostList->end(); it++) {
+    for (list<server_info *>::iterator it = hostList->begin(); it != hostList->end(); it++) {
       if(it == new_msg_loc){
         //The same procedure signature already exists on the same location
         //TODO: Move to end of round robin or something
@@ -112,11 +112,7 @@ int location_request_handler(LocRequestMessage * message, int sock){
 		
       exist = true;
       
-      string strval= 'hello';
-      unsigned int i = 1;
-
-      //LocSuccessMessage * success_message = new LocSuccessMessage((*it)->si->server_identifier, (*it)->si->port);
-      LocSuccessMessage * success_message = new LocSuccessMessage(strval, i);
+      LocSuccessMessage * success_message = new LocSuccessMessage((*it)->si->server_identifier, (*it)->si->port);
       
       success_message->send(sock);
     
