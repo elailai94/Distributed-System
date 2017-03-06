@@ -154,6 +154,6 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
     args[i] = argsBuffer[i];
   }
 
-  parsedMessage = new ExecuteRequestMessage(name, argTypes, args);
+  parsedMessage = new ExecuteSuccessMessage(name, argTypes, args);
   return totalNumOfBytesReceived;
 }
