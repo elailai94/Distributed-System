@@ -1,3 +1,6 @@
+#include <cstring>
+#include <sys/socket.h>
+
 #include "execute_failure_message.h"
 
 // See interface (header file).
