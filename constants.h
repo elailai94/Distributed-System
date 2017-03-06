@@ -1,3 +1,6 @@
+#ifndef __CONSTANTS_H__
+#define __CONSTANTS_H__
+
 #include <string>
 #include <vector>
 
@@ -30,3 +33,5 @@ struct ps_compare {
   	bool operator() (const procedure_signature& lhs, const procedure_signature& rhs) const;
 
 };
+
+#endif

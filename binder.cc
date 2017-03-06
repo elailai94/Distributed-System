@@ -26,7 +26,6 @@
 #include "loc_failure_message.h"
 #include "loc_request_message.h"
 
-#include "rpc.h"
 #include "constants.h"
 #include "helper_function.h"
 #include "message_types.h"
@@ -58,17 +57,17 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   int port = message->getPort();
 
   procedure_signature key(name, argTypes);
-  
+
   int status = 0;
 
   //if 'key' dosnt exist in map, add it to the map and round robin
 	if (proc_loc_dict.find(key) == proc_loc_dict.end()) {
     //The purpose of this function is so we can have copy of the argTypes that not the original
     int *memArgTypes = copyArgTypes(argTypes);
-    
+
     key = procedure_signature(name, memArgTypes);
     proc_loc_dict[key] = list<server_info *>();
-    
+
     //This is bad we shouldn't need a newKey and we should be able to use the key above
     //due to &* reasones I made a variable newKey for the 'info' object
     procedure_signature * newKey = new procedure_signature(name, memArgTypes);
@@ -81,18 +80,18 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   } else {
     bool sameLoc = false;
     list<server_info *> hostList = proc_loc_dict[key];
-    
+
     for (list<server_info *>::iterator it = hostList.begin(); it != hostList.end(); it++) {
-      if((*it)->socket == sock){ 
+      if((*it)->socket == sock){
         //If they have the same socket, then must be same server_address/port
         //The same procedure signature already exists on the same location
         //TODO: Move to end of round robin or something, maybe we should keep
         sameLoc = true;
-      }   
+      }
     }
 
   	if(!sameLoc){ //same procedure different socket
-       server_info * new_msg_loc = new server_info(server_identifier, port, sock);  
+       server_info * new_msg_loc = new server_info(server_identifier, port, sock);
        hostList.push_back(new_msg_loc);
     }
   }
