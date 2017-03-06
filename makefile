@@ -12,25 +12,25 @@ loc_success_message.o loc_failure_message.o execute_request_message.o \
 execute_success_message.o execute_failure_message.o register_request_message.o \
 register_success_message.o register_failure_message.o terminate.o constants.o \
 helper_function.o message_types.o message_results.o
-OBJECTS = ${SERVEROBJECTS} ${BINDEROBJECTS} ${RPCOBJECTS}
+OBJECTS = ${RPCOBJECTS} ${BINDEROBJECTS}
 DEPENDS = ${OBJECTS: .o=.d}
+RPCEXEC = librpc.a
+BINDEREXEC = binder
 CLIENTEXEC = client
 SERVEREXEC = server
-BINDEREXEC = binder
-RPCEXEC = librpc.a
-EXECS = ${SERVEREXEC} ${BINDEREXEC} ${RPCEXEC}
+EXECS = ${RPCEXEC} ${BINDEREXEC}
+
+${RPCEXEC}: ${RPCOBJECTS}
+	${AR} ${ARFLAGS} ${RPCEXEC} ${RPCOBJECTS}
+
+${BINDEREXEC}: ${BINDEROBJECTS}
+	${CXX} ${CXXFLAGS} ${BINDEROBJECTS} -o ${BINDEREXEC}
 
 ${CLIENTEXEC}: ${CLIENTOBJECTS}
 	${CXX} ${CXXFLAGS} ${CLIENTOBJECTS} -o ${CLIENTEXEC}
 
 ${SERVEREXEC}: ${SERVEROBJECTS}
 	${CXX} ${CXXFLAGS} ${SERVEROBJECTS} -o ${SERVEREXEC}
-
-${BINDEREXEC}: ${BINDEROBJECTS}
-	${CXX} ${CXXFLAGS} ${BINDEROBJECTS} -o ${BINDEREXEC}
-
-${RPCEXEC}: ${RPCOBJECTS}
-	${AR} ${ARFLAGS} ${RPCEXEC} ${RPCOBJECTS}
 
 -include ${DEPENDS}
 
