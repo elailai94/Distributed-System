@@ -17,7 +17,7 @@ class RegisterRequestMessage: public Message {
 public:
   RegisterRequestMessage(std::string serverIdentifier, unsigned int port,
     std::string name, int *argTypes);  // Constructor
-  ~RegisterRequestMessage(); // Destructor
+  virtual ~RegisterRequestMessage(); // Destructor
 
   // Returns the server identifier
   std::string getServerIdentifier() const;
