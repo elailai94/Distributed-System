@@ -1,3 +1,7 @@
+#include <cstring>
+#include <vector>
+#include <sys/socket.h>
+
 #include "execute_success_message.h"
 
 using namespace std;
@@ -59,7 +63,7 @@ int ExecuteSuccessMessage::send(int dataTransferSocket) {
   messageBufferPointer += MAX_LENGTH_ARG_TYPE;
 
   // Writes the arguments to the buffer
-  unsigned int numOfArgs = numOfArgTypes - 1; 
+  unsigned int numOfArgs = numOfArgTypes - 1;
   memcpy(messageBufferPointer, args,
     numOfArgs * MAX_LENGTH_ARG);
 
@@ -106,8 +110,9 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
   }
 
   // Parses the remote procedure name from the buffer
+  char *messageBufferPointer = messageBuffer;
   char nameBuffer[MAX_LENGTH_NAME + 1] = {'\0'};
-  memcpy(nameBuffer, messageBuffer, MAX_LENGTH_NAME);
+  memcpy(nameBuffer, messageBufferPointer, MAX_LENGTH_NAME);
   string name = string(nameBuffer);
   messageBufferPointer += MAX_LENGTH_NAME;
 
@@ -149,7 +154,6 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
     args[i] = argsBuffer[i];
   }
 
-  parsedMessage =
-    new ExecuteRequestMessage(name, argTypes, args);
-  return length;
+  parsedMessage = new ExecuteRequestMessage(name, argTypes, args);
+  return totalNumOfBytesReceived;
 }

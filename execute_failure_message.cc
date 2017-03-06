@@ -24,7 +24,6 @@ int ExecuteFailureMessage::send(int dataTransferSocket) {
 
   // Writes the reason code to the buffer
   memcpy(messageBufferPointer, &reasonCode, MAX_LENGTH_REASON_CODE);
-  messageBufferPointer += MAX_LENGTH_REASON_CODE;
 
   // Writes the message from the buffer out to the data transfer socket
   unsigned int totalNumOfBytesMessage = getLength();
@@ -68,11 +67,11 @@ int ExecuteFailureMessage::receive(int dataTransferSocket,
   }
 
   // Parses the reasonCode from the buffer
+  char *messageBufferPointer = messageBuffer;
   char reasonCodeBuffer[MAX_LENGTH_REASON_CODE] = {'\0'};
-  memcpy(reasonCodeBuffer, messageBuffer, MAX_LENGTH_REASON_CODE);
-  unsigned int reasonCode = *((int *) reasonCodeBuffer);
- 
-  parsedMessage =
-    new ExecuteFailureMessage(reasonCode);
-  return length;
+  memcpy(reasonCodeBuffer, messageBufferPointer, MAX_LENGTH_REASON_CODE);
+  int reasonCode = *((int *) reasonCodeBuffer);
+
+  parsedMessage = new ExecuteFailureMessage(reasonCode);
+  return totalNumOfBytesReceived;
 }
