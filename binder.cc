@@ -83,7 +83,8 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     list<server_info *> hostList = proc_loc_dict[key];
     
     for (list<server_info *>::iterator it = hostList.begin(); it != hostList.end(); it++) {
-      if((*it)->socket == sock){ //if they have the same socket, then must be same server_address/port
+      if((*it)->socket == sock){ 
+        //If they have the same socket, then must be same server_address/port
         //The same procedure signature already exists on the same location
         //TODO: Move to end of round robin or something, maybe we should keep
         sameLoc = true;
@@ -112,7 +113,7 @@ int location_request_handler(LocRequestMessage * message, int sock){
     //If the name are the same and argTypes
     if((*it)->ps->name == message->getName() && compareArr((*it)->ps->argTypes, message->getArgTypes() )){
       exist = true;
-      
+
       LocSuccessMessage * success_message = new LocSuccessMessage((*it)->si->server_identifier, (*it)->si->port);
       success_message->send(sock);
 

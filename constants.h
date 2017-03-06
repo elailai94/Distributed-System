@@ -1,11 +1,6 @@
 #include <string>
 #include <vector>
 
-struct thread_data {
-  int sock;
-  std::vector<std::string> *buf;
-};
-
 // Constants used for binder.cc
 struct server_info {
 	std::string server_identifier;
