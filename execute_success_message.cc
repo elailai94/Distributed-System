@@ -130,7 +130,7 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
     argTypes[i] = argTypesBuffer[i];
   }
 
-  // Parses the argument types from the buffer
+  // Parses the argument from the buffer
   vector<int> argsBuffer;
   while (true) {
     char argBuffer[MAX_LENGTH_ARG] = {'\0'};
@@ -139,7 +139,7 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
     argsBuffer.push_back(arg);
     messageBufferPointer += MAX_LENGTH_ARG;
 
-    if (argType == 0) {
+    if (arg == 0) {
       break;
     }
   }
