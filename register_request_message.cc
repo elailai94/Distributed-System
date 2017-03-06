@@ -129,7 +129,7 @@ int RegisterRequestMessage::receive(int dataTransferSocket,
   // Parses the port from the buffer
   char portBuffer[MAX_LENGTH_PORT] = {'\0'};
   memcpy(portBuffer, messageBuffer, MAX_LENGTH_PORT);
-  unsigned int port = *((int *)portBuffer);
+  unsigned int port = *((int *) portBuffer);
   messageBufferPointer += MAX_LENGTH_PORT;
 
   // Parses the remote procedure name from the buffer
@@ -143,7 +143,7 @@ int RegisterRequestMessage::receive(int dataTransferSocket,
   while (true) {
     char argTypeBuffer[MAX_LENGTH_ARG_TYPE] = {'\0'};
     memcpy(argTypeBuffer, messageBufferPointer, MAX_LENGTH_ARG_TYPE);
-    int argType = *((int *)argTypeBuffer);
+    int argType = *((int *) argTypeBuffer);
     argTypesBuffer.push_back(argType);
     messageBufferPointer += MAX_LENGTH_ARG_TYPE;
 
