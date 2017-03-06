@@ -14,11 +14,11 @@ unsigned int TerminateMessage::getLength() const {
 
 // See interface (header file).
 int TerminateMessage::send(int dataTransferSocket) {
-  return 1;
+  return 0;
 }
 
 // See interface (header file).
 int TerminateMessage::receive(int dataTransferSocket,
   Message *parsedMessage, unsigned int length) {
-  return 1;
+  return 0;
 }

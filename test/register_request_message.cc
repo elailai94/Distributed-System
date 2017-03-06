@@ -1,9 +1,7 @@
-#include <cstdlib>
 #include <cstring>
 #include <vector>
-#include <netinet/in.h>
-#include <sys/param.h>
 #include <sys/socket.h>
+
 #include "register_request_message.h"
 
 using namespace std;
@@ -73,7 +71,7 @@ int RegisterRequestMessage::send(int dataTransferSocket) {
   memcpy(messageBufferPointer, name.c_str(), name.length());
   messageBufferPointer += MAX_LENGTH_NAME;
 
-  // Writes the argument types out to the data transfer socket
+  // Writes the argument types to the buffer
   unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
   memcpy(messageBufferPointer, argTypes,
     numOfArgTypes * MAX_LENGTH_ARG_TYPE);
@@ -122,19 +120,20 @@ int RegisterRequestMessage::receive(int dataTransferSocket,
   // Parses the server identifier from the buffer
   char *messageBufferPointer = messageBuffer;
   char serverIdentifierBuffer[MAX_LENGTH_SERVER_IDENTIFIER + 1] = {'\0'};
-  memcpy(serverIdentifierBuffer, messageBuffer, MAX_LENGTH_SERVER_IDENTIFIER);
+  memcpy(serverIdentifierBuffer, messageBufferPointer,
+    MAX_LENGTH_SERVER_IDENTIFIER);
   string serverIdentifier = string(serverIdentifierBuffer);
   messageBufferPointer += MAX_LENGTH_SERVER_IDENTIFIER;
 
   // Parses the port from the buffer
   char portBuffer[MAX_LENGTH_PORT] = {'\0'};
-  memcpy(portBuffer, messageBuffer, MAX_LENGTH_PORT);
-  unsigned int port = *((int *) portBuffer);
+  memcpy(portBuffer, messageBufferPointer, MAX_LENGTH_PORT);
+  unsigned int port = *((unsigned int *) portBuffer);
   messageBufferPointer += MAX_LENGTH_PORT;
 
   // Parses the remote procedure name from the buffer
   char nameBuffer[MAX_LENGTH_NAME + 1] = {'\0'};
-  memcpy(nameBuffer, messageBuffer, MAX_LENGTH_NAME);
+  memcpy(nameBuffer, messageBufferPointer, MAX_LENGTH_NAME);
   string name = string(nameBuffer);
   messageBufferPointer += MAX_LENGTH_NAME;
 
@@ -159,5 +158,5 @@ int RegisterRequestMessage::receive(int dataTransferSocket,
 
   parsedMessage =
     new RegisterRequestMessage(serverIdentifier, port, name, argTypes);
-  return length;
+  return totalNumOfBytesReceived;
 }
