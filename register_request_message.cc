@@ -26,9 +26,7 @@ RegisterRequestMessage::RegisterRequestMessage(string serverIdentifier,
 } //  Constructor
 
 // See interface (header file).
-RegisterRequestMessage::~RegisterRequestMessage() {
-  delete[] argTypes;
-} // Destructor
+RegisterRequestMessage::~RegisterRequestMessage() {} // Destructor
 
 // See interface (header file).
 string RegisterRequestMessage::getServerIdentifier() const {
