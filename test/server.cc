@@ -149,6 +149,8 @@ int main() {
             } // if
 
             Message *msg = parsedSegment->getMessage();
+            cout << msg->getServerIdentifier() << endl;
+            cout << msg->getPort() << endl;
 
          } // if
       } // for
