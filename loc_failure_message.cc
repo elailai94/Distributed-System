@@ -1,3 +1,6 @@
+#include <cstring>
+#include <sys/socket.h>
+
 #include "loc_failure_message.h"
 
 // See interface (header file).
@@ -19,11 +22,58 @@ unsigned int LocFailureMessage::getLength() const {
 
 // See interface (header file).
 int LocFailureMessage::send(int dataTransferSocket) {
-  return 1;
+  char messageBuffer[getLength()];
+  char *messageBufferPointer = messageBuffer;
+
+  // Writes the reason code to the buffer
+  memcpy(messageBufferPointer, &reasonCode, MAX_LENGTH_REASON_CODE);
+
+  // Writes the message from the buffer out to the data transfer socket
+  unsigned int totalNumOfBytesMessage = getLength();
+  unsigned int numOfBytesLeft = totalNumOfBytesMessage;
+  unsigned int totalNumOfBytesSent = 0;
+
+  while (totalNumOfBytesSent < totalNumOfBytesMessage) {
+    int numOfBytesSent =
+      ::send(dataTransferSocket, messageBuffer + totalNumOfBytesSent,
+        numOfBytesLeft, 0);
+    if (numOfBytesSent < 0) {
+      return numOfBytesSent;
+    }
+
+    totalNumOfBytesSent += numOfBytesSent;
+    numOfBytesLeft += numOfBytesSent;
+  }
+
+  return totalNumOfBytesSent;
 }
 
 // See interface (header file).
 int LocFailureMessage::receive(int dataTransferSocket,
   Message *parsedMessage, unsigned int length) {
-  return 1;
+  // Reads the message into a buffer from the data transfer socket
+  char messageBuffer[length];
+  unsigned int totalNumOfBytesMessage = length;
+  unsigned int numOfBytesLeft = totalNumOfBytesMessage;
+  unsigned int totalNumOfBytesReceived = 0;
+
+  while (totalNumOfBytesReceived < totalNumOfBytesMessage) {
+    int numOfBytesReceived =
+      ::recv(dataTransferSocket, messageBuffer + totalNumOfBytesReceived,
+        numOfBytesLeft, 0);
+    if (numOfBytesReceived < 0 || numOfBytesReceived == 0) {
+      return numOfBytesReceived;
+    }
+
+    totalNumOfBytesReceived += numOfBytesReceived;
+    numOfBytesLeft -= numOfBytesReceived;
+  }
+
+  // Parses the reason code from the buffer
+  char reasonCodeBuffer[MAX_LENGTH_REASON_CODE] = {'\0'};
+  memcpy(reasonCodeBuffer, messageBuffer, MAX_LENGTH_REASON_CODE);
+  int reasonCode = *((int *) reasonCodeBuffer);
+
+  parsedMessage = new LocFailureMessage(reasonCode);
+  return totalNumOfBytesReceived;
 }
