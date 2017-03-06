@@ -148,7 +148,8 @@ int main() {
                continue;
             } // if
 
-            Message *msg = parsedSegment->getMessage();
+            RegisterRequestMessage *msg = dynamic_cast<RegisterRequestMessage *>(parsedSegment->getMessage());
+
             cout << msg->getServerIdentifier() << endl;
             cout << msg->getPort() << endl;
 
