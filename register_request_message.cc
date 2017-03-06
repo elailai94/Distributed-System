@@ -120,19 +120,20 @@ int RegisterRequestMessage::receive(int dataTransferSocket,
   // Parses the server identifier from the buffer
   char *messageBufferPointer = messageBuffer;
   char serverIdentifierBuffer[MAX_LENGTH_SERVER_IDENTIFIER + 1] = {'\0'};
-  memcpy(serverIdentifierBuffer, messageBuffer, MAX_LENGTH_SERVER_IDENTIFIER);
+  memcpy(serverIdentifierBuffer, messageBufferPointer,
+    MAX_LENGTH_SERVER_IDENTIFIER);
   string serverIdentifier = string(serverIdentifierBuffer);
   messageBufferPointer += MAX_LENGTH_SERVER_IDENTIFIER;
 
   // Parses the port from the buffer
   char portBuffer[MAX_LENGTH_PORT] = {'\0'};
-  memcpy(portBuffer, messageBuffer, MAX_LENGTH_PORT);
+  memcpy(portBuffer, messageBufferPointer, MAX_LENGTH_PORT);
   unsigned int port = *((unsigned int *) portBuffer);
   messageBufferPointer += MAX_LENGTH_PORT;
 
   // Parses the remote procedure name from the buffer
   char nameBuffer[MAX_LENGTH_NAME + 1] = {'\0'};
-  memcpy(nameBuffer, messageBuffer, MAX_LENGTH_NAME);
+  memcpy(nameBuffer, messageBufferPointer, MAX_LENGTH_NAME);
   string name = string(nameBuffer);
   messageBufferPointer += MAX_LENGTH_NAME;
 

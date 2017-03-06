@@ -70,8 +70,9 @@ int RegisterSuccessMessage::receive(int dataTransferSocket,
   }
 
   // Parses the reason code from the buffer
+  char *messageBufferPointer = messageBuffer;
   char reasonCodeBuffer[MAX_LENGTH_REASON_CODE] = {'\0'};
-  memcpy(reasonCodeBuffer, messageBuffer, MAX_LENGTH_REASON_CODE);
+  memcpy(reasonCodeBuffer, messageBufferPointer, MAX_LENGTH_REASON_CODE);
   int reasonCode = *((int *) reasonCodeBuffer);
 
   parsedMessage = new RegisterSuccessMessage(reasonCode);
