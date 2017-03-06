@@ -61,20 +61,22 @@ int RegisterRequestMessage::send(int dataTransferSocket) {
   char *messageBufferPointer = messageBuffer;
 
   // Writes the server identifier to the buffer
-  memcpy(messageBuffer, serverIdentifier.c_str(), serverIdentifier.length());
+  memcpy(messageBufferPointer, serverIdentifier.c_str(),
+    serverIdentifier.length());
   messageBufferPointer += MAX_LENGTH_SERVER_IDENTIFIER;
 
   // Writes the port to the buffer
-  memcpy(messageBuffer, &port, MAX_LENGTH_PORT);
+  memcpy(messageBufferPointer, &port, MAX_LENGTH_PORT);
   messageBufferPointer += MAX_LENGTH_PORT;
 
   // Writes the remote procedure name to the buffer
-  memcpy(messageBuffer, name.c_str(), name.length());
+  memcpy(messageBufferPointer, name.c_str(), name.length());
   messageBufferPointer += MAX_LENGTH_NAME;
 
-  // Writes the argument types out to the data transfer socket
+  // Writes the argument types to the buffer
   unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
-  memcpy(messageBuffer, argTypes, numOfArgTypes * MAX_LENGTH_ARG_TYPE);
+  memcpy(messageBufferPointer, argTypes,
+    numOfArgTypes * MAX_LENGTH_ARG_TYPE);
 
   // Writes the message from the buffer out to the data transfer socket
   unsigned int totalNumOfBytesMessage = getLength();

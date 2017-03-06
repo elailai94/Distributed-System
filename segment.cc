@@ -18,9 +18,7 @@ Segment::Segment(unsigned int length, unsigned int type, Message *message)
   : length(length), type(type), message(message) {} // Constructor
 
 // See interface (header file).
-Segment::~Segment() {
-  delete message;
-}
+Segment::~Segment() {}
 
 // See interface (header file).
 unsigned int Segment::getLength() const {
