@@ -67,31 +67,6 @@ int setUpClientSocket() {
    return clientSocket;
 } //setUpSocket
 
-// Sends request to the server
-void sendRequest(int clientSocket) {
-   // Removes a message from the messages not sent queue and
-   // writes it out to the client socket
-   Message messageToServer = messagesNotSent.front();
-   pthread_mutex_lock(&messagesNotSentMutex);
-   messagesNotSent.pop();
-   pthread_mutex_unlock(&messagesNotSentMutex);
-   messageToServer.send(clientSocket);
-
-   // Creates a message to receive data from the server and reads
-   // into it from the client socket
-   Message messageFromServer = Message("");
-   int result = 0;
-   Message::receive(clientSocket, messageFromServer, result);
-   if (result == 0) {
-      string titleCaseText = messageFromServer.getText();
-      cout << "Server: " << titleCaseText << endl;
-   } // if
-         
-   // Delays for two seconds between successive requests
-   sleep(2);
-} // sendRequest
-
-
 int main() {
    // Checks the number and formats of the environment variables passed
    checkEnvironmentVariables();
