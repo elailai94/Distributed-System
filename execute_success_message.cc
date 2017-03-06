@@ -136,11 +136,11 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
   }
 
   // Parses the argument from the buffer
-  vector<int> argsBuffer;
+  vector<void *> argsBuffer;
   while (true) {
     char argBuffer[MAX_LENGTH_ARG] = {'\0'};
     memcpy(argBuffer, messageBufferPointer, MAX_LENGTH_ARG);
-    int arg = *((int *) argBuffer);
+    void *arg = *((void **) argBuffer);
     argsBuffer.push_back(arg);
     messageBufferPointer += MAX_LENGTH_ARG;
 
@@ -149,7 +149,7 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
     }
   }
 
-  int *args = new int[argsBuffer.size()];
+  void **args = new void *[argsBuffer.size()];
   for (unsigned int i = 0; i < argsBuffer.size(); i++) {
     args[i] = argsBuffer[i];
   }
