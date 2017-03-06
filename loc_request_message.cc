@@ -1,3 +1,7 @@
+#include <cstring>
+#include <vector>
+#include <sys/socket.h>
+
 #include "loc_request_message.h"
 
 using namespace std;
@@ -37,11 +41,85 @@ unsigned int LocRequestMessage::getLength() const {
 
 // See interface (header file).
 int LocRequestMessage::send(int dataTransferSocket) {
-  return 1;
+  char messageBuffer[getLength()];
+  char *messageBufferPointer = messageBuffer;
+
+  // Writes the remote procedure name to the buffer
+  memcpy(messageBufferPointer, name.c_str(), name.length());
+  messageBufferPointer += MAX_LENGTH_NAME;
+
+  // Writes the argument types to the buffer
+  unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
+  memcpy(messageBufferPointer, argTypes,
+    numOfArgTypes * MAX_LENGTH_ARG_TYPE);
+
+  // Writes the message from the buffer out to the data transfer socket
+  unsigned int totalNumOfBytesMessage = getLength();
+  unsigned int numOfBytesLeft = totalNumOfBytesMessage;
+  unsigned int totalNumOfBytesSent = 0;
+
+  while (totalNumOfBytesSent < totalNumOfBytesMessage) {
+    int numOfBytesSent =
+      ::send(dataTransferSocket, messageBuffer + totalNumOfBytesSent,
+        numOfBytesLeft, 0);
+    if (numOfBytesSent < 0) {
+      return numOfBytesSent;
+    }
+
+    totalNumOfBytesSent += numOfBytesSent;
+    numOfBytesLeft += numOfBytesSent;
+  }
+
+  return totalNumOfBytesSent;
 }
 
 // See interface (header file).
 int LocRequestMessage::receive(int dataTransferSocket,
   Message *parsedMessage, unsigned int length) {
-  return 1;
+  // Reads the message into a buffer from the data transfer socket
+  char messageBuffer[length];
+  unsigned int totalNumOfBytesMessage = length;
+  unsigned int numOfBytesLeft = totalNumOfBytesMessage;
+  unsigned int totalNumOfBytesReceived = 0;
+
+  while (totalNumOfBytesReceived < totalNumOfBytesMessage) {
+    int numOfBytesReceived =
+      ::recv(dataTransferSocket, messageBuffer + totalNumOfBytesReceived,
+        numOfBytesLeft, 0);
+    if (numOfBytesReceived < 0 || numOfBytesReceived == 0) {
+      return numOfBytesReceived;
+    }
+
+    totalNumOfBytesReceived += numOfBytesReceived;
+    numOfBytesLeft -= numOfBytesReceived;
+  }
+
+  // Parses the remote procedure name from the buffer
+  char *messageBufferPointer = messageBuffer;
+  char nameBuffer[MAX_LENGTH_NAME + 1] = {'\0'};
+  memcpy(nameBuffer, messageBufferPointer, MAX_LENGTH_NAME);
+  string name = string(nameBuffer);
+  messageBufferPointer += MAX_LENGTH_NAME;
+
+  // Parses the argument types from the buffer
+  vector<int> argTypesBuffer;
+  while (true) {
+    char argTypeBuffer[MAX_LENGTH_ARG_TYPE] = {'\0'};
+    memcpy(argTypeBuffer, messageBufferPointer, MAX_LENGTH_ARG_TYPE);
+    int argType = *((int *) argTypeBuffer);
+    argTypesBuffer.push_back(argType);
+    messageBufferPointer += MAX_LENGTH_ARG_TYPE;
+
+    if (argType == 0) {
+      break;
+    }
+  }
+
+  int *argTypes = new int[argTypesBuffer.size()];
+  for (unsigned int i = 0; i < argTypesBuffer.size(); i++) {
+    argTypes[i] = argTypesBuffer[i];
+  }
+
+  parsedMessage = new LocRequestMessage(name, argTypes);
+  return totalNumOfBytesReceived;
 }
