@@ -10,12 +10,12 @@ TerminateMessage::TerminateMessage()
 TerminateMessage::~TerminateMessage() {} // Destructor
 
 // See interface (header file).
-unsigned int LocFailureMessage::getLength() const {
+unsigned int TerminateMessage::getLength() const {
   return 0;
 }
 
 // See interface (header file).
-int TerminateMessage::send(int dataTransferSocket, unsigned int length) {
+int TerminateMessage::send(int dataTransferSocket) {
   return 1;
 }
 
