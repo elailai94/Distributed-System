@@ -78,7 +78,7 @@ int main() {
    unsigned int port = 80;
    string name = "func";
    int argTypes[3] = {1, 2, 3};
-   Message msg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
+   RegisterRequestMessage msg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
    Segment seg = Segment(msg.getLength(), MSG_TYPE_EXECUTE_REQUEST, &msg);
    seg.send(clientSocket);
 
