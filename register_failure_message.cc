@@ -72,7 +72,7 @@ int RegisterFailureMessage::receive(int dataTransferSocket,
   // Parses the reason code from the buffer
   char reasonCodeBuffer[MAX_LENGTH_REASON_CODE] = {'\0'};
   memcpy(reasonCodeBuffer, messageBuffer, MAX_LENGTH_REASON_CODE);
-  unsigned int reasonCode = *((int *) reasonCodeBuffer);
+  int reasonCode = *((int *) reasonCodeBuffer);
 
   parsedMessage = new RegisterFailureMessage(reasonCode);
   return totalNumOfBytesReceived;
