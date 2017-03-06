@@ -1,7 +1,6 @@
-#include <string.h>
-
 #include <iostream>
 #include <sstream>
+#include <string>
 
 #include <netinet/in.h>
 #include <unistd.h>
@@ -15,7 +14,7 @@
 #include <map>
 
 #include <netdb.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "segment.h"
 #include "message.h"
@@ -25,11 +24,10 @@
 #include "loc_success_message.h"
 #include "loc_failure_message.h"
 #include "loc_request_message.h"
+#include "terminate_message.h"
 
 #include "constants.h"
 #include "helper_function.h"
-#include "message_types.h"
-#include "message_results.h"
 
 using namespace std;
 

@@ -13,7 +13,7 @@
 class Message {
 public:
   Message();              // Constructor
-  virtual ~Message() {}; // Destructor
+  virtual ~Message() = 0; // Destructor
 
   // Calculates the length of the message
   virtual unsigned int getLength() const = 0;

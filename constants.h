@@ -2,7 +2,6 @@
 #define __CONSTANTS_H__
 
 #include <string>
-#include <vector>
 
 // Constants used for binder.cc
 struct server_info {
@@ -29,9 +28,7 @@ struct server_function_info {
 };
 
 struct ps_compare {
-
   	bool operator() (const procedure_signature& lhs, const procedure_signature& rhs) const;
-
 };
 
 #endif

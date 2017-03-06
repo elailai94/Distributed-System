@@ -14,7 +14,7 @@
 #include <map>
 
 #include <netdb.h>
-#include <stdlib.h>
+#include <cstdlib>
 
 #include "segment.h"
 #include "message.h"
@@ -27,12 +27,11 @@
 #include "register_success_message.h"
 #include "register_failure_message.h"
 #include "register_request_message.h"
+#include "terminate_message.h"
 
 #include "rpc.h"
 #include "constants.h"
 #include "helper_function.h"
-#include "message_types.h"
-#include "message_results.h"
 
 using namespace std;
 
@@ -180,7 +179,7 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
     status = Segment::receive(binder_sock, segment);
 
     if(segment->getType() == MSG_TYPE_REGISTER_SUCCESS){
-      
+
       // IF NEEDED
       //Message * cast = segment->getMessage();
       //RegisterSuccessMessage * rsm = dynamic_cast<RegisterSuccessMessage*>(cast);
