@@ -1,9 +1,7 @@
-#include <cstdlib>
 #include <cstring>
 #include <vector>
-#include <netinet/in.h>
-#include <sys/param.h>
 #include <sys/socket.h>
+
 #include "register_request_message.h"
 
 using namespace std;
@@ -129,7 +127,7 @@ int RegisterRequestMessage::receive(int dataTransferSocket,
   // Parses the port from the buffer
   char portBuffer[MAX_LENGTH_PORT] = {'\0'};
   memcpy(portBuffer, messageBuffer, MAX_LENGTH_PORT);
-  unsigned int port = *((int *) portBuffer);
+  unsigned int port = *((unsigned int *) portBuffer);
   messageBufferPointer += MAX_LENGTH_PORT;
 
   // Parses the remote procedure name from the buffer
@@ -159,5 +157,5 @@ int RegisterRequestMessage::receive(int dataTransferSocket,
 
   parsedMessage =
     new RegisterRequestMessage(serverIdentifier, port, name, argTypes);
-  return length;
+  return totalNumOfBytesReceived;
 }
