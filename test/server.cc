@@ -150,8 +150,8 @@ int main() {
 
             RegisterRequestMessage *msg = dynamic_cast<RegisterRequestMessage *>(parsedSegment->getMessage());
 
-            cout << msg->getServerIdentifier() << endl;
-            cout << msg->getPort() << endl;
+            cout << msg->getLength() << endl;
+            //cout << msg->getPort() << endl;
 
          } // if
       } // for

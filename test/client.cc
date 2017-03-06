@@ -79,6 +79,10 @@ int main() {
    string name = "func";
    int argTypes[3] = {1, 2, 3};
    RegisterRequestMessage msg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
+   cout << "Server Identifier: " << msg.getServerIdentifier() << endl;
+   cout << "Port: " << msg.getPort() << endl;
+   cout << "Name: " << msg.getName() << endl;
+   cout << "Got here" << endl;
    Segment seg = Segment(msg.getLength(), MSG_TYPE_EXECUTE_REQUEST, &msg);
    seg.send(clientSocket);
 
