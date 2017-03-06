@@ -26,7 +26,7 @@ RegisterRequestMessage::RegisterRequestMessage(string serverIdentifier,
 } //  Constructor
 
 // See interface (header file).
-virtual RegisterRequestMessage::~RegisterRequestMessage() {} // Destructor
+RegisterRequestMessage::~RegisterRequestMessage() {} // Destructor
 
 // See interface (header file).
 string RegisterRequestMessage::getServerIdentifier() const {
