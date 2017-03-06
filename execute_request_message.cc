@@ -104,13 +104,6 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
     numOfBytesLeft -= numOfBytesReceived;
   }
 
-  // Parses the server identifier from the buffer
-  char *messageBufferPointer = messageBuffer;
-  char serverIdentifierBuffer[MAX_LENGTH_SERVER_IDENTIFIER + 1] = {'\0'};
-  memcpy(serverIdentifierBuffer, messageBuffer, MAX_LENGTH_SERVER_IDENTIFIER);
-  string serverIdentifier = string(serverIdentifierBuffer);
-  messageBufferPointer += MAX_LENGTH_SERVER_IDENTIFIER;
-
   // Parses the remote procedure name from the buffer
   char nameBuffer[MAX_LENGTH_NAME + 1] = {'\0'};
   memcpy(nameBuffer, messageBuffer, MAX_LENGTH_NAME);
@@ -136,14 +129,13 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
     argTypes[i] = argTypesBuffer[i];
   }
 
-
   // Parses the argument types from the buffer
   vector<int> argsBuffer;
   while (true) {
     char argBuffer[MAX_LENGTH_ARG] = {'\0'};
     memcpy(argBuffer, messageBufferPointer, MAX_LENGTH_ARG);
     int arg = *((int *) argBuffer);
-    argsBuffer.push_back(argType);
+    argsBuffer.push_back(arg);
     messageBufferPointer += MAX_LENGTH_ARG;
 
     if (argType == 0) {
