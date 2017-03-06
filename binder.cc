@@ -15,6 +15,7 @@
 
 #include <netdb.h>
 #include <cstdlib>
+#include <cstring>
 
 #include "segment.h"
 #include "message.h"
