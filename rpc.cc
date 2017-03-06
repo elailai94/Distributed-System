@@ -86,9 +86,9 @@ int sendExecute(int sock, string name, int* argTypes, void**args){
     int status = execute_request->send(sock);
     int returnVal;
 
-	string retName;
-	int* retArgTypes;
-	void** retArgs;
+  	string retName;
+  	int* retArgTypes;
+  	void** retArgs;
 
     if(status == 0){
 		Segment * segment = 0;
@@ -96,12 +96,12 @@ int sendExecute(int sock, string name, int* argTypes, void**args){
 
         if(segment->getType() == MSG_TYPE_EXECUTE_SUCCESS) {
 
-			Message * cast = segment->getMessage();
-			ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(cast);
+    			Message * cast = segment->getMessage();
+    	 		ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(cast);
 
-			retName = esm->getName();
-			retArgTypes = esm->getArgTypes();
-			retArgs = esm->getArgs();
+    			retName = esm->getName();
+    			retArgTypes = esm->getArgTypes();
+    			retArgs = esm->getArgs();
 
 			if(retName == name){
 				//extractArgumentsMessage(replyMessageP, argTypes, args, argTypesLength, false);
@@ -111,8 +111,8 @@ int sendExecute(int sock, string name, int* argTypes, void**args){
 			}
 
         }else if(segment->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
-			Message * cast = segment->getMessage();
-			ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
+    			Message * cast = segment->getMessage();
+    			ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
         	returnVal = efm->getReasonCode();
         }
 
@@ -142,7 +142,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	/**Server stuff **/
 	if(binder_status == 0){
 		Segment * segment = 0;
-        status = Segment::receive(binder_sock, segment);
+    status = Segment::receive(binder_sock, segment);
 
 		if(segment->getType() == MSG_TYPE_LOC_SUCCESS){ //'LOC_REQUEST'
     		Message * cast = segment->getMessage();
@@ -157,7 +157,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	  	}
 	}
 
-    int server_sock = createConnection(serverAddress, serverPort);
+  int server_sock = createConnection(serverAddress, serverPort);
 	int server_status = sendExecute(server_sock, string(name), argTypes, args);
 
 	return server_status;
@@ -170,8 +170,6 @@ int rpcCall(char * name, int * argTypes, void ** args) {
   // CONNECT TO BINDER
 
 int rpcRegister(char * name, int *argTypes, skeleton f){
-
-  int binder_sock = connectToBinder();
 
   RegisterRequestMessage * request_message = new RegisterRequestMessage(serverIdentifier, port, name, argTypes);
   int status = request_message->send(binder_sock);
@@ -201,7 +199,6 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
     //Error
     return 99;
   }
-
 
   return 1;
 }
@@ -314,11 +311,6 @@ int rpcInit(void){
 
   status = getaddrinfo(NULL, "0", &hints, &servinfo);
 
-  if (status != 0) {
-    fprintf(stderr, "getaddrinfo error: %s\n", gai_strerror(status));
-    return 0;
-  }
-
   p = servinfo;
   sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
 
@@ -339,6 +331,8 @@ int rpcInit(void){
 
   serverIdentifier = hostname;
   port =  ntohs(sin.sin_port);
+
+  int binder_sock = connectToBinder();
 
   return 0;
 }
