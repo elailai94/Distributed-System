@@ -19,6 +19,6 @@ int TerminateMessage::send(int dataTransferSocket) {
 
 // See interface (header file).
 int TerminateMessage::receive(int dataTransferSocket,
-  Message *parsedMessage, unsigned int length) {
+  Message *&parsedMessage, unsigned int length) {
   return 0;
 }
