@@ -63,7 +63,7 @@ int LocSuccessMessage::send(int dataTransferSocket) {
 
 // See interface (header file).
 int LocSuccessMessage::receive(int dataTransferSocket,
-  Message *parsedMessage, unsigned int length) {
+  Message *&parsedMessage, unsigned int length) {
   // Reads the message into a buffer from the data transfer socket
   char messageBuffer[length];
   unsigned int totalNumOfBytesMessage = length;

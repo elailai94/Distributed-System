@@ -59,7 +59,7 @@ int Segment::send(int dataTransferSocket) {
 }
 
 // See interface (header file).
-int Segment::receive(int dataTransferSocket, Segment *parsedSegment) {
+int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
   // Reads the length of the message from the data transfer socket
   unsigned int length = 0;
   int result = ::recv(dataTransferSocket, &length, sizeof(length), 0);
