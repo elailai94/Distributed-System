@@ -71,6 +71,7 @@ int main() {
    // Checks the number and formats of the environment variables passed
    checkEnvironmentVariables();
 
+
    // Sets up the client socket
    int clientSocket = setUpClientSocket();
 
@@ -82,10 +83,14 @@ int main() {
    cout << "Server Identifier: " << msg.getServerIdentifier() << endl;
    cout << "Port: " << msg.getPort() << endl;
    cout << "Name: " << msg.getName() << endl;
+   cout << "Name Length: " << msg.getName().length() << endl;
    cout << "Got here" << endl;
-   Segment seg = Segment(msg.getLength(), MSG_TYPE_EXECUTE_REQUEST, &msg);
+   Segment seg = Segment(msg.getLength(), MSG_TYPE_REGISTER_REQUEST, &msg);
    seg.send(clientSocket);
 
    // Closes the client socket
+   
+   sleep(2);
+   
    close(clientSocket);
 } // main

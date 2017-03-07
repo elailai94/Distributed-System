@@ -112,15 +112,24 @@ int main() {
 
             if (parsedSegment != 0) {
                Message *msg = parsedSegment->getMessage();
-               if (msg != 0) {
+              	  cout << "Segment type is: " << parsedSegment->getType() << endl;
+		if (msg != 0) {
                   cout << "Message isn't null...." << endl;
                   RegisterRequestMessage *rrm = static_cast<RegisterRequestMessage *>(msg);
-                  if (rrm != 0) {
+                	 
+		 if (rrm != 0) {
                      cout << "RRM isn't null..." << endl;
-                     //cout << "Server Identifier: " << rrm->getServerIdentifier() << endl;
-                     //cout << "Port: " << rrm->getPort() << endl;
-                     //cout << "Name: " << rrm->getName() << endl;
-                  }
+		     cout << "Server Identifier: " << rrm->getServerIdentifier() << endl;
+                	
+		     int tempInt = rrm->getPort(); 
+		     cout << "Port: " << tempInt << endl;
+
+                     string rrmName  = rrm->getName();
+		     int strLen = rrmName.length();
+
+		     cout << "Name: " << rrmName << endl;
+                     cout << "Name Length: " << strLen << endl;
+		}
                }
                //cout << parsedSegment->getLength() << endl;
                //cout << parsedSegment->getType() << endl;
