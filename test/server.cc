@@ -129,6 +129,7 @@ int main() {
 
 		     cout << "Name: " << rrmName << endl;
                      cout << "Name Length: " << strLen << endl;
+		     cout << "ArgTypes: " << *(rrm->getArgTypes()) << ", " << *(rrm->getArgTypes()+1) << ", " << *(rrm->getArgTypes()+2)  << ", " << *(rrm->getArgTypes()+3) << endl;
 		}
                }
                //cout << parsedSegment->getLength() << endl;
