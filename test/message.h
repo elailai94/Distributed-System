@@ -28,7 +28,7 @@ public:
    * Creates a message to receive data and reads into it from the data
    * transfer socket
    */
-  static int receive(int dataTransferSocket, Message *parsedMessage,
+  static int receive(int dataTransferSocket, Message *&parsedMessage,
     unsigned int length);
 };
 
