@@ -85,37 +85,12 @@ int setUpWelcomeSocket() {
 } // setUpWelcomeSocket
 
 int main() {
-   fd_set allSockets;
-   fd_set readSockets;
-
-   // Clears all entries from the all sockets set and the read
-   // sockets set
-   FD_ZERO(&allSockets);
-   FD_ZERO(&readSockets);
-   
    // Sets up the welcome socket, adds it to the all sockets set and
    // sets it as the maximum socket so far
    int welcomeSocket = setUpWelcomeSocket();
-   FD_SET(welcomeSocket, &allSockets);
-   int maxSocket = welcomeSocket;
 
-   while (true) {
-      readSockets = allSockets;
-
-      // Checks if some of the sockets are ready to be read from
-      int result = select(maxSocket + 1, &readSockets, 0, 0, 0);
-      if (result < 0) {
-         continue;
-      } // if
-
-      for (int i = 0; i <= maxSocket; ++i) {
-         if (!FD_ISSET(i, &readSockets)) {
-            continue;
-         } // if
-            
-         if (i == welcomeSocket) {
-            
-            struct sockaddr clientAddress;
+   while (true) {            
+      struct sockaddr clientAddress;
             socklen_t clientAddressLength = sizeof(clientAddress);
 
             // Creates the connection socket when a connection is made
@@ -126,35 +101,34 @@ int main() {
                continue;
             } // if
 
-            // Adds the connection socket to the all sockets set
-            FD_SET(connectionSocket, &allSockets);
-
-            // Sets the connection socket as the maximum socket so far
-            // if necessary
-            if (connectionSocket > maxSocket) {
-               maxSocket = connectionSocket;
-            } // if
-
-         } else {
-
             Segment *parsedSegment = 0;
-            result = 0;
-            result = Segment::receive(i, parsedSegment);
+            int result = 0;
+            result = Segment::receive(connectionSocket, parsedSegment);
             if (result < 0) {
                // Closes the connection socket and removes it from the
                // all sockets set
-               close(i);
-               FD_CLR(i, &allSockets);
-               continue;
+               close(connectionSocket);
             } // if
 
-            RegisterRequestMessage *msg = dynamic_cast<RegisterRequestMessage *>(parsedSegment->getMessage());
+            if (parsedSegment != 0) {
+               Message *msg = parsedSegment->getMessage();
+               if (msg != 0) {
+                  cout << "Message isn't null...." << endl;
+                  RegisterRequestMessage *rrm = static_cast<RegisterRequestMessage *>(msg);
+                  if (rrm != 0) {
+                     cout << "RRM isn't null..." << endl;
+                     //cout << "Server Identifier: " << rrm->getServerIdentifier() << endl;
+                     //cout << "Port: " << rrm->getPort() << endl;
+                     //cout << "Name: " << rrm->getName() << endl;
+                  }
+               }
+               //cout << parsedSegment->getLength() << endl;
+               //cout << parsedSegment->getType() << endl;
+            }
+            //RegisterRequestMessage *msg = dynamic_cast<RegisterRequestMessage *>(parsedSegment->getMessage());
 
-            cout << msg->getLength() << endl;
+            //cout << msg->getLength() << endl;
             //cout << msg->getPort() << endl;
-
-         } // if
-      } // for
    } // while
 
    // Closes the welcome socket
