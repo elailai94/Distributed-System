@@ -111,7 +111,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
   char *messageBufferPointer = messageBuffer;
   char nameBuffer[MAX_LENGTH_NAME + 1] = {'\0'};
   memcpy(nameBuffer, messageBufferPointer, MAX_LENGTH_NAME);
-  string name = string(nameBuffer);
+  string name(nameBuffer);
   messageBufferPointer += MAX_LENGTH_NAME;
 
   // Parses the argument types from the buffer
