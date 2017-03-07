@@ -115,7 +115,7 @@ int main() {
               	  cout << "Segment type is: " << parsedSegment->getType() << endl;
 		if (msg != 0) {
                   cout << "Message isn't null...." << endl;
-                  RegisterRequestMessage *rrm = static_cast<RegisterRequestMessage *>(msg);
+                  RegisterRequestMessage *rrm = dynamic_cast<RegisterRequestMessage *>(msg);
                 	 
 		 if (rrm != 0) {
                      cout << "RRM isn't null..." << endl;
