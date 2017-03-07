@@ -87,7 +87,7 @@ int LocSuccessMessage::receive(int dataTransferSocket,
   char serverIdentifierBuffer[MAX_LENGTH_SERVER_IDENTIFIER + 1] = {'\0'};
   memcpy(serverIdentifierBuffer, messageBufferPointer,
     MAX_LENGTH_SERVER_IDENTIFIER);
-  string serverIdentifier = string(serverIdentifierBuffer);
+  string serverIdentifier(serverIdentifierBuffer);
   messageBufferPointer += MAX_LENGTH_SERVER_IDENTIFIER;
 
   // Parses the port from the buffer

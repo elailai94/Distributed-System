@@ -1,5 +1,5 @@
 #include <sys/socket.h>
-#include <iostream>
+
 #include "segment.h"
 #include "message.h"
 #include "register_request_message.h"
@@ -12,31 +12,26 @@
 #include "execute_success_message.h"
 #include "execute_failure_message.h"
 #include "terminate_message.h"
-using namespace std;
+
 // See interface (header file).
 Segment::Segment(unsigned int length, unsigned int type, Message *message)
-  : length(length), type(type), message(message) {
-  cout << "Length in constructor: " << this->length << endl;
-  cout << "Type in constructor: " << this->type << endl;
-} // Constructor
+  : length(length), type(type), message(message) {} // Constructor
 
 // See interface (header file).
 Segment::~Segment() {} // Destructor
 
 // See interface (header file).
-unsigned int Segment::getLength() {
-  cout << "Length in getter: " << this->length << endl;
+unsigned int Segment::getLength() const {
   return length;
 }
 
 // See interface (header file).
-unsigned int Segment::getType() {
-  cout << "Type in getter: " << this->type << endl;
+unsigned int Segment::getType() const {
   return type;
 }
 
 // See interface (header file).
-Message *Segment::getMessage() {
+Message *Segment::getMessage() const {
   return message;
 }
 
