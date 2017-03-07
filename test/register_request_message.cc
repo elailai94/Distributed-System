@@ -1,7 +1,7 @@
 #include <cstring>
 #include <vector>
 #include <sys/socket.h>
-
+#include <iostream>
 #include "register_request_message.h"
 
 using namespace std;
@@ -124,19 +124,19 @@ int RegisterRequestMessage::receive(int dataTransferSocket,
     MAX_LENGTH_SERVER_IDENTIFIER);
   string serverIdentifier = string(serverIdentifierBuffer);
   messageBufferPointer += MAX_LENGTH_SERVER_IDENTIFIER;
-
+  cout << "Server Identifier: " << serverIdentifier << endl;
   // Parses the port from the buffer
   char portBuffer[MAX_LENGTH_PORT] = {'\0'};
   memcpy(portBuffer, messageBufferPointer, MAX_LENGTH_PORT);
   unsigned int port = *((unsigned int *) portBuffer);
   messageBufferPointer += MAX_LENGTH_PORT;
-
+  cout << "Port : " << port << endl;
   // Parses the remote procedure name from the buffer
   char nameBuffer[MAX_LENGTH_NAME + 1] = {'\0'};
   memcpy(nameBuffer, messageBufferPointer, MAX_LENGTH_NAME);
   string name = string(nameBuffer);
   messageBufferPointer += MAX_LENGTH_NAME;
-
+  cout << "Name: " << name << endl;
   // Parses the argument types from the buffer
   vector<int> argTypesBuffer;
   while (true) {
@@ -158,5 +158,10 @@ int RegisterRequestMessage::receive(int dataTransferSocket,
 
   parsedMessage =
     new RegisterRequestMessage(serverIdentifier, port, name, argTypes);
+  RegisterRequestMessage *castMessage = dynamic_cast<RegisterRequestMessage *>(parsedMessage);
+  cout << castMessage << endl;
+  cout << castMessage->getServerIdentifier() << endl;
+  cout << castMessage->getPort() << endl;
+  cout << castMessage->getName() << endl;
   return totalNumOfBytesReceived;
 }

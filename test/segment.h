@@ -57,13 +57,13 @@ public:
   ~Segment();          // Destructor
 
   // Returns the length of the message
-  unsigned int getLength() const;
+  unsigned int getLength();
 
   // Returns the type of the message
-  unsigned int getType() const;
+  unsigned int getType();
 
   // Returns the message
-  Message *getMessage() const;
+  Message *getMessage();
 
   /*
    * Creates a segment to send data and writes it out to the data
