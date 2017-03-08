@@ -97,3 +97,14 @@ string toString(unsigned int number) {
   oss << number;
   return oss.str();
 }
+
+// See interface (header file).
+unsigned int toUnsignedInteger(string text) {
+  ostringstream oss;
+  oss << text;
+
+  unsigned int number = 0;
+  oss >> number;
+
+  return number;
+}

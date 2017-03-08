@@ -18,4 +18,10 @@ std::string getHostAddress();
 // Returns the port number of a socket
 int getSocketPort(int socket);
 
+// Returns the address of the binder
+std::string getBinderAddress();
+
+// Returns the port number of the binder
+unsigned int getBinderPort();
+
 #endif
