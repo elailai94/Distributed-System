@@ -115,7 +115,7 @@ void location_request_handler(LocRequestMessage * message, int sock){
       exist = true;
 
       LocSuccessMessage locSuccessMsg = LocSuccessMessage((*it)->si->server_identifier, (*it)->si->port);
-      Segment locSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_LOC_SUCCESS, &locSuccessMsg);
+      Segment locSuccessSeg = Segment(locSuccessSeg.getLength(), MSG_TYPE_LOC_SUCCESS, &locSuccessMsg);
       locSuccessSeg.send(sock);
 
       //When we have identified the correct procedure_signature use splice and move that service to the end
@@ -127,8 +127,8 @@ void location_request_handler(LocRequestMessage * message, int sock){
   if(!exist){
     int reasoncode = -5; // Need actual reasoncode
     LocFailureMessage locFailMsg = LocFailureMessage(reasoncode);
-    Segment regFailSeg = Segment(locFailMsg.getLength(), MSG_TYPE_LOC_FAILURE, &locFailMsg);
-    regFailSeg.send(sock);  
+    Segment locFailSeg = Segment(locFailMsg.getLength(), MSG_TYPE_LOC_FAILURE, &locFailMsg);
+    locFailSeg.send(sock);  
   }
 }
 
