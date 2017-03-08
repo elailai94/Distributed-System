@@ -320,6 +320,6 @@ int rpcTerminate() {
 	TerminateMessage messageToBinder = TerminateMessage();
 	Segment segmentToBinder =
 	  Segment(messageToBinder.getLength(), MSG_TYPE_TERMINATE, &messageToBinder);
-	segment.send(binderSocket);
+	segmentToBinder.send(binderSocket);
 	return 0;
 }
