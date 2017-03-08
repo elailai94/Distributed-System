@@ -95,7 +95,7 @@ int *copyArgTypes(int *argTypes) {
 string toString(unsigned int number) {
   stringstream ss;
   ss << number;
-  return oss.str();
+  return ss.str();
 }
 
 // See interface (header file).
