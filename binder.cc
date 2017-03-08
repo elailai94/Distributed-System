@@ -224,7 +224,12 @@ int main(){
 
         for (vector<int>::iterator it = myConnections.begin(); it != myConnections.end(); ++it) {
           int tempConnection = *it;
+
+            cout << "Socket iterator" << endl;
+
           if (FD_ISSET(tempConnection, &readfds)) {
+
+            cout << "We in here" << endl;
 
             Segment * segment = 0;
             status = Segment::receive(tempConnection, segment);

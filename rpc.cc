@@ -58,11 +58,13 @@ int rpcInit(){
 	setUpToListen(welcomeSocket);
 
 	// Opens a connection to the binder
+
 	binderSocket = createSocket();
 	string binderAddress = getBinderAddress();
 	unsigned int binderPort = getBinderPort();
 	setUpToConnect(binderSocket, binderAddress, binderPort);
   connectedToBinder = true;
+  cout << "binderSocket: " << binderSocket << endl;
 
   return 0;
 }
@@ -166,6 +168,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 int rpcRegister(char * name, int *argTypes, skeleton f){
 
   RegisterRequestMessage regReqMsg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
+  cout << "rpcRegister: " << name << endl;  
 
   /*
   We should get seg.send to give us some feed back maybe
@@ -174,7 +177,7 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
 
   Segment regReqSeg = Segment(regReqMsg.getLength(), MSG_TYPE_REGISTER_REQUEST, &regReqMsg);
   int status = regReqSeg.send(binderSocket);
-
+  cout << "rpcRegister Status: " << status << endl;
 
   if(status == 0){
     //Success
