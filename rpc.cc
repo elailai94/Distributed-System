@@ -46,7 +46,7 @@ static map<procedure_signature, skeleton, ps_compare> proc_skele_dict;
 
 string serverIdentifier;
 unsigned int port;
-int sock;
+int welcomeSocket;
 
 
 int connectToBinder(){
@@ -242,9 +242,9 @@ int rpcExecute(void){
   while(true){
     //CONNECTIONS VECTOR
     FD_ZERO(&readfds);
-    FD_SET(sock, &readfds);
+    FD_SET(welcomeSocket, &readfds);
 
-    n = sock;
+    n = welcomeSocket;
 
     for (vector<int>::iterator it = myConnections.begin();it != myConnections.end(); ++it) {
       int connection = *it;
@@ -262,9 +262,9 @@ int rpcExecute(void){
       cerr << "ERROR: select failed." << endl;
     } else {
 
-      if (FD_ISSET(sock, &readfds)) {
+      if (FD_ISSET(welcomeSocket, &readfds)) {
         socklen_t addr_size = sizeof their_addr;
-        int new_sock = accept(sock, (struct sockaddr*)&their_addr, &addr_size);
+        int new_sock = accept(welcomeSocket, (struct sockaddr*)&their_addr, &addr_size);
 
         if (new_sock < 0) {
           cerr << "ERROR: while accepting connection" << endl;
@@ -325,4 +325,12 @@ int rpcExecute(void){
 
   freeaddrinfo(servinfo);
   return 0;
+}
+
+int rpcCacheCall() {
+	return 0;
+}
+
+int rpcTerminate() {
+	return 0;
 }
