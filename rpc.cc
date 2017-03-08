@@ -94,8 +94,10 @@ int rpcInit(){
 
 int sendExecute(int sock, string name, int* argTypes, void**args){
 
-  ExecuteRequestMessage *execute_request = new ExecuteRequestMessage(name, argTypes, args);
-  int status = execute_request->send(sock);
+  ExecuteRequestMessage exeReqMsg = ExecuteRequestMessage(name, argTypes, args);
+  Segment exeReqSeg = Segment(exeReqMsg.getLength(), MSG_TYPE_EXECUTE_REQUEST, &exeReqMsg);
+  int status =  exeReqSeg.send(sock);
+
   int returnVal;
 
 	string retName;
@@ -147,9 +149,11 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	}
 	//do something with returnVal
 
-	LocRequestMessage * loc_request = new LocRequestMessage(name, argTypes);
-	int binder_status = loc_request->send(binder_sock);
-  	//maybe error check with binder_status
+  LocRequestMessage locReqMsg = LocRequestMessage(name, argTypes);
+  Segment locReqSeg = Segment(locReqMsg.getLength(), MSG_TYPE_LOC_REQUEST, &locReqMsg);
+  int binder_status = locReqSeg.send(clientSocket);
+
+	//maybe error check with binder_status
 
 	/**Server stuff **/
 	if(binder_status == 0){
@@ -182,15 +186,15 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 
 int rpcRegister(char * name, int *argTypes, skeleton f){
 
-  RegisterRequestMessage request_message = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
-
-  /*
-  We should get seg.send to give us some feed back maybe
-  int status = request_message->send(binder_sock);
+  RegisterRequestMessage regReqMsg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
+  
+  /* 
+  We should get seg.send to give us some feed back maybe 
+  int status = regReqMsg->send(binder_sock);
   */
-
-  Segment seg = Segment(request_message.getLength(), MSG_TYPE_REGISTER_REQUEST, &request_message);
-  int status = seg.send(binder_sock);
+  
+  Segment regReqSeg = Segment(regReqMsg.getLength(), MSG_TYPE_REGISTER_REQUEST, &regReqMsg);
+  int status = regReqSeg.send(binder_sock);
 
 
   if(status == 0){
@@ -290,11 +294,14 @@ int rpcExecute(void){
               int result = skel(eqm->getArgTypes(), eqm->getArgs());
 
               if(result == 0 ){
-                ExecuteSuccessMessage * execute_success = new ExecuteSuccessMessage(eqm->getName(), eqm->getArgTypes(), eqm->getArgs());
-                status = execute_success->send(sock);
+                ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(eqm->getName(), eqm->getArgTypes(), eqm->getArgs());
+                Segment exeSuccessSeg = Segment(exeSuccessMsg.getLength(), MSG_TYPE_EXECUTE_SUCCESS, &exeSuccessMsg);
+                status = exeSuccessSeg.send(sock);
+
               }else{
-                ExecuteFailureMessage * execute_failure = new ExecuteFailureMessage(reasonCode);
-                status = execute_failure->send(sock);
+                ExecuteFailureMessage exeFailMsg = ExecuteFailureMessage(reasonCode);
+                Segment exeFailSeg = Segment(exeFailMsg.getLength(), MSG_TYPE_EXECUTE_FAILURE, &exeFailMsg);
+                status = exeFailSeg.send(sock);
               }
             }
 
