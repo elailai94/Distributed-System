@@ -68,9 +68,9 @@ int connectToBinder(){
 
   unsigned int portInt = atoi(binderPortString);
 
-  binder_sock = createConnection(string(binderAddressString), portInt);
+  binderSocket = createConnection(string(binderAddressString), portInt);
 
-  if (binder_sock < 0) {
+  if (binderSocket < 0) {
     return 3;
   }else{
   	connectedToBinder = true;
@@ -87,7 +87,7 @@ int rpcInit(){
 	setUpToListen(welcomeSocket);
 
 	// Opens a connection to the binder
-  int binder_sock = connectToBinder();
+  int binderSocket = connectToBinder();
 
   return 0;
 }
@@ -158,7 +158,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	/**Server stuff **/
 	if(binder_status == 0){
 		Segment * segment = 0;
-    status = Segment::receive(binder_sock, segment);
+    status = Segment::receive(binderSocket, segment);
 
 		if(segment->getType() == MSG_TYPE_LOC_SUCCESS){ //'LOC_REQUEST'
   		Message * cast = segment->getMessage();
@@ -187,21 +187,21 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 int rpcRegister(char * name, int *argTypes, skeleton f){
 
   RegisterRequestMessage regReqMsg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
-  
-  /* 
-  We should get seg.send to give us some feed back maybe 
-  int status = regReqMsg->send(binder_sock);
+
+  /*
+  We should get seg.send to give us some feed back maybe
+  int status = regReqMsg->send(binderSocket);
   */
-  
+
   Segment regReqSeg = Segment(regReqMsg.getLength(), MSG_TYPE_REGISTER_REQUEST, &regReqMsg);
-  int status = regReqSeg.send(binder_sock);
+  int status = regReqSeg.send(binderSocket);
 
 
   if(status == 0){
     //Success
     Segment *parsedSegment = 0;
     int result = 0;
-    segment = Segment::receive(binder_sock, parsedSegment);
+    segment = Segment::receive(binderSocket, parsedSegment);
 
 
     if(segment->getType() == MSG_TYPE_REGISTER_SUCCESS){
