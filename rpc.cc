@@ -55,52 +55,52 @@ int connectToBinder(){
 	}
 
 	char * binderAddressString = getenv("BINDER_ADDRESS");
-  	char * binderPortString = getenv("BINDER_PORT");
+	char * binderPortString = getenv("BINDER_PORT");
 
-  	if(binderAddressString == NULL){
-        return 1;
-    }
+	if(binderAddressString == NULL){
+    return 1;
+  }
 
-    if(binderPortString == NULL){
-        return 2;
-    }
+  if(binderPortString == NULL){
+    return 2;
+  }
 
-    unsigned int portInt = atoi(binderPortString);
+  unsigned int portInt = atoi(binderPortString);
 
-    binder_sock = createConnection(string(binderAddressString), portInt);
+  binder_sock = createConnection(string(binderAddressString), portInt);
 
-    if (binder_sock < 0) {
-        return 3;
-    }else{
-    	connectedToBinder = true;
-    }
+  if (binder_sock < 0) {
+    return 3;
+  }else{
+  	connectedToBinder = true;
+  }
 
-    return 0;
+  return 0;
 }
 
 
 int sendExecute(int sock, string name, int* argTypes, void**args){
 
-    ExecuteRequestMessage *execute_request = new ExecuteRequestMessage(name, argTypes, args);
-    int status = execute_request->send(sock);
-    int returnVal;
+  ExecuteRequestMessage *execute_request = new ExecuteRequestMessage(name, argTypes, args);
+  int status = execute_request->send(sock);
+  int returnVal;
 
-  	string retName;
-  	int* retArgTypes;
-  	void** retArgs;
+	string retName;
+	int* retArgTypes;
+	void** retArgs;
 
-    if(status == 0){
-		Segment * segment = 0;
-        status = Segment::receive(sock, segment);
+  if(status == 0){
+    Segment * segment = 0;
+    status = Segment::receive(sock, segment);
 
-        if(segment->getType() == MSG_TYPE_EXECUTE_SUCCESS) {
+    if(segment->getType() == MSG_TYPE_EXECUTE_SUCCESS) {
 
-    			Message * cast = segment->getMessage();
-    	 		ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(cast);
+			Message * cast = segment->getMessage();
+	 		ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(cast);
 
-    			retName = esm->getName();
-    			retArgTypes = esm->getArgTypes();
-    			retArgs = esm->getArgs();
+			retName = esm->getName();
+			retArgTypes = esm->getArgTypes();
+			retArgs = esm->getArgs();
 
 			if(retName == name){
 				//extractArgumentsMessage(replyMessageP, argTypes, args, argTypesLength, false);
@@ -109,17 +109,17 @@ int sendExecute(int sock, string name, int* argTypes, void**args){
 				returnVal = 99;
 			}
 
-        }else if(segment->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
-    			Message * cast = segment->getMessage();
-    			ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
-        	returnVal = efm->getReasonCode();
-        }
-
-    }else{ //Something bad happened
-    	returnVal = 99;
+    }else if(segment->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
+  		Message * cast = segment->getMessage();
+			ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
+    	returnVal = efm->getReasonCode();
     }
 
-    return returnVal;
+  }else{ //Something bad happened
+  	returnVal = 99;
+  }
+
+  return returnVal;
 }
 
 
@@ -135,7 +135,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	//do something with returnVal
 
 	LocRequestMessage * loc_request = new LocRequestMessage(name, argTypes);
-  	int binder_status = loc_request->send(binder_sock);
+	int binder_status = loc_request->send(binder_sock);
   	//maybe error check with binder_status
 
 	/**Server stuff **/
@@ -144,11 +144,10 @@ int rpcCall(char * name, int * argTypes, void ** args) {
     status = Segment::receive(binder_sock, segment);
 
 		if(segment->getType() == MSG_TYPE_LOC_SUCCESS){ //'LOC_REQUEST'
-    		Message * cast = segment->getMessage();
-    		LocSuccessMessage * lcm = dynamic_cast<LocSuccessMessage*>(cast);
-
-		  	serverAddress = lcm->getServerIdentifier();
-		  	serverPort = lcm->getPort();
+  		Message * cast = segment->getMessage();
+  		LocSuccessMessage * lcm = dynamic_cast<LocSuccessMessage*>(cast);
+	  	serverAddress = lcm->getServerIdentifier();
+	  	serverPort = lcm->getPort();
 
 	  	}else if(segment->getType() == MSG_TYPE_LOC_FAILURE){
 			//something bad happens
