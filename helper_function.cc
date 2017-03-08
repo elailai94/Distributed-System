@@ -22,7 +22,6 @@
 
 using namespace std;
 
-
 int createConnection(string address, unsigned int port){
 
   string data;
@@ -75,7 +74,7 @@ int findLenOfArgTypes(int * array){
 
 int *copyArgTypes(int *argTypes) {
     unsigned int argTypesLength = 0;
-    
+
     while (argTypes[argTypesLength]){
       argTypesLength++;
     }
@@ -92,3 +91,9 @@ int *copyArgTypes(int *argTypes) {
     return memArgTypes;
 }
 
+// See interface (header file).
+string toString(unsigned int number) {
+  ostringstream oss;
+  oss << number;
+  return oss.str();
+}

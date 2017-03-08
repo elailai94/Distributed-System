@@ -78,6 +78,7 @@ int connectToBinder(){
   return 0;
 }
 
+// See interface (header file).
 int rpcInit(){
   int status;
   struct addrinfo hints;

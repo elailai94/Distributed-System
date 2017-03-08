@@ -6,4 +6,7 @@ bool compareArr(const int *array1, const int *array2);
 int findLenOfArgTypes(int *array);
 int *copyArgTypes(int argTypes[]);
 
+// Converts a number to a string
+std::string toString(unsigned int number);
+
 #endif
