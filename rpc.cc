@@ -83,6 +83,8 @@ int connectToBinder(){
 int rpcInit(){
 	// Creates a connection socket to be used for accepting connections
 	// from clients
+  cout << "rpcInit" << endl;
+
 	welcomeSocket = createSocket();
 	setUpToListen(welcomeSocket);
 
@@ -238,6 +240,9 @@ int rpcExecute(void){
   int n;
   int status;
   struct sockaddr_storage their_addr;
+
+  cout << "rpcExecute" << endl;
+
 
   while(true){
     //CONNECTIONS VECTOR

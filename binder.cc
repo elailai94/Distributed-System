@@ -50,10 +50,12 @@ IF FUNCTION EXISTS IN ROUND ROBIN DELETE OLD REPLACE WITH NEW (where)
 
 
 void registration_request_handler(RegisterRequestMessage * message, int sock){
-	const char * name = message->getName().c_str();
+  const char * name = message->getName().c_str();
   int * argTypes = message->getArgTypes();
   string server_identifier = message->getServerIdentifier();
   int port = message->getPort();
+
+  cout << "We are trying to register: " << name << endl;
 
   procedure_signature key(name, argTypes);
 
