@@ -28,6 +28,7 @@
 #include "terminate_message.h"
 
 #include "constants.h"
+#include "network.h"
 #include "helper_function.h"
 
 using namespace std;
@@ -130,7 +131,7 @@ void location_request_handler(LocRequestMessage * message, int sock){
     int reasoncode = -5; // Need actual reasoncode
     LocFailureMessage locFailMsg = LocFailureMessage(reasoncode);
     Segment locFailSeg = Segment(locFailMsg.getLength(), MSG_TYPE_LOC_FAILURE, &locFailMsg);
-    locFailSeg.send(sock);  
+    locFailSeg.send(sock);
   }
 }
 
@@ -139,38 +140,17 @@ int request_handler(Segment * segment, int sock){
   if(segment->getType() == MSG_TYPE_REGISTER_REQUEST){ //'LOC_REQUEST'
     Message * cast1 = segment->getMessage();
     RegisterRequestMessage * rrm = dynamic_cast<RegisterRequestMessage*>(cast1);
-   
+
     registration_request_handler(rrm, sock);
 
   }else if (segment->getType() == MSG_TYPE_LOC_REQUEST){ //'REGISTER'
     Message * cast2 = segment->getMessage();
     LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(cast2);
-   
+
     location_request_handler(lqm, sock);
   }
 
 	return retval;
-}
-
-// Returns the binder address
-string getBinderAddress() {
-   char hostname[MAXHOSTNAMELEN + 1] = {'\0'};
-   gethostname(hostname, sizeof(hostname));
-   return string(hostname);
-}
-
-// Returns the binder port
-int getBinderPort(int welcomeSocket) {
-   struct sockaddr_in binderAddress;
-   socklen_t binderAddressLength = sizeof(binderAddress);
-
-   int result = getsockname(welcomeSocket, (struct sockaddr*) &binderAddress,
-      &binderAddressLength);
-   if (result < 0) {
-      exit(-1);
-   } // if
-
-   return ntohs(binderAddress.sin_port);
 }
 
 //TODO:
@@ -198,8 +178,8 @@ int main(){
   status = bind(sock, servinfo->ai_addr, servinfo->ai_addrlen);
   status = listen(sock, SOMAXCONN);
 
-  cout << "BINDER_ADDRESS " << getBinderAddress() << endl;
-  cout << "BINDER_PORT " << getBinderPort(sock) << endl;
+  cout << "BINDER_ADDRESS " << getHostAddress() << endl;
+  cout << "BINDER_PORT " << getSocketPort(sock) << endl;
 
   fd_set readfds;
   int n;
@@ -250,7 +230,7 @@ int main(){
             status = Segment::receive(tempConnection, segment);
 
             //TODO: More sophisticaled error handling/replies
-            // Maybe status should be reasonacode instead  
+            // Maybe status should be reasonacode instead
             if (status < 0 && segment->getType() == MSG_TYPE_REGISTER_REQUEST) {
                 RegisterFailureMessage regFailMsg = RegisterFailureMessage(status);
                 Segment regFailSeg = Segment(regFailMsg.getLength(), MSG_TYPE_REGISTER_FAILURE, &regFailMsg);
@@ -261,7 +241,7 @@ int main(){
                 Segment regFailSeg = Segment(locFailMsg.getLength(), MSG_TYPE_LOC_FAILURE, &locFailMsg);
                 regFailSeg.send(tempConnection);
                 return status;
-            } 
+            }
 
             if (status == 0) {
               // client has closed the connection
