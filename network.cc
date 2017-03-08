@@ -14,7 +14,7 @@ using namespace std;
 // See interface (header file).
 int createSocket() {
   // Creates the socket
-  int socket = socket(AF_INET, SOCK_STREAM, 0);
+  int socket = ::socket(AF_INET, SOCK_STREAM, 0);
   if (socket < 0) {
     return socket;
   }

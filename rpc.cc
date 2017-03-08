@@ -38,7 +38,7 @@ using namespace std;
 
 //Global Variables for client
 bool connectedToBinder = false;
-int binder_sock;
+int binderSocket = 0;
 
 //Global Variables for server
 struct addrinfo* servinfo;
@@ -86,6 +86,7 @@ int rpcInit(){
 	int welcomeSocket = createSocket();
 	setUpToListen(welcomeSocket);
 
+	// Opens a connection to the binder
   int binder_sock = connectToBinder();
 
   return 0;
