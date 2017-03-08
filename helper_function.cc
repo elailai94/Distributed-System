@@ -52,8 +52,8 @@ bool compareArr(const int* array1, const int* array2){
       if (*array1 != *array2){
           return false;
       }
-      *array1++;
-      *array2++;
+      *array1 += 1;
+      *array2 += 1;
   }
 
   return true;
