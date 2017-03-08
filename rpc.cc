@@ -46,7 +46,7 @@ static map<procedure_signature, skeleton, ps_compare> proc_skele_dict;
 
 string serverIdentifier;
 unsigned int port;
-int welcomeSocket;
+int welcomeSocket = 0;
 
 
 int connectToBinder(){
@@ -83,11 +83,11 @@ int connectToBinder(){
 int rpcInit(){
 	// Creates a connection socket to be used for accepting connections
 	// from clients
-	int welcomeSocket = createSocket();
+	welcomeSocket = createSocket();
 	setUpToListen(welcomeSocket);
 
 	// Opens a connection to the binder
-  int binderSocket = connectToBinder();
+  binderSocket = connectToBinder();
 
   return 0;
 }
