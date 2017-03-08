@@ -198,6 +198,7 @@ int main(){
   status = bind(sock, servinfo->ai_addr, servinfo->ai_addrlen);
   status = listen(sock, SOMAXCONN);
 
+  cout << "binder socket: " << sock << endl;
   cout << "BINDER_ADDRESS " << getBinderAddress() << endl;
   cout << "BINDER_PORT " << getBinderPort(sock) << endl;
 
@@ -244,7 +245,12 @@ int main(){
 
         for (vector<int>::iterator it = myConnections.begin(); it != myConnections.end(); ++it) {
           int tempConnection = *it;
+
+            cout << "Socket iterator" << endl;
+
           if (FD_ISSET(tempConnection, &readfds)) {
+
+            cout << "We in here" << endl;
 
             Segment * segment = 0;
             status = Segment::receive(tempConnection, segment);
