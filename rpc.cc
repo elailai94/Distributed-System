@@ -181,7 +181,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 int rpcRegister(char * name, int *argTypes, skeleton f){
 
   RegisterRequestMessage regReqMsg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
-  cout << "rpcRegister: " << name << endl;  
+  cout << "rpcRegister: " << name << endl;
 
   /*
   We should get seg.send to give us some feed back maybe
@@ -330,5 +330,10 @@ int rpcCacheCall() {
 }
 
 int rpcTerminate() {
+	cout << "Running rpcTerminate..." << endl;
+	TerminateMessage messageToBinder = TerminateMessage();
+	Segment segmentToBinder =
+	  Segment(messageToBinder.getLength(), MSG_TYPE_TERMINATE, &messageToBinder);
+	segmentToBinder.send(binderSocket);
 	return 0;
 }
