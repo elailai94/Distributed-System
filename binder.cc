@@ -95,15 +95,17 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     }
   }
 
-  RegisterSuccessMessage * success_message = new RegisterSuccessMessage(status);
-  success_message->send(sock);
+  RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
+  Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
+  regSuccessSeg.send(sock);
+
 }
 
 /*
 TODO:
 USE ROUND ROBIN TO ACCESS THE CORRECT SERVER/FUNCTION FOR THE CLIENT
 */
-int location_request_handler(LocRequestMessage * message, int sock){
+void location_request_handler(LocRequestMessage * message, int sock){
 
   bool exist = false;
 	for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
@@ -112,8 +114,9 @@ int location_request_handler(LocRequestMessage * message, int sock){
     if((*it)->ps->name == message->getName() && compareArr((*it)->ps->argTypes, message->getArgTypes() )){
       exist = true;
 
-      LocSuccessMessage * success_message = new LocSuccessMessage((*it)->si->server_identifier, (*it)->si->port);
-      success_message->send(sock);
+      LocSuccessMessage locSuccessMsg = LocSuccessMessage((*it)->si->server_identifier, (*it)->si->port);
+      Segment locSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_LOC_SUCCESS, &locSuccessMsg);
+      locSuccessSeg.send(sock);
 
       //When we have identified the correct procedure_signature use splice and move that service to the end
       roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
@@ -122,12 +125,11 @@ int location_request_handler(LocRequestMessage * message, int sock){
 	}
 
   if(!exist){
-    int reasoncode = 0;
-    LocFailureMessage * failure_message = new LocFailureMessage(reasoncode);
-    failure_message->send(sock);
+    int reasoncode = -5; // Need actual reasoncode
+    LocFailureMessage locFailMsg = LocFailureMessage(reasoncode);
+    Segment regFailSeg = Segment(locFailMsg.getLength(), MSG_TYPE_LOC_FAILURE, &locFailMsg);
+    regFailSeg.send(sock);  
   }
-
-	return 0; //LOC_FAILURE
 }
 
 int request_handler(Segment * segment, int sock){
@@ -135,12 +137,14 @@ int request_handler(Segment * segment, int sock){
   if(segment->getType() == MSG_TYPE_REGISTER_REQUEST){ //'LOC_REQUEST'
     Message * cast1 = segment->getMessage();
     RegisterRequestMessage * rrm = dynamic_cast<RegisterRequestMessage*>(cast1);
+   
     registration_request_handler(rrm, sock);
 
   }else if (segment->getType() == MSG_TYPE_LOC_REQUEST){ //'REGISTER'
     Message * cast2 = segment->getMessage();
     LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(cast2);
-    retval = location_request_handler(lqm, sock);
+   
+    location_request_handler(lqm, sock);
   }
 
 	return retval;
@@ -244,11 +248,18 @@ int main(){
             status = Segment::receive(sock, segment);
 
             //TODO: More sophisticaled error handling/replies
-            if (status < 0) {
-                RegisterFailureMessage * failure_message = new RegisterFailureMessage(status);
-                failure_message->send(sock);
+            // Maybe status should be reasonacode instead  
+            if (status < 0 && segment->getType() == MSG_TYPE_REGISTER_REQUEST) {
+                RegisterFailureMessage regFailMsg = RegisterFailureMessage(status);
+                Segment regFailSeg = Segment(regFailMsg.getLength(), MSG_TYPE_REGISTER_FAILURE, &regFailMsg);
+                regFailSeg.send(sock);
                 return status;
-            }
+            } else if (status < 0 && segment->getType() == MSG_TYPE_LOC_REQUEST) {
+                LocFailureMessage locFailMsg = LocFailureMessage(status);
+                Segment regFailSeg = Segment(locFailMsg.getLength(), MSG_TYPE_LOC_FAILURE, &locFailMsg);
+                regFailSeg.send(sock);
+                return status;
+            } 
 
             if (status == 0) {
               // client has closed the connection
