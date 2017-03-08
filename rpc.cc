@@ -31,6 +31,7 @@
 
 #include "rpc.h"
 #include "constants.h"
+#include "network.h"
 #include "helper_function.h"
 
 using namespace std;
@@ -80,37 +81,10 @@ int connectToBinder(){
 
 // See interface (header file).
 int rpcInit(){
-  int status;
-  struct addrinfo hints;
-  struct addrinfo* p;
-
-  memset(&hints, 0, sizeof hints);
-  hints.ai_family = AF_UNSPEC;
-  hints.ai_socktype = SOCK_STREAM;
-  hints.ai_flags = AI_PASSIVE;
-
-  status = getaddrinfo(NULL, "0", &hints, &servinfo);
-
-  p = servinfo;
-  sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-
-  status = bind(sock, servinfo->ai_addr, servinfo->ai_addrlen);
-  status = listen(sock, 5);
-
-  char hostname[256];
-  gethostname(hostname, 256);
-
-  struct sockaddr_in sin;
-  socklen_t len = sizeof(sin);
-
-  getsockname(sock, (struct sockaddr *)&sin, &len);
-
-  stringstream ss;
-  ss << ntohs(sin.sin_port);
-  string ps = ss.str();
-
-  serverIdentifier = hostname;
-  port =  ntohs(sin.sin_port);
+	// Creates a connection socket to be used for accepting connections
+	// from clients
+	int welcomeSocket = createSocket();
+	setUpToListen(welcomeSocket);
 
   int binder_sock = connectToBinder();
 
@@ -211,6 +185,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 
 int rpcRegister(char * name, int *argTypes, skeleton f){
 
+<<<<<<< HEAD
   RegisterRequestMessage regReqMsg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
   
   /* 
@@ -220,6 +195,17 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
   
   Segment regReqSeg = Segment(regReqMsg.getLength(), MSG_TYPE_REGISTER_REQUEST, &regReqMsg);
   int status = regReqSeg.send(binder_sock);
+=======
+  RegisterRequestMessage request_message = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
+
+  /*
+  We should get seg.send to give us some feed back maybe
+  int status = request_message->send(binder_sock);
+  */
+
+  Segment seg = Segment(request_message.getLength(), MSG_TYPE_REGISTER_REQUEST, &request_message);
+  int status = seg.send(binder_sock);
+>>>>>>> ff21bc65be92c8d1330a50247a3f75821fb0d522
 
 
   if(status == 0){
@@ -232,9 +218,9 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
     if(segment->getType() == MSG_TYPE_REGISTER_SUCCESS){
 
       Message * cast = segment->getMessage();
-      //Error Checking maybe 
+      //Error Checking maybe
       RegisterSuccessMessage * rsm = dynamic_cast<RegisterSuccessMessage*>(cast);
- 
+
       struct procedure_signature k(string(name), argTypes);
       proc_skele_dict[k] = f;
 
