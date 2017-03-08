@@ -22,7 +22,7 @@ unsigned int ExecuteFailureMessage::getLength() const {
 
 // See interface (header file).
 int ExecuteFailureMessage::send(int dataTransferSocket) {
-  char messageBuffer[getLength()];
+  char messageBuffer[getLength()] = {'\0'};
   char *messageBufferPointer = messageBuffer;
 
   // Writes the reason code to the buffer

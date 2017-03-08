@@ -22,7 +22,7 @@ unsigned int RegisterFailureMessage::getLength() const {
 
 // See interface (header file).
 int RegisterFailureMessage::send(int dataTransferSocket) {
-  char messageBuffer[getLength()];
+  char messageBuffer[getLength()] = {'\0'};
   char *messageBufferPointer = messageBuffer;
 
   // Writes the reason code to the buffer

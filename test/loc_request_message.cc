@@ -41,7 +41,7 @@ unsigned int LocRequestMessage::getLength() const {
 
 // See interface (header file).
 int LocRequestMessage::send(int dataTransferSocket) {
-  char messageBuffer[getLength()];
+  char messageBuffer[getLength()] = {'\0'};
   char *messageBufferPointer = messageBuffer;
 
   // Writes the remote procedure name to the buffer

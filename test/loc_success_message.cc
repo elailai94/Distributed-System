@@ -30,7 +30,7 @@ unsigned int LocSuccessMessage::getLength() const {
 
 // See interface (header file).
 int LocSuccessMessage::send(int dataTransferSocket) {
-  char messageBuffer[getLength()];
+  char messageBuffer[getLength()] = {'\0'};
   char *messageBufferPointer = messageBuffer;
 
   // Writes the server identifier to the buffer
