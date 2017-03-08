@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <stdio.h>
 #include <string.h>
 #include "rpc.h"
@@ -89,6 +90,16 @@ int *copyArgTypes(int *argTypes) {
     memArgTypes[i] = 0;
 
     return memArgTypes;
+}
+
+// See interface (header file).
+int checkEnvironmentVariable(char *environmentVariableName) {
+  char* environmentVariable = getenv(environmentVariableName);
+  if (environmentVariable == 0) {
+    return -1;
+  } else {
+    return 0;
+  }
 }
 
 // See interface (header file).
