@@ -7,9 +7,19 @@
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+
 #include "message.h"
 #include "segment.h"
+#include "execute_failure_message.h"
+#include "execute_request_message.h"
+#include "execute_success_message.h"
+#include "loc_failure_message.h"
+#include "loc_request_message.h"
+#include "loc_success_message.h"
+#include "register_failure_message.h"
 #include "register_request_message.h"
+#include "register_success_message.h"
+#include "terminate_message.h"
 
 using namespace std;
 
@@ -110,27 +120,67 @@ int main() {
       close(connectionSocket);
     } // if
 
-    if (parsedSegment != 0) {
-      Message *msg = parsedSegment->getMessage();
-      cout << "Segment length is: " << parsedSegment->getLength() << endl;
-      cout << "Segment type is: " << parsedSegment->getType() << endl;
-		  if (msg != 0) {
+    Message *msg = parsedSegment->getMessage();
+    switch (parsedSegment->getType()) {
+      case MSG_TYPE_EXECUTE_FAILURE:
+        ExecuteFailureMessage *efm = dynamic_cast<ExecuteFailureMessage *>(msg);
+        cout << "Received Execute Failure Message!" << endl;
+        cout << "Reason Code: " << efm->getReasonCode() << endl;
+        break;
+
+      case MSG_TYPE_EXECUTE_REQUEST:
+        ExecuteRequestMessage *erm = dynamic_cast<ExecuteRequestMessage *>(msg);
+        cout << "Received Execute Request Message!" << endl;
+        cout << "Name: " << erm->getName() << endl;
+        break;
+
+      case MSG_TYPE_EXECUTE_SUCCESS:
+        ExecuteSuccessMessage *esm = dynamic_cast<ExecuteSuccessMessage *>(msg);
+        cout << "Received Execute Success Message!" << endl;
+        cout << "Name: " << esm->getName() << endl;
+        break;
+
+      case MSG_TYPE_LOC_FAILURE:
+        LocFailureMessage *lfm = dynamic_cast<LocFailureMessage *>(msg);
+        cout << "Received Loc Failure Message!" << endl;
+        cout << "Reason Code: " << lfm->getReasonCode() << endl;
+        break;
+
+      case MSG_TYPE_LOC_REQUEST:
+        LocRequestMessage *lrm = dynamic_cast<LocRequestMessage *>(msg);
+        cout << "Received Loc Request Message!" << endl;
+        cout << "Name: " << lrm->getName() << endl;
+        break;
+
+      case MSG_TYPE_LOC_SUCCESS:
+        LocSuccessMessage *lsm = dynamic_cast<LocSuccessMessage *>(msg);
+        cout << "Received Loc Success Message!" << endl;
+        cout << "Server Identifier: " << lsm->getServerIdentifier() << endl;
+        cout << "Port: " << lsm->getPort() << endl;
+        break;
+
+      case MSG_TYPE_REGISTER_FAILURE:
+        RegisterFailureMessage *rfm = dynamic_cast<RegisterFailureMessage *>(msg);
+        cout << "Received Register Failure Message!" << endl;
+        cout << "Reason Code: " << rfm->getReasonCode() << endl;
+        break;
+
+      case MSG_TYPE_REGISTER_REQUEST:
         RegisterRequestMessage *rrm = dynamic_cast<RegisterRequestMessage *>(msg);
+        cout << "Received Register Request Message!" << endl;
+        cout << "Server Identifier: " << rrm->getServerIdentifier() << endl;
+        cout << "Port: " << rrm->getPort() << endl;
+        cout << "Name: " << rrm->getName() << endl;
+        break;
 
-		    if (rrm != 0) {
-		     cout << "Server Identifier: " << rrm->getServerIdentifier() << endl;
+      case MSG_TYPE_REGISTER_SUCCESS:
+        RegisterSuccessMessage *rsm = dynamic_cast<RegisterSuccessMessage *>(msg);
+        cout << "Reason Code: " << rsm->getReasonCode() << endl;
+        break;
 
-		     unsigned int tempInt = rrm->getPort();
-		     cout << "Port: " << tempInt << endl;
-
-         string rrmName  = rrm->getName();
-		     int strLen = rrmName.length();
-
-		     cout << "Name: " << rrmName << endl;
-         cout << "Name Length: " << strLen << endl;
-		     cout << "ArgTypes: " << *(rrm->getArgTypes()) << ", " << *(rrm->getArgTypes()+1) << ", " << *(rrm->getArgTypes()+2)  << ", " << *(rrm->getArgTypes()+3) << endl;
-		   }
-     }
+      case MSG_TYPE_TERMINATE:
+        TerminateMessage *tm = dynamic_cast<TerminateMessage *>(msg);
+        break;
     }
    } // while
 

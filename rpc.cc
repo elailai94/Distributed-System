@@ -78,6 +78,43 @@ int connectToBinder(){
     return 0;
 }
 
+int rpcInit(){
+  int status;
+  struct addrinfo hints;
+  struct addrinfo* p;
+
+  memset(&hints, 0, sizeof hints);
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags = AI_PASSIVE;
+
+  status = getaddrinfo(NULL, "0", &hints, &servinfo);
+
+  p = servinfo;
+  sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+
+  status = bind(sock, servinfo->ai_addr, servinfo->ai_addrlen);
+  status = listen(sock, 5);
+
+  char hostname[256];
+  gethostname(hostname, 256);
+
+  struct sockaddr_in sin;
+  socklen_t len = sizeof(sin);
+
+  getsockname(sock, (struct sockaddr *)&sin, &len);
+
+  stringstream ss;
+  ss << ntohs(sin.sin_port);
+  string ps = ss.str();
+
+  serverIdentifier = hostname;
+  port =  ntohs(sin.sin_port);
+
+  int binder_sock = connectToBinder();
+
+  return 0;
+}
 
 int sendExecute(int sock, string name, int* argTypes, void**args){
 
@@ -295,43 +332,5 @@ int rpcExecute(void){
   }
 
   freeaddrinfo(servinfo);
-  return 0;
-}
-
-int rpcInit(void){
-  int status;
-  struct addrinfo hints;
-  struct addrinfo* p;
-
-  memset(&hints, 0, sizeof hints);
-  hints.ai_family = AF_UNSPEC;
-  hints.ai_socktype = SOCK_STREAM;
-  hints.ai_flags = AI_PASSIVE;
-
-  status = getaddrinfo(NULL, "0", &hints, &servinfo);
-
-  p = servinfo;
-  sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-
-  status = bind(sock, servinfo->ai_addr, servinfo->ai_addrlen);
-  status = listen(sock, 5);
-
-  char hostname[256];
-  gethostname(hostname, 256);
-
-  struct sockaddr_in sin;
-  socklen_t len = sizeof(sin);
-
-  getsockname(sock, (struct sockaddr *)&sin, &len);
-
-  stringstream ss;
-  ss << ntohs(sin.sin_port);
-  string ps = ss.str();
-
-  serverIdentifier = hostname;
-  port =  ntohs(sin.sin_port);
-
-  int binder_sock = connectToBinder();
-
   return 0;
 }
