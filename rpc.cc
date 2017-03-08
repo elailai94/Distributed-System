@@ -169,20 +169,30 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 
 int rpcRegister(char * name, int *argTypes, skeleton f){
 
-  RegisterRequestMessage * request_message = new RegisterRequestMessage(serverIdentifier, port, name, argTypes);
+  RegisterRequestMessage request_message = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
+  
+  /* 
+  We should get seg.send to give us some feed back maybe 
   int status = request_message->send(binder_sock);
+  */
+  
+  Segment seg = Segment(request_message.getLength(), MSG_TYPE_REGISTER_REQUEST, &request_message);
+  int status = seg.send(binder_sock);
+
 
   if(status == 0){
     //Success
-    Segment * segment = 0;
-    status = Segment::receive(binder_sock, segment);
+    Segment *parsedSegment = 0;
+    int result = 0;
+    segment = Segment::receive(binder_sock, parsedSegment);
+
 
     if(segment->getType() == MSG_TYPE_REGISTER_SUCCESS){
 
-      // IF NEEDED
-      //Message * cast = segment->getMessage();
-      //RegisterSuccessMessage * rsm = dynamic_cast<RegisterSuccessMessage*>(cast);
-
+      Message * cast = segment->getMessage();
+      //Error Checking maybe 
+      RegisterSuccessMessage * rsm = dynamic_cast<RegisterSuccessMessage*>(cast);
+ 
       struct procedure_signature k(string(name), argTypes);
       proc_skele_dict[k] = f;
 
