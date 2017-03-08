@@ -50,10 +50,10 @@ int welcomeSocket = 0;
 
 // See interface (header file).
 int rpcInit(){
+	cout << "Running rpcInit..." << endl;
+
 	// Creates a connection socket to be used for accepting connections
 	// from clients
-  cout << "rpcInit" << endl;
-
 	welcomeSocket = createSocket();
 	setUpToListen(welcomeSocket);
 
@@ -120,7 +120,11 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	int status;
 
 	if(!connectedToBinder){
-		status = connectToBinder();
+		binderSocket = createSocket();
+		string binderAddress = getBinderAddress();
+		unsigned int binderPort = getBinderPort();
+		status = setUpToConnect(binderSocket, binderAddress, binderPort);
+	  connectedToBinder = true;
 	}
 	//do something with returnVal
 
