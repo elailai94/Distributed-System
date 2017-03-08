@@ -93,7 +93,18 @@ int *copyArgTypes(int *argTypes) {
 
 // See interface (header file).
 string toString(unsigned int number) {
-  ostringstream oss;
-  oss << number;
-  return oss.str();
+  stringstream ss;
+  ss << number;
+  return ss.str();
+}
+
+// See interface (header file).
+unsigned int toUnsignedInteger(string text) {
+  stringstream ss;
+  ss << text;
+
+  unsigned int number = 0;
+  ss >> number;
+
+  return number;
 }

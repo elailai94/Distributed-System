@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <cstring>
 #include <unistd.h>
 #include <sys/param.h>
@@ -112,4 +113,16 @@ int getSocketPort(int socket) {
   }
 
   return ntohs(hostAddress.sin_port);
+}
+
+// See interface (header file).
+string getBinderAddress() {
+  char *binderAddress = getenv("BINDER_ADDRESS");
+  return string(binderAddress);
+}
+
+// See interface (header file).
+unsigned int getBinderPort() {
+  char *binderPort = getenv("BINDER_PORT");
+  return toUnsignedInteger(string(binderPort));
 }

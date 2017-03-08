@@ -48,37 +48,6 @@ string serverIdentifier;
 unsigned int port;
 int welcomeSocket = 0;
 
-
-int connectToBinder(){
-
-	if(connectedToBinder){
-		return 0;
-	}
-
-	char * binderAddressString = getenv("BINDER_ADDRESS");
-	char * binderPortString = getenv("BINDER_PORT");
-
-	if(binderAddressString == NULL){
-    return 1;
-  }
-
-  if(binderPortString == NULL){
-    return 2;
-  }
-
-  unsigned int portInt = atoi(binderPortString);
-
-  binderSocket = createConnection(string(binderAddressString), portInt);
-
-  if (binderSocket < 0) {
-    return 3;
-  }else{
-  	connectedToBinder = true;
-  }
-
-  return 0;
-}
-
 // See interface (header file).
 int rpcInit(){
 	// Creates a connection socket to be used for accepting connections
@@ -89,7 +58,12 @@ int rpcInit(){
 	setUpToListen(welcomeSocket);
 
 	// Opens a connection to the binder
-  int resultOfMakingSocket = connectToBinder();
+
+	binderSocket = createSocket();
+	string binderAddress = getBinderAddress();
+	unsigned int binderPort = getBinderPort();
+	setUpToConnect(binderSocket, binderAddress, binderPort);
+  connectedToBinder = true;
   cout << "binderSocket: " << binderSocket << endl;
 
   return 0;
