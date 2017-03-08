@@ -39,13 +39,13 @@ int setUpClientSocket() {
    // Gets the environment variables passed
    char* serverAddress = getenv("BINDER_ADDRESS");
    char* serverPort = getenv("BINDER_PORT");
-   
+
    // Sets up the server address hints and results to perform the DNS
    // lookup on the server's host name to obtain the server's IP address
    memset(&serverAddressHints, 0, sizeof(serverAddressHints));
    serverAddressHints.ai_family = AF_INET;
    serverAddressHints.ai_socktype = SOCK_STREAM;
-   
+
    // Performs a DNS lookup on the server's host name to obtain the
    // server's IP address
    int result = getaddrinfo(serverAddress, serverPort,
@@ -83,15 +83,13 @@ int main() {
    cout << "Server Identifier: " << msg.getServerIdentifier() << endl;
    cout << "Port: " << msg.getPort() << endl;
    cout << "Name: " << msg.getName() << endl;
-   cout << "Name Length: " << msg.getName().length() << endl;
    cout << "ArgTypes: " << *(msg.getArgTypes()) << ", " << *(msg.getArgTypes() + 1) << ", " << *(msg.getArgTypes() + 2) << ", " << *(msg.getArgTypes() + 3) << ", "  <<endl;
-   cout << "Got here" << endl;
    Segment seg = Segment(msg.getLength(), MSG_TYPE_REGISTER_REQUEST, &msg);
    seg.send(clientSocket);
 
    // Closes the client socket
-   
+
    sleep(2);
-   
+
    close(clientSocket);
 } // main
