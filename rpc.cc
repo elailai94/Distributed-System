@@ -188,6 +188,8 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
 
     if(parsedSegment->getType() == MSG_TYPE_REGISTER_SUCCESS){
 
+      cout << "MSG_TYPE_REGISTER_SUCCESS" << endl;
+
       Message * cast = parsedSegment->getMessage();
       //Error Checking maybe
       RegisterSuccessMessage * rsm = dynamic_cast<RegisterSuccessMessage*>(cast);
