@@ -1,4 +1,5 @@
 #include <cstring>
+#include <unistd.h>
 #include <sys/param.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -13,7 +14,7 @@ using namespace std;
 // See interface (header file).
 int createSocket(string type) {
   // Creates the socket
-  int socket = socket(AF_INET, SOCK_STREAM, 0);
+  int socket = ::socket(AF_INET, SOCK_STREAM, 0);
   if (socket < 0) {
     return socket;
   }
@@ -95,7 +96,7 @@ int setUpToConnect(int socket, string address, unsigned int port) {
 // See interface (header file).
 string getHostAddress() {
   char hostname[MAXHOSTNAMELEN + 1] = {'\0'};
-  gethostbyname(hostname, sizeof(hostname));
+  gethostname(hostname, sizeof(hostname));
   return string(hostname);
 }
 
