@@ -179,7 +179,7 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
   int status = regReqSeg.send(binderSocket);
   cout << "rpcRegister Status: " << status << endl;
 
-  if(status == 0){
+  if(status >= 0){
     //Success
     Segment *parsedSegment = 0;
     int result = 0;
@@ -187,6 +187,8 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
 
 
     if(parsedSegment->getType() == MSG_TYPE_REGISTER_SUCCESS){
+
+      cout << "MSG_TYPE_REGISTER_SUCCESS" << endl;
 
       Message * cast = parsedSegment->getMessage();
       //Error Checking maybe
@@ -199,12 +201,9 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
       return 0;
     }
 
-  }else if( status > 0){
-    //Warning
-    return -99;
   }else if( status < 0){
     //Error
-    return 99;
+    return -99;
   }
 
   return 1;
