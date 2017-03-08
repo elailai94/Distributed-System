@@ -50,10 +50,12 @@ IF FUNCTION EXISTS IN ROUND ROBIN DELETE OLD REPLACE WITH NEW (where)
 
 
 void registration_request_handler(RegisterRequestMessage * message, int sock){
-	const char * name = message->getName().c_str();
+  const char * name = message->getName().c_str();
   int * argTypes = message->getArgTypes();
   string server_identifier = message->getServerIdentifier();
   int port = message->getPort();
+
+  cout << "We are trying to register: " << name << endl;
 
   procedure_signature key(name, argTypes);
 
@@ -245,29 +247,29 @@ int main(){
           if (FD_ISSET(tempConnection, &readfds)) {
 
             Segment * segment = 0;
-            status = Segment::receive(sock, segment);
+            status = Segment::receive(tempConnection, segment);
 
             //TODO: More sophisticaled error handling/replies
             // Maybe status should be reasonacode instead  
             if (status < 0 && segment->getType() == MSG_TYPE_REGISTER_REQUEST) {
                 RegisterFailureMessage regFailMsg = RegisterFailureMessage(status);
                 Segment regFailSeg = Segment(regFailMsg.getLength(), MSG_TYPE_REGISTER_FAILURE, &regFailMsg);
-                regFailSeg.send(sock);
+                regFailSeg.send(tempConnection);
                 return status;
             } else if (status < 0 && segment->getType() == MSG_TYPE_LOC_REQUEST) {
                 LocFailureMessage locFailMsg = LocFailureMessage(status);
                 Segment regFailSeg = Segment(locFailMsg.getLength(), MSG_TYPE_LOC_FAILURE, &locFailMsg);
-                regFailSeg.send(sock);
+                regFailSeg.send(tempConnection);
                 return status;
             } 
 
             if (status == 0) {
               // client has closed the connection
-              myToRemove.push_back(sock);
+              myToRemove.push_back(tempConnection);
               return status;
             }
 
-            request_handler(segment, sock);
+            request_handler(segment, tempConnection);
           }
         }
       }

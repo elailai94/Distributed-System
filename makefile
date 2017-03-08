@@ -1,55 +1,31 @@
 CXX = g++
-CXXFLAGS = -Wall -MMD
-AR = ar
-ARFLAGS = rcs
+CXXFLAGS = -g -Wall 
+MAKEFILE_NAME = ${firstword ${MAKEFILE_LIST}}	
+SOURCES = $(wildcard *.cc)
 
-RPCOBJECTS = rpc.o segment.o message.o loc_request_message.o \
-loc_success_message.o loc_failure_message.o execute_request_message.o \
-execute_success_message.o execute_failure_message.o register_request_message.o \
-register_success_message.o register_failure_message.o terminate_message.o \
-constants.o helper_function.o
-RPCEXEC = librpc.a
+OBJECTS1 = binder.o segment.o message.o loc_request_message.o  loc_success_message.o loc_failure_message.o execute_request_message.o execute_success_message.o execute_failure_message.o register_request_message.o register_success_message.o register_failure_message.o terminate_message.o constants.o helper_function.o network.o
 
-BINDEROBJECTS = binder.o segment.o message.o loc_request_message.o \
-loc_success_message.o loc_failure_message.o execute_request_message.o \
-execute_success_message.o execute_failure_message.o register_request_message.o \
-register_success_message.o register_failure_message.o terminate_message.o \
-constants.o helper_function.o
-BINDEREXEC = binder
+EXEC1 = binder				
 
-CLIENTOBJECTS = client.o
-CLIENTEXEC = client
+OBJECTS = ${OBJECTS1}
+DEPENDS = ${OBJECTS:.o=.d}			
+EXECS = ${EXEC1}
 
-SERVEROBJECTS = server.o server_functions.o server_function_skels.o
-SERVEREXEC = server
 
-OBJECTS = ${BINDEROBJECTS}
-DEPENDS = ${OBJECTS: .o=.d}
-EXECS = ${BINDEREXEC}
+.PHONY : all clean
 
-.PHONY: all clean
+all : ${EXECS}					
+	${CXX} -c rpc.cc server.c client.c server_functions.c server_function_skels.c
+	ar rcs librpc.a  rpc.o segment.o message.o loc_request_message.o loc_success_message.o loc_failure_message.o execute_request_message.o execute_success_message.o execute_failure_message.o register_request_message.o register_success_message.o register_failure_message.o terminate_message.o constants.o helper_function.o network.o
 
-all:
-	@echo "Compiling..."
-	${EXECS}
-	@echo "Granting file execution permissions..."
-	chmod u+x ${EXECS}
 
-${RPCEXEC}: ${RPCOBJECTS}
-	${AR} ${ARFLAGS} $@ $^
+${EXEC1} : ${OBJECTS1}				
+	${CXX} $^ -o $@
 
-${BINDEREXEC}: ${BINDEROBJECTS}
-	${CXX} ${CXXFLAGS} $^ -o $@
+${OBJECTS} : ${MAKEFILE_NAME}			
 
-${CLIENTEXEC}: ${CLIENTOBJECTS}
-	${CXX} ${CXXFLAGS} $^ -o $@
+-include ${DEPENDS}				
 
-${SERVEREXEC}: ${SERVEROBJECTS}
-	${CXX} ${CXXFLAGS} $^ -o $@
+clean :						
+	rm -f *.d *.o ${EXECS}
 
--include ${DEPENDS}
-
-clean:
-	find . -name ${EXECS} -delete
-	find . -name ${OBJECTS} -delete
-	find . -name ${DEPENDS} -delete
