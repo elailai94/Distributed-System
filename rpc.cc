@@ -282,7 +282,7 @@ int rpcExecute(void){
 
             int reasonCode = 0;
             Segment * segment = 0;
-            status = Segment::receive(sock, segment);
+            status = Segment::receive(tempConnection, segment);
 
             if(segment->getType() == MSG_TYPE_EXECUTE_REQUEST){
               Message * cast = segment->getMessage();
@@ -296,18 +296,18 @@ int rpcExecute(void){
               if(result == 0 ){
                 ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(eqm->getName(), eqm->getArgTypes(), eqm->getArgs());
                 Segment exeSuccessSeg = Segment(exeSuccessMsg.getLength(), MSG_TYPE_EXECUTE_SUCCESS, &exeSuccessMsg);
-                status = exeSuccessSeg.send(sock);
+                status = exeSuccessSeg.send(tempConnection);
 
               }else{
                 ExecuteFailureMessage exeFailMsg = ExecuteFailureMessage(reasonCode);
                 Segment exeFailSeg = Segment(exeFailMsg.getLength(), MSG_TYPE_EXECUTE_FAILURE, &exeFailMsg);
-                status = exeFailSeg.send(sock);
+                status = exeFailSeg.send(tempConnection);
               }
             }
 
             if (status == 0) {
               // client has closed the connection
-              myToRemove.push_back(sock);
+              myToRemove.push_back(tempConnection);
               return status;
             }
 
