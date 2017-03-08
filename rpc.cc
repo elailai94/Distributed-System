@@ -48,6 +48,19 @@ string serverIdentifier;
 unsigned int port;
 int welcomeSocket = 0;
 
+void mapPrint(){
+
+  cout << "Map Print: ";
+
+  for(map<procedure_signature, skeleton, ps_compare>::const_iterator it = proc_skele_dict.begin(); it != proc_skele_dict.end(); ++it){
+  
+    cout << it->first->name << ", " ;
+  }
+
+  cout << endl;
+}
+
+
 // See interface (header file).
 int rpcInit(){
 	cout << "Running rpcInit..." << endl;
@@ -197,6 +210,7 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
       struct procedure_signature k(string(name), argTypes);
       proc_skele_dict[k] = f;
 
+      mapPrint();
     }else if(parsedSegment->getType() == MSG_TYPE_REGISTER_FAILURE){
       return 0;
     }
