@@ -122,65 +122,77 @@ int main() {
 
     Message *msg = parsedSegment->getMessage();
     switch (parsedSegment->getType()) {
-      case MSG_TYPE_EXECUTE_FAILURE:
+      case MSG_TYPE_EXECUTE_FAILURE: {
         ExecuteFailureMessage *efm = dynamic_cast<ExecuteFailureMessage *>(msg);
         cout << "Received Execute Failure Message!" << endl;
         cout << "Reason Code: " << efm->getReasonCode() << endl;
         break;
+      }
 
-      case MSG_TYPE_EXECUTE_REQUEST:
+      case MSG_TYPE_EXECUTE_REQUEST: {
         ExecuteRequestMessage *erm = dynamic_cast<ExecuteRequestMessage *>(msg);
         cout << "Received Execute Request Message!" << endl;
         cout << "Name: " << erm->getName() << endl;
         break;
+      }
 
-      case MSG_TYPE_EXECUTE_SUCCESS:
+      case MSG_TYPE_EXECUTE_SUCCESS: {
         ExecuteSuccessMessage *esm = dynamic_cast<ExecuteSuccessMessage *>(msg);
         cout << "Received Execute Success Message!" << endl;
         cout << "Name: " << esm->getName() << endl;
         break;
+      }
 
-      case MSG_TYPE_LOC_FAILURE:
+      case MSG_TYPE_LOC_FAILURE: {
         LocFailureMessage *lfm = dynamic_cast<LocFailureMessage *>(msg);
         cout << "Received Loc Failure Message!" << endl;
         cout << "Reason Code: " << lfm->getReasonCode() << endl;
         break;
+      }
 
-      case MSG_TYPE_LOC_REQUEST:
+      case MSG_TYPE_LOC_REQUEST: {
         LocRequestMessage *lrm = dynamic_cast<LocRequestMessage *>(msg);
         cout << "Received Loc Request Message!" << endl;
         cout << "Name: " << lrm->getName() << endl;
         break;
+      }
 
-      case MSG_TYPE_LOC_SUCCESS:
+      case MSG_TYPE_LOC_SUCCESS: {
         LocSuccessMessage *lsm = dynamic_cast<LocSuccessMessage *>(msg);
         cout << "Received Loc Success Message!" << endl;
         cout << "Server Identifier: " << lsm->getServerIdentifier() << endl;
         cout << "Port: " << lsm->getPort() << endl;
         break;
+      }
 
-      case MSG_TYPE_REGISTER_FAILURE:
+      case MSG_TYPE_REGISTER_FAILURE: {
         RegisterFailureMessage *rfm = dynamic_cast<RegisterFailureMessage *>(msg);
         cout << "Received Register Failure Message!" << endl;
         cout << "Reason Code: " << rfm->getReasonCode() << endl;
         break;
+      }
 
-      case MSG_TYPE_REGISTER_REQUEST:
+      case MSG_TYPE_REGISTER_REQUEST: {
         RegisterRequestMessage *rrm = dynamic_cast<RegisterRequestMessage *>(msg);
         cout << "Received Register Request Message!" << endl;
         cout << "Server Identifier: " << rrm->getServerIdentifier() << endl;
         cout << "Port: " << rrm->getPort() << endl;
         cout << "Name: " << rrm->getName() << endl;
         break;
+      }
 
-      case MSG_TYPE_REGISTER_SUCCESS:
+      case MSG_TYPE_REGISTER_SUCCESS: {
         RegisterSuccessMessage *rsm = dynamic_cast<RegisterSuccessMessage *>(msg);
+        cout << "Received Register Success Message!" << endl;
         cout << "Reason Code: " << rsm->getReasonCode() << endl;
         break;
+      }
 
-      case MSG_TYPE_TERMINATE:
+      case MSG_TYPE_TERMINATE: {
         TerminateMessage *tm = dynamic_cast<TerminateMessage *>(msg);
+        cout << "Received Terminate Message!" << endl;
         break;
+      }
     }
    } // while
 
