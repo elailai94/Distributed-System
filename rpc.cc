@@ -151,7 +151,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 
   LocRequestMessage locReqMsg = LocRequestMessage(name, argTypes);
   Segment locReqSeg = Segment(locReqMsg.getLength(), MSG_TYPE_LOC_REQUEST, &locReqMsg);
-  int binder_status = locReqSeg.send(clientSocket);
+  int binder_status = locReqSeg.send(binderSocket);
 
 	//maybe error check with binder_status
 
@@ -201,19 +201,19 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
     //Success
     Segment *parsedSegment = 0;
     int result = 0;
-    segment = Segment::receive(binderSocket, parsedSegment);
+    result = Segment::receive(binderSocket, parsedSegment);
 
 
-    if(segment->getType() == MSG_TYPE_REGISTER_SUCCESS){
+    if(parsedSegment->getType() == MSG_TYPE_REGISTER_SUCCESS){
 
-      Message * cast = segment->getMessage();
+      Message * cast = parsedSegment->getMessage();
       //Error Checking maybe
       RegisterSuccessMessage * rsm = dynamic_cast<RegisterSuccessMessage*>(cast);
 
       struct procedure_signature k(string(name), argTypes);
       proc_skele_dict[k] = f;
 
-    }else if(segment->getType() == MSG_TYPE_REGISTER_FAILURE){
+    }else if(parsedSegment->getType() == MSG_TYPE_REGISTER_FAILURE){
       return 0;
     }
 
