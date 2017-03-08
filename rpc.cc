@@ -185,7 +185,6 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 
 int rpcRegister(char * name, int *argTypes, skeleton f){
 
-<<<<<<< HEAD
   RegisterRequestMessage regReqMsg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
   
   /* 
@@ -195,17 +194,6 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
   
   Segment regReqSeg = Segment(regReqMsg.getLength(), MSG_TYPE_REGISTER_REQUEST, &regReqMsg);
   int status = regReqSeg.send(binder_sock);
-=======
-  RegisterRequestMessage request_message = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
-
-  /*
-  We should get seg.send to give us some feed back maybe
-  int status = request_message->send(binder_sock);
-  */
-
-  Segment seg = Segment(request_message.getLength(), MSG_TYPE_REGISTER_REQUEST, &request_message);
-  int status = seg.send(binder_sock);
->>>>>>> ff21bc65be92c8d1330a50247a3f75821fb0d522
 
 
   if(status == 0){
