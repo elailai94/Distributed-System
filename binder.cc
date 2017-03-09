@@ -129,9 +129,10 @@ void location_request_handler(LocRequestMessage * message, int sock){
 
   cout << "Hunted name names: " << message->getName() << endl;
 
-
-	for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
+	for (list<server_function_info *>::const_iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
     //If the name are the same and argTypes
+    cout << "Iterator names: " << (*it)->ps->name << endl;
+  
     if((*it)->ps->name == message->getName() && compareArr((*it)->ps->argTypes, message->getArgTypes() )){
       exist = true;
 
@@ -144,8 +145,7 @@ void location_request_handler(LocRequestMessage * message, int sock){
       break;
  		}
 
-    cout << "Iterator names: " << (*it)->ps->name << endl;
-	}
+  }
 
   if(!exist){
     int reasoncode = -5; // Need actual reasoncode
