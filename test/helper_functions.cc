@@ -65,25 +65,25 @@ unsigned int toUnsignedInt(string text) {
 
 // See interface (header file).
 short toShort(char *array) {
-  return *(static_cast<short *>(array));
+  return *((short *) array);
 }
 
 // See interface (header file).
 int toInt(char *array) {
-  return *(static_cast<int *>(array));
+  return *((int *) array);
 }
 
 // See interface (header file).
 long toLong(char *array) {
-  return *(static_cast<long *>(array));
+  return *((long *) array);
 }
 
 // See interface (header file).
 double toDouble(char *array) {
-  return *(static_cast<double *>(array));
+  return *((double *) array);
 }
 
 // See interface (header file).
 float toFloat(char *array) {
-  return *(static_cast<float *>(array));
+  return *((float *) array);
 }
