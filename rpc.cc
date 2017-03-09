@@ -180,10 +180,10 @@ int rpcCall(char *name, int *argTypes, void **args) {
 	}
 
   int serverSocket = createSocket();
-	int status = setUpToConnect(serverSocket, serverAddress, serverPort);
-	status = sendExecute(serverSocket, string(name), argTypes, args);
+	int status1 = setUpToConnect(serverSocket, serverAddress, serverPort);
+	status1 = sendExecute(serverSocket, string(name), argTypes, args);
 
-	return status;
+	return status1;
 }
 
 
