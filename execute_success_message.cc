@@ -114,37 +114,43 @@ int ExecuteSuccessMessage::send(int dataTransferSocket) {
 
     switch (argTypeInformation) {
       case ARG_CHAR: {
-        memcpy(messageBufferPointer, args[i], argTypeArrayLength * MAX_LENGTH_ARG_CHAR);
+        memcpy(messageBufferPointer, args[i],
+          argTypeArrayLength * MAX_LENGTH_ARG_CHAR);
         messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_CHAR;
         break;
       }
 
       case ARG_SHORT: {
-        memcpy(messageBufferPointer, args[i], argTypeArrayLength * MAX_LENGTH_ARG_SHORT);
+        memcpy(messageBufferPointer, args[i],
+          argTypeArrayLength * MAX_LENGTH_ARG_SHORT);
         messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_SHORT;
         break;
       }
 
       case ARG_INT: {
-        memcpy(messageBufferPointer, args[i], argTypeArrayLength * MAX_LENGTH_ARG_INT);
+        memcpy(messageBufferPointer, args[i],
+          argTypeArrayLength * MAX_LENGTH_ARG_INT);
         messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_INT;
         break;
       }
 
       case ARG_LONG: {
-        memcpy(messageBufferPointer, args[i], argTypeArrayLength * MAX_LENGTH_ARG_LONG);
+        memcpy(messageBufferPointer, args[i],
+          argTypeArrayLength * MAX_LENGTH_ARG_LONG);
         messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_LONG;
         break;
       }
 
       case ARG_DOUBLE: {
-        memcpy(messageBufferPointer, args[i], argTypeArrayLength * MAX_LENGTH_ARG_DOUBLE);
+        memcpy(messageBufferPointer, args[i],
+          argTypeArrayLength * MAX_LENGTH_ARG_DOUBLE);
         messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_DOUBLE;
         break;
       }
 
       case ARG_FLOAT: {
-        memcpy(messageBufferPointer, args[i], argTypeArrayLength * MAX_LENGTH_ARG_FLOAT);
+        memcpy(messageBufferPointer, args[i],
+          argTypeArrayLength * MAX_LENGTH_ARG_FLOAT);
         messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_FLOAT;
         break;
       }
