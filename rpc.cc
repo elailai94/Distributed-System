@@ -72,8 +72,6 @@ int rpcInit(){
 	setUpToListen(welcomeSocket);
 	serverIdentifier = getHostAddress();
 	port = getSocketPort(welcomeSocket);
-	cout << "SERVER IDENTIFIER: " << serverIdentifier << endl;
-	cout << "PORT: " << port << endl;
 
 	// Opens a connection to the binder
 	binderSocket = createSocket();
@@ -166,6 +164,13 @@ int rpcCall(char *name, int *argTypes, void **args) {
     cout << "Flag2.2" << endl;
     tempStatus = Segment::receive(binderSocket, parsedSegment);
     cout << "Flag2.5" << endl;
+
+    Message *messageFromBinder = parsedSegment->getMessage(); 
+		switch (parsedSegment->getType()) {
+			case MSG_TYPE_LOC_SUCCESS: {
+
+			}
+		}
 
 		if(parsedSegment->getType() == MSG_TYPE_LOC_SUCCESS) { //'LOC_REQUEST'
   		cout << "Got success" << endl;
