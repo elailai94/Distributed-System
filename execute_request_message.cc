@@ -83,7 +83,6 @@ unsigned int ExecuteRequestMessage::getArgsLength() const {
 // See interface (header file).
 unsigned int ExecuteRequestMessage::getLength() const {
   unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
-  unsigned int numOfArgs = numOfArgTypes - 1;
   return MAX_LENGTH_NAME + (numOfArgTypes * MAX_LENGTH_ARG_TYPE) +
     getArgsLength();
 }
@@ -272,7 +271,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
         for (int j = 0; j < argTypeArrayLength; j++) {
           char argLongBuffer[MAX_LENGTH_ARG_LONG] = {'\0'};
           memcpy(argLongBuffer, messageBufferPointer, MAX_LENGTH_ARG_LONG);
-          argLongArray[j] = toLong(argLongArray);
+          argLongArray[j] = toLong(argLongBuffer);
           messageBufferPointer += MAX_LENGTH_ARG_LONG;
         }
         args[i] = static_cast<void *>(argLongArray);
@@ -284,7 +283,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
         for (int j = 0; j < argTypeArrayLength; j++) {
           char argDoubleBuffer[MAX_LENGTH_ARG_DOUBLE] = {'\0'};
           memcpy(argDoubleBuffer, messageBufferPointer, MAX_LENGTH_ARG_DOUBLE);
-          argDoubleArray[j] = toDouble(argDoubleArray);
+          argDoubleArray[j] = toDouble(argDoubleBuffer);
           messageBufferPointer += MAX_LENGTH_ARG_DOUBLE;
         }
         args[i] = static_cast<void *>(argDoubleArray);
@@ -296,7 +295,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
         for (int j = 0; j < argTypeArrayLength; j++) {
           char argFloatBuffer[MAX_LENGTH_ARG_FLOAT] = {'\0'};
           memcpy(argFloatBuffer, messageBufferPointer, MAX_LENGTH_ARG_FLOAT);
-          argFloatArray[j] = toFloat(argFloatArray);
+          argFloatArray[j] = toFloat(argFloatBuffer);
           messageBufferPointer += MAX_LENGTH_ARG_FLOAT;
         }
         args[i] = static_cast<void *>(argFloatArray);
