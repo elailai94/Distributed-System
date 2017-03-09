@@ -64,7 +64,7 @@ void mapPrint(){
 void roundRobinPrint(){
   cout << "roundRobin Print: ";
   for(list<server_function_info *> ::const_iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
-    cout << it->ps->name << endl;
+    cout << (*it)->ps->name << endl;
   }
 }
 
