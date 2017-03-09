@@ -160,9 +160,8 @@ int main(){
   vector<int> myConnections;
   vector<int> myToRemove;
 
-  int status;
-  sock = createSocket();
-  status = setUpToListen(sock);
+  int sock = createSocket();
+  int status = setUpToListen(sock);
 
   cout << "BINDER_ADDRESS " << getHostAddress() << endl;
   cout << "BINDER_PORT " << getSocketPort(sock) << endl;
@@ -252,6 +251,4 @@ int main(){
       myToRemove.clear();
     }
   }
-
-  freeaddrinfo(servinfo);
 }
