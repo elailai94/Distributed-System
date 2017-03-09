@@ -166,14 +166,14 @@ int rpcCall(char * name, int * argTypes, void ** args) {
     cout << "Flag2.5" << endl;
 
 
-		if(segment->getType() == MSG_TYPE_LOC_SUCCESS){ //'LOC_REQUEST'
+		if(parsedSegment->getType() == MSG_TYPE_LOC_SUCCESS){ //'LOC_REQUEST'
   		cout << "Got success" << endl;
-      Message * cast = segment->getMessage();
+      Message * cast = parsedSegment->getMessage();
   		LocSuccessMessage * lcm = dynamic_cast<LocSuccessMessage*>(cast);
 	  	serverAddress = lcm->getServerIdentifier();
 	  	serverPort = lcm->getPort();
 
-	  	}else if(segment->getType() == MSG_TYPE_LOC_FAILURE){
+	  	}else if(parsedSegment->getType() == MSG_TYPE_LOC_FAILURE){
 			//something bad happens
 	  		return 1;
 	  	}
