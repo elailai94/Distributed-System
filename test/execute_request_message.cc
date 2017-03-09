@@ -227,6 +227,9 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
   // Parses the argument from the buffer
   unsigned int numOfArgs = argTypesBuffer.size() - 1;
   void **args = new void*[numOfArgs];
+
+  cout<<"Number of args: " <<numOfArgs << endl;
+
   for (unsigned int i = 0; i < numOfArgs; i++) {
     int argType = argTypes[i];
     int argTypeInformation =
