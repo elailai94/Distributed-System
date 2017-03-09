@@ -4,6 +4,7 @@
 
 #include "execute_request_message.h"
 #include "helper_functions.h"
+#include "rpc.h"
 
 using namespace std;
 
@@ -31,7 +32,7 @@ void **ExecuteRequestMessage::getArgs() const {
 }
 
 // See interface (header file).
-unsigned int ExecuteSuccessMessage::getArgsLength() const {
+unsigned int ExecuteRequestMessage::getArgsLength() const {
   unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
   unsigned int numOfArgs = numOfArgTypes - 1;
   unsigned int argsLength = 0;
@@ -226,7 +227,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
   // Parses the argument from the buffer
   unsigned int numOfArgs = argTypesBuffer.size() - 1;
   void **args = new void*[numOfArgs];
-  for (int i = 0; i < numOfArgs; i++) {
+  for (unsigned int i = 0; i < numOfArgs; i++) {
     int argType = argTypes[i];
     int argTypeInformation =
       (argType & ARG_TYPE_INFORMATION_MASK) >> ARG_TYPE_INFORMATION_SHIFT_AMOUNT;
@@ -237,13 +238,13 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
       case ARG_CHAR: {
         char *argCharArray = new char[argTypeArrayLength];
         memcpy(argCharArray, messageBufferPointer, argTypeArrayLength);
-        args[i] = static_cast<void *>argCharArray;
+        args[i] = static_cast<void *>(argCharArray);
         messageBufferPointer += argTypeArrayLength;
         break;
       }
 
       case ARG_SHORT: {
-        short *argShortArray = new char[argTypeArrayLength];
+        short *argShortArray = new short[argTypeArrayLength];
         for (int j = 0; j < argTypeArrayLength; j++) {
           char argShortBuffer[MAX_LENGTH_ARG_SHORT] = {'\0'};
           memcpy(argShortBuffer, messageBufferPointer, MAX_LENGTH_ARG_SHORT);
@@ -282,7 +283,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
         double *argDoubleArray = new double[argTypeArrayLength];
         for (int j = 0; j < argTypeArrayLength; j++) {
           char argDoubleBuffer[MAX_LENGTH_ARG_DOUBLE] = {'\0'};
-          memcpy(argDoubleArray, messageBufferPointer, MAX_LENGTH_ARG_DOUBLE);
+          memcpy(argDoubleBuffer, messageBufferPointer, MAX_LENGTH_ARG_DOUBLE);
           argDoubleArray[j] = toDouble(argDoubleArray);
           messageBufferPointer += MAX_LENGTH_ARG_DOUBLE;
         }
@@ -298,7 +299,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
           argFloatArray[j] = toFloat(argFloatArray);
           messageBufferPointer += MAX_LENGTH_ARG_FLOAT;
         }
-        arg[i] = static_cast<void *>(argFloatArray);
+        args[i] = static_cast<void *>(argFloatArray);
         break;
       }
     }
