@@ -138,7 +138,9 @@ void location_request_handler(LocRequestMessage * message, int sock){
       exist = true;
 
       cout << "Attempt to send locSuccessMsg" << endl;
-
+      cout << "server_identifier: "<< (*it)->si->server_identifier << endl;
+      cout << "port: " << (*it)->si->port<< endl;
+      
       LocSuccessMessage locSuccessMsg = LocSuccessMessage((*it)->si->server_identifier, (*it)->si->port);
       Segment locSuccessSeg = Segment(locSuccessSeg.getLength(), MSG_TYPE_LOC_SUCCESS, &locSuccessMsg);
       locSuccessSeg.send(sock);
