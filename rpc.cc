@@ -164,7 +164,8 @@ int rpcCall(char * name, int * argTypes, void ** args) {
     status = Segment::receive(binderSocket, segment);
 
 		if(segment->getType() == MSG_TYPE_LOC_SUCCESS){ //'LOC_REQUEST'
-  		Message * cast = segment->getMessage();
+  		cout << "Got success" << endl;
+      Message * cast = segment->getMessage();
   		LocSuccessMessage * lcm = dynamic_cast<LocSuccessMessage*>(cast);
 	  	serverAddress = lcm->getServerIdentifier();
 	  	serverPort = lcm->getPort();
@@ -176,7 +177,10 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	}
 
   int server_sock = createConnection(serverAddress, serverPort);
-	int server_status = sendExecute(server_sock, string(name), argTypes, args);
+  cout << "Flag3" << endl;
+  int server_status = sendExecute(server_sock, string(name), argTypes, args);
+  cout << "Flag4" << endl;
+ 
 
 	return server_status;
 }
