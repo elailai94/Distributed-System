@@ -149,7 +149,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
 	}
 	//do something with returnVal
 
-  cout << "binderSocket: " <<binderSocket << endl;
+  cout << "binderSocket: " << binderSocket << endl;
 
   cout << "Flag1" << endl;
 
