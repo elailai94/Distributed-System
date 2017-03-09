@@ -78,13 +78,31 @@ int main() {
    string serverIdentifier = "ubuntu1404-002.student.cs.uwaterloo.ca";
    unsigned int port = 80;
    string name = "func";
-   int argTypes[3] = {1337, 2525, 369};
-   RegisterRequestMessage msg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
-   cout << "Server Identifier: " << msg.getServerIdentifier() << endl;
-   cout << "Port: " << msg.getPort() << endl;
-   cout << "Name: " << msg.getName() << endl;
-   cout << "ArgTypes: " << *(msg.getArgTypes()) << ", " << *(msg.getArgTypes() + 1) << ", " << *(msg.getArgTypes() + 2) << ", " << *(msg.getArgTypes() + 3) << ", "  <<endl;
-   Segment seg = Segment(msg.getLength(), MSG_TYPE_REGISTER_REQUEST, &msg);
+   /* prepare the arguments for f0 */
+   int a0 = 5;
+   int b0 = 10;
+   int count0 = 3;
+   int return0;
+   int argTypes0[count0 + 1];
+   void **args0;
+
+   argTypes0[0] = (1 << ARG_OUTPUT) | (ARG_INT << 16);
+   argTypes0[1] = (1 << ARG_INPUT) | (ARG_INT << 16);
+   argTypes0[2] = (1 << ARG_INPUT) | (ARG_INT << 16);
+   argTypes0[3] = 0;
+
+   args0 = (void **)malloc(count0 * sizeof(void *));
+   args0[0] = (void *)&return0;
+   args0[1] = (void *)&a0;
+   args0[2] = (void *)&b0;
+
+   ExecuteRequestMessage msg = ExecuteRequestMessage(name, argTypes);
+   //cout << "Server Identifier: " << msg.getServerIdentifier() << endl;
+   //cout << "Port: " << msg.getPort() << endl;
+   //cout << "Name: " << msg.getName() << endl;
+   //cout << "ArgTypes: " << *(msg.getArgTypes()) << ", " << *(msg.getArgTypes() + 1) << ", " << *(msg.getArgTypes() + 2) << ", " << *(msg.getArgTypes() + 3) << ", "  <<endl;
+   
+   Segment seg = Segment(msg.getLength(), MSG_TYPE_EXECUTE_REQUEST, &msg);
    seg.send(clientSocket);
 
    // Closes the client socket
