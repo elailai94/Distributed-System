@@ -54,7 +54,7 @@ void mapPrint(){
 
   for(map<procedure_signature, skeleton, ps_compare>::const_iterator it = proc_skele_dict.begin(); it != proc_skele_dict.end(); ++it){
   
-    cout << it->first->name << ", " ;
+    cout << it->first.name << ", " ;
   }
 
   cout << endl;
