@@ -2,9 +2,7 @@
 #include <sstream>
 #include <string>
 
-#include <netinet/in.h>
 #include <unistd.h>
-#include <arpa/inet.h>
 #include <vector>
 #include <algorithm>
 #include <list>
@@ -51,7 +49,7 @@ void mapPrint(){
   cout << "Map Print: ";
   for(map<procedure_signature, list<server_info *>, ps_compare> ::const_iterator it = proc_loc_dict.begin();
    it != proc_loc_dict.end(); it++){
-  
+
     cout << it->first.name << ", " ;
   }
 
@@ -115,7 +113,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
 
   mapPrint();
   roundRobinPrint();
-  
+
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
   regSuccessSeg.send(sock);
@@ -180,14 +178,13 @@ int main(){
 
   // Creates the welcome socket
   int welcomeSocket = createSocket();
-  int status = setUpToListen(sock);
+  int status = setUpToListen(welcomeSocket);
 
   cout << "BINDER_ADDRESS " << getHostAddress() << endl;
   cout << "BINDER_PORT " << getSocketPort(welcomeSocket) << endl;
 
   fd_set readfds;
   int n;
-  struct sockaddr_storage their_addr;
 
   while(true){
     //CONNECTIONS VECTOR
