@@ -105,6 +105,8 @@ int ExecuteRequestMessage::send(int dataTransferSocket) {
   messageBufferPointer += MAX_LENGTH_ARG_TYPE;
 
   // Writes the arguments to the buffer
+  cout << "SENDING >>>>>>>>>>>>>" << endl;
+
   unsigned int numOfArgs = numOfArgTypes - 1;
   for (unsigned int i = 0; i < numOfArgs; i++) {
     int argType = argTypes[i];
@@ -131,6 +133,7 @@ int ExecuteRequestMessage::send(int dataTransferSocket) {
       case ARG_INT: {
         memcpy(messageBufferPointer, args[i],
           argTypeArrayLength * MAX_LENGTH_ARG_INT);
+        cout << args[i] << endl;
         messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_INT;
         break;
       }
