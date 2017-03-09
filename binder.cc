@@ -117,7 +117,8 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   }
 
   mapPrint();
-
+  roundRobinPrint();
+  
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
   regSuccessSeg.send(sock);
