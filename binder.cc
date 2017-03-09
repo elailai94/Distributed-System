@@ -33,7 +33,7 @@ using namespace std;
 //DATABASE
 //ROUND ROBIN
 
-static map<procedure_signature, list<server_info *>, ps_compare> proc_loc_dict;
+static map<procedure_signature, list<server_info *>, ps_compare> procLocDict;
 static list<server_function_info *> roundRobinList;
 
 /*
@@ -44,10 +44,10 @@ IF FUNCTION EXISTS IN ROUND ROBIN DELETE OLD REPLACE WITH NEW (where)
 */
 
 void mapPrint(){
-  cout << "proc_loc_dict size: "<<proc_loc_dict.size() << endl;
+  cout << "procLocDict size: "<<procLocDict.size() << endl;
   cout << "Map Print: ";
-  for(map<procedure_signature, list<server_info *>, ps_compare> ::const_iterator it = proc_loc_dict.begin();
-   it != proc_loc_dict.end(); it++){
+  for(map<procedure_signature, list<server_info *>, ps_compare> ::const_iterator it = procLocDict.begin();
+   it != procLocDict.end(); it++){
 
     cout << it->first.name << ", " ;
   }
@@ -75,12 +75,12 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   int status = 0;
 
   //if 'key' dosnt exist in map, add it to the map and round robin
-	if (proc_loc_dict.find(key) == proc_loc_dict.end()) {
+	if (procLocDict.find(key) == procLocDict.end()) {
     //The purpose of this function is so we can have copy of the argTypes that not the original
     int *memArgTypes = copyArgTypes(argTypes);
 
     key = procedure_signature(name, memArgTypes);
-    proc_loc_dict[key] = list<server_info *>();
+    procLocDict[key] = list<server_info *>();
 
     //This is bad we shouldn't need a newKey and we should be able to use the key above
     //due to &* reasones I made a variable newKey for the 'info' object
@@ -93,7 +93,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
 
   } else {
     bool sameLoc = false;
-    list<server_info *> hostList = proc_loc_dict[key];
+    list<server_info *> hostList = procLocDict[key];
 
     for (list<server_info *>::iterator it = hostList.begin(); it != hostList.end(); it++) {
       if((*it)->socket == sock){

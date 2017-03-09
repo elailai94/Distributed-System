@@ -42,18 +42,18 @@ int binderSocket = 0;
 
 // Global variables for server
 struct addrinfo* servinfo;
-static map<procedure_signature, skeleton, ps_compare> proc_skele_dict;
+static map<procedure_signature, skeleton, ps_compare> procSkeleDict;
 string serverIdentifier;
 unsigned int port = 0;
 int welcomeSocket = 0;
 
 void mapPrint(){
-  cout << "proc_skele_dict size: "<<proc_skele_dict.size() << endl;
+  cout << "procSkeleDict size: "<<procSkeleDict.size() << endl;
 
   cout << "Map Print: ";
 
-  for(map<procedure_signature, skeleton>::iterator it = proc_skele_dict.begin();
-   it != proc_skele_dict.end(); ++it){
+  for(map<procedure_signature, skeleton>::iterator it = procSkeleDict.begin();
+   it != procSkeleDict.end(); ++it){
 
     cout << it->first.name << endl;
   }
@@ -224,7 +224,7 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
       struct procedure_signature k(string(name), argTypes);
 
 
-      proc_skele_dict[k] = f;
+      procSkeleDict[k] = f;
 
       //cout << "k: " << k.name << endl;
       mapPrint();
@@ -299,7 +299,7 @@ int rpcExecute(void){
               ExecuteRequestMessage * eqm = dynamic_cast<ExecuteRequestMessage*>(cast);
 
               procedure_signature * ps = new procedure_signature(eqm->getName(), eqm->getArgTypes());
-              skeleton skel = proc_skele_dict[*ps];
+              skeleton skel = procSkeleDict[*ps];
 
               int result = skel(eqm->getArgTypes(), eqm->getArgs());
 
