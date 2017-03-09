@@ -138,6 +138,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
 	int status;
 
 	if(!connectedToBinder){
+    cout << "Does it run" << endl;
 		binderSocket = createSocket();
 		string binderAddress = getBinderAddress();
 		unsigned int binderPort = getBinderPort();
@@ -146,24 +147,19 @@ int rpcCall(char *name, int *argTypes, void **args) {
 	}
 	//do something with returnVal
 
-  cout << "Flag1" << endl;
+  cout << "binderSocket: " << binderSocket << endl;
 
   LocRequestMessage locReqMsg = LocRequestMessage(name, argTypes);
   Segment locReqSeg = Segment(locReqMsg.getLength(), MSG_TYPE_LOC_REQUEST, &locReqMsg);
   int binder_status = locReqSeg.send(binderSocket);
-  cout << "Flag1.5" << endl;
 
 	//maybe error check with binder_status
   //TODO: SEGMENT FAULT IF NOT IN THIS FOR LOOP
 	/**Server stuff **/
 	if(binder_status >= 0){
-	  cout << "Flag2" << endl;
     Segment * parsedSegment = 0;
-    cout << "Flag2.1" << endl;
     int tempStatus = 0;
-    cout << "Flag2.2" << endl;
     tempStatus = Segment::receive(binderSocket, parsedSegment);
-    cout << "Flag2.5" << endl;
 
     Message *messageFromBinder = parsedSegment->getMessage(); 
 		switch (parsedSegment->getType()) {
@@ -185,10 +181,10 @@ int rpcCall(char *name, int *argTypes, void **args) {
 	}
 
   int serverSocket = createSocket();
-	int status = setUpToConnect(serverSocket, serverAddress, serverPort);
-	status = sendExecute(serverSocket, string(name), argTypes, args);
+	int status1 = setUpToConnect(serverSocket, serverAddress, serverPort);
+	status1 = sendExecute(serverSocket, string(name), argTypes, args);
 
-	return status;
+	return status1;
 }
 
 
