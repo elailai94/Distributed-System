@@ -14,12 +14,7 @@ using namespace std;
 
 // See interface (header file).
 int createSocket() {
-  // Creates the socket
   int socket = ::socket(AF_INET, SOCK_STREAM, 0);
-  if (socket < 0) {
-    return socket;
-  }
-
   return socket;
 }
 
@@ -125,4 +120,19 @@ string getBinderAddress() {
 unsigned int getBinderPort() {
   char *binderPort = getenv("BINDER_PORT");
   return toUnsignedInteger(string(binderPort));
+}
+
+// See interface (header file).
+int acceptConnection(int socket) {
+  struct sockaddr hostAddress;
+  socklen_t hostAddressLength = sizeof(hostAddress);
+
+  int newSocket = accept(socket, &hostAddress, &hostAddressLength);
+  return newSocket;
+}
+
+// See interface (header file).
+int destroySocket(int socket) {
+  int result = close(socket);
+  return result;
 }

@@ -24,4 +24,10 @@ std::string getBinderAddress();
 // Returns the port number of the binder
 unsigned int getBinderPort();
 
+// Creates a new socket when a connection is made to the socket
+int acceptConnection(int socket);
+
+// Destroys a socket
+int destroySocket(int socket);
+
 #endif

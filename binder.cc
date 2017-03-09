@@ -2,12 +2,7 @@
 #include <sstream>
 #include <string>
 
-#include <netinet/in.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <sys/param.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
 #include <vector>
 #include <algorithm>
 #include <list>
@@ -54,7 +49,7 @@ void mapPrint(){
   cout << "Map Print: ";
   for(map<procedure_signature, list<server_info *>, ps_compare> ::const_iterator it = proc_loc_dict.begin();
    it != proc_loc_dict.end(); it++){
-  
+
     cout << it->first.name << ", " ;
   }
 
@@ -118,7 +113,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
 
   mapPrint();
   roundRobinPrint();
-  
+
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
   regSuccessSeg.send(sock);
@@ -181,22 +176,22 @@ int main(){
   vector<int> myConnections;
   vector<int> myToRemove;
 
-  int sock = createSocket();
-  int status = setUpToListen(sock);
+  // Creates the welcome socket
+  int welcomeSocket = createSocket();
+  int status = setUpToListen(welcomeSocket);
 
   cout << "BINDER_ADDRESS " << getHostAddress() << endl;
-  cout << "BINDER_PORT " << getSocketPort(sock) << endl;
+  cout << "BINDER_PORT " << getSocketPort(welcomeSocket) << endl;
 
   fd_set readfds;
   int n;
-  struct sockaddr_storage their_addr;
 
   while(true){
     //CONNECTIONS VECTOR
     FD_ZERO(&readfds);
-    FD_SET(sock, &readfds);
+    FD_SET(welcomeSocket, &readfds);
 
-    n = sock;
+    n = welcomeSocket;
 
     for (vector<int>::iterator it = myConnections.begin();it != myConnections.end(); ++it) {
       int connection = *it;
@@ -214,17 +209,15 @@ int main(){
       cerr << "ERROR: select failed." << endl;
     } else {
 
-      if (FD_ISSET(sock, &readfds)) {
-        socklen_t addr_size = sizeof their_addr;
-        int new_sock = accept(sock, (struct sockaddr*)&their_addr, &addr_size);
+      if (FD_ISSET(welcomeSocket, &readfds)) {
+        int connectionSocket = acceptConnection(welcomeSocket);
 
-        if (new_sock < 0) {
+        if (connectionSocket < 0) {
           cerr << "ERROR: while accepting connection" << endl;
-          close(new_sock);
           continue;
         }
 
-        myConnections.push_back(new_sock);
+        myConnections.push_back(connectionSocket);
 
       } else {
 
@@ -267,9 +260,12 @@ int main(){
 
       for (vector<int>::iterator it = myToRemove.begin(); it != myToRemove.end(); ++it) {
         myConnections.erase(remove(myConnections.begin(), myConnections.end(), *it), myConnections.end());
-        close(*it);
+        destroySocket(*it);
       }
       myToRemove.clear();
     }
   }
+
+  // Destroys the welcome socket
+  destroySocket(welcomeSocket);
 }
