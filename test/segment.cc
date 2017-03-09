@@ -55,7 +55,7 @@ int Segment::send(int dataTransferSocket) {
     return result;
   }
 
-  return length;
+  return result;
 }
 
 // See interface (header file).
@@ -165,5 +165,5 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
   }
 
   parsedSegment = new Segment(length, type, parsedMessage);
-  return length;
+  return result;
 }

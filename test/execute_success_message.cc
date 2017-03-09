@@ -3,18 +3,10 @@
 #include <sys/socket.h>
 
 #include "execute_success_message.h"
+#include "helper_functions.h"
+#include "rpc.h"
 
 using namespace std;
-
-// See interface (header file).
-unsigned int ExecuteSuccessMessage::countNumOfArgTypes(int *argTypes) const {
-  int count = 1;
-  while (argTypes[(count - 1)] != 0) {
-    count += 1;
-  }
-
-  return count;
-}
 
 // See interface (header file).
 ExecuteSuccessMessage::ExecuteSuccessMessage(string name, int *argTypes,
@@ -40,11 +32,60 @@ void **ExecuteSuccessMessage::getArgs() const {
 }
 
 // See interface (header file).
+unsigned int ExecuteSuccessMessage::getArgsLength() const {
+  unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
+  unsigned int numOfArgs = numOfArgTypes - 1;
+  unsigned int argsLength = 0;
+
+  for (unsigned int i = 0; i < numOfArgs; i++) {
+    int argType = argTypes[i];
+    int argTypeInformation =
+      (argType & ARG_TYPE_INFORMATION_MASK) >> ARG_TYPE_INFORMATION_SHIFT_AMOUNT;
+    int argTypeArrayLength = argType & ARG_TYPE_ARRAY_LENGTH_MASK;
+    argTypeArrayLength = (argTypeArrayLength == 0) ? 1: argTypeArrayLength;
+
+    switch (argTypeInformation) {
+      case ARG_CHAR: {
+        argsLength += argTypeArrayLength * MAX_LENGTH_ARG_CHAR;
+        break;
+      }
+
+      case ARG_SHORT: {
+        argsLength += argTypeArrayLength * MAX_LENGTH_ARG_SHORT;
+        break;
+      }
+
+      case ARG_INT: {
+        argsLength += argTypeArrayLength * MAX_LENGTH_ARG_INT;
+        break;
+      }
+
+      case ARG_LONG: {
+        argsLength += argTypeArrayLength * MAX_LENGTH_ARG_LONG;
+        break;
+      }
+
+      case ARG_DOUBLE: {
+        argsLength += argTypeArrayLength * MAX_LENGTH_ARG_DOUBLE;
+        break;
+      }
+
+      case ARG_FLOAT: {
+        argsLength += argTypeArrayLength * MAX_LENGTH_ARG_FLOAT;
+        break;
+      }
+    }
+  }
+
+  return argsLength;
+}
+
+// See interface (header file).
 unsigned int ExecuteSuccessMessage::getLength() const {
   unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
   unsigned int numOfArgs = numOfArgTypes - 1;
   return MAX_LENGTH_NAME + (numOfArgTypes * MAX_LENGTH_ARG_TYPE) +
-    (numOfArgs * MAX_LENGTH_ARG);
+    getArgsLength();
 }
 
 // See interface (header file).
@@ -64,8 +105,57 @@ int ExecuteSuccessMessage::send(int dataTransferSocket) {
 
   // Writes the arguments to the buffer
   unsigned int numOfArgs = numOfArgTypes - 1;
-  memcpy(messageBufferPointer, args,
-    numOfArgs * MAX_LENGTH_ARG);
+  for (unsigned int i = 0; i < numOfArgs; i++) {
+    int argType = argTypes[i];
+    int argTypeInformation =
+      (argType & ARG_TYPE_INFORMATION_MASK) >> ARG_TYPE_INFORMATION_SHIFT_AMOUNT;
+    int argTypeArrayLength = argType & ARG_TYPE_ARRAY_LENGTH_MASK;
+    argTypeArrayLength = (argTypeArrayLength == 0) ? 1: argTypeArrayLength;
+
+    switch (argTypeInformation) {
+      case ARG_CHAR: {
+        memcpy(messageBufferPointer, args[i],
+          argTypeArrayLength * MAX_LENGTH_ARG_CHAR);
+        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_CHAR;
+        break;
+      }
+
+      case ARG_SHORT: {
+        memcpy(messageBufferPointer, args[i],
+          argTypeArrayLength * MAX_LENGTH_ARG_SHORT);
+        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_SHORT;
+        break;
+      }
+
+      case ARG_INT: {
+        memcpy(messageBufferPointer, args[i],
+          argTypeArrayLength * MAX_LENGTH_ARG_INT);
+        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_INT;
+        break;
+      }
+
+      case ARG_LONG: {
+        memcpy(messageBufferPointer, args[i],
+          argTypeArrayLength * MAX_LENGTH_ARG_LONG);
+        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_LONG;
+        break;
+      }
+
+      case ARG_DOUBLE: {
+        memcpy(messageBufferPointer, args[i],
+          argTypeArrayLength * MAX_LENGTH_ARG_DOUBLE);
+        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_DOUBLE;
+        break;
+      }
+
+      case ARG_FLOAT: {
+        memcpy(messageBufferPointer, args[i],
+          argTypeArrayLength * MAX_LENGTH_ARG_FLOAT);
+        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_FLOAT;
+        break;
+      }
+    }
+  }
 
   // Writes the message from the buffer out to the data transfer socket
   unsigned int totalNumOfBytesMessage = getLength();
@@ -136,22 +226,84 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
   }
 
   // Parses the argument from the buffer
-  vector<void *> argsBuffer;
-  while (true) {
-    char argBuffer[MAX_LENGTH_ARG] = {'\0'};
-    memcpy(argBuffer, messageBufferPointer, MAX_LENGTH_ARG);
-    void *arg = *((void **) argBuffer);
-    argsBuffer.push_back(arg);
-    messageBufferPointer += MAX_LENGTH_ARG;
+  unsigned int numOfArgs = argTypesBuffer.size() - 1;
+  void **args = new void*[numOfArgs];
+  for (int i = 0; i < numOfArgs; i++) {
+    int argType = argTypes[i];
+    int argTypeInformation =
+      (argType & ARG_TYPE_INFORMATION_MASK) >> ARG_TYPE_INFORMATION_SHIFT_AMOUNT;
+    int argTypeArrayLength = argType & ARG_TYPE_ARRAY_LENGTH_MASK;
+    argTypeArrayLength = (argTypeArrayLength == 0) ? 1: argTypeArrayLength;
 
-    if (arg == 0) {
-      break;
+    switch (argTypeInformation) {
+      case ARG_CHAR: {
+        char *argCharArray = new char[argTypeArrayLength];
+        memcpy(argCharArray, messageBufferPointer, argTypeArrayLength);
+        args[i] = static_cast<void *>argCharArray;
+        messageBufferPointer += argTypeArrayLength;
+        break;
+      }
+
+      case ARG_SHORT: {
+        short *argShortArray = new char[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          char argShortBuffer[MAX_LENGTH_ARG_SHORT] = {'\0'};
+          memcpy(argShortBuffer, messageBufferPointer, MAX_LENGTH_ARG_SHORT);
+          argShortArray[j] = toShort(argShortBuffer);
+          messageBufferPointer += MAX_LENGTH_ARG_SHORT;
+        }
+        args[i] = static_cast<void *>(argShortArray);
+        break;
+      }
+
+      case ARG_INT: {
+        int *argIntArray = new int[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          char argIntBuffer[MAX_LENGTH_ARG_INT] = {'\0'};
+          memcpy(argIntBuffer, messageBufferPointer, MAX_LENGTH_ARG_INT);
+          argIntArray[j] = toInt(argIntBuffer);
+          messageBufferPointer += MAX_LENGTH_ARG_INT;
+        }
+        args[i] = static_cast<void *>(argIntArray);
+        break;
+      }
+
+      case ARG_LONG: {
+        long *argLongArray = new long[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          char argLongBuffer[MAX_LENGTH_ARG_LONG] = {'\0'};
+          memcpy(argLongBuffer, messageBufferPointer, MAX_LENGTH_ARG_LONG);
+          argLongArray[j] = toLong(argLongArray);
+          messageBufferPointer += MAX_LENGTH_ARG_LONG;
+        }
+        args[i] = static_cast<void *>(argLongArray);
+        break;
+      }
+
+      case ARG_DOUBLE: {
+        double *argDoubleArray = new double[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          char argDoubleBuffer[MAX_LENGTH_ARG_DOUBLE] = {'\0'};
+          memcpy(argDoubleArray, messageBufferPointer, MAX_LENGTH_ARG_DOUBLE);
+          argDoubleArray[j] = toDouble(argDoubleArray);
+          messageBufferPointer += MAX_LENGTH_ARG_DOUBLE;
+        }
+        args[i] = static_cast<void *>(argDoubleArray);
+        break;
+      }
+
+      case ARG_FLOAT: {
+        float *argFloatArray = new float[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          char argFloatBuffer[MAX_LENGTH_ARG_FLOAT] = {'\0'};
+          memcpy(argFloatBuffer, messageBufferPointer, MAX_LENGTH_ARG_FLOAT);
+          argFloatArray[j] = toFloat(argFloatArray);
+          messageBufferPointer += MAX_LENGTH_ARG_FLOAT;
+        }
+        arg[i] = static_cast<void *>(argFloatArray);
+        break;
+      }
     }
-  }
-
-  void **args = new void *[argsBuffer.size()];
-  for (unsigned int i = 0; i < argsBuffer.size(); i++) {
-    args[i] = argsBuffer[i];
   }
 
   parsedMessage = new ExecuteSuccessMessage(name, argTypes, args);
