@@ -146,6 +146,8 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	}
 	//do something with returnVal
 
+  cout << "Flag1" << endl;
+
   LocRequestMessage locReqMsg = LocRequestMessage(name, argTypes);
   Segment locReqSeg = Segment(locReqMsg.getLength(), MSG_TYPE_LOC_REQUEST, &locReqMsg);
   int binder_status = locReqSeg.send(binderSocket);
@@ -154,7 +156,8 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 
 	/**Server stuff **/
 	if(binder_status == 0){
-		Segment * segment = 0;
+	  cout << "Flag2" << endl;
+    Segment * segment = 0;
     status = Segment::receive(binderSocket, segment);
 
 		if(segment->getType() == MSG_TYPE_LOC_SUCCESS){ //'LOC_REQUEST'
