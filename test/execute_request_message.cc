@@ -1,6 +1,7 @@
 #include <cstring>
 #include <vector>
 #include <sys/socket.h>
+#include <iostream>
 
 #include "execute_request_message.h"
 #include "helper_functions.h"
