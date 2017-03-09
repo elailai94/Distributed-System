@@ -3,9 +3,11 @@
 
 #include <string>
 
-int createConnection(std::string address, unsigned int port);
 bool compareArr(const int *array1, const int *array2);
-int findLenOfArgTypes(int *array);
+
+// Returns a count of the number of argument types
+unsigned int countNumOfArgTypes(int* argTypes);
+
 int *copyArgTypes(int argTypes[]);
 
 // Converts an unsigned number to a string

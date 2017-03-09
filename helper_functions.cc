@@ -18,17 +18,14 @@ bool compareArr(const int* array1, const int* array2){
   return true;
 }
 
-int findLenOfArgTypes(int * array){
-  unsigned int counter = 0;
-  while(true){
-    counter++;
-
-    int type = *array;
-    array++;
-    if(type == 0){
-      break;
-    }
+// See interface (header file).
+unsigned int countNumOfArgTypes(int *argTypes) {
+  int count = 1;
+  while (argTypes[(count - 1)] != 0) {
+    count += 1;
   }
+
+  return count;
 }
 
 int *copyArgTypes(int *argTypes) {
