@@ -159,7 +159,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 
 	/**Server stuff **/
 	if(binder_status >= 0){
-	  cout << "Flag2" << endl;
+	  cout << "Flag2.9999999999999999999" << endl;
     Segment * segment = 0;
     status = Segment::receive(binderSocket, segment);
     cout << "Flag2.5" << endl;
