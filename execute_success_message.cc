@@ -220,6 +220,72 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
   }
 
   // Parses the argument from the buffer
+  void **args = new void*[argTypesBuffer.size() - 1];
+  for (int i = 0; i < (argTypesBuffer.size() - 1); i++) {
+    int argType = argTypes[i];
+    int argTypeInformation =
+      (argType & ARG_TYPE_INFORMATION_MASK) >> ARG_TYPE_INFORMATION_SHIFT_AMOUNT;
+    int argTypeArrayLength = argType & ARG_TYPE_ARRAY_LENGTH_MASK;
+    argTypeArrayLength = (argTypeArrayLength == 0) ? 1: argTypeArrayLength;
+
+    switch (argTypeInformation) {
+      case ARG_CHAR: {
+        char *argCharArray = new char[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          char argCharBuffer[MAX_LENGTH_ARG_CHAR] = {'\0'};
+          messageBufferPointer += MAX_LENGTH_ARG_CHAR;
+        }
+        args[i] = static_cast<void *>argCharArray;
+        break;
+      }
+
+      case ARG_SHORT: {
+        short *argShortArray = new char[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          messageBufferPointer += MAX_LENGTH_ARG_SHORT;
+        }
+        args[i] = static_cast<void *>(argShortArray);
+        break;
+      }
+
+      case ARG_INT: {
+        int *argIntArray = new int[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          messageBufferPointer += MAX_LENGTH_ARG_INT;
+        }
+        args[i] = static_cast<void *>(argIntArray);
+        break;
+      }
+
+      case ARG_LONG: {
+        long *argLongArray = new long[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          messageBufferPointer += MAX_LENGTH_ARG_LONG;
+        }
+        args[i] = static_cast<void *>(argLongArray);
+        break;
+      }
+
+      case ARG_DOUBLE: {
+        double *argDoubleArray = new double[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          messageBufferPointer += MAX_LENGTH_ARG_DOUBLE;
+        }
+        args[i] = static_cast<void *>(argDoubleArray);
+        break;
+      }
+
+      case ARG_FLOAT: {
+        float *argFloatArray = new float[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          messageBufferPointer += MAX_LENGTH_ARG_FLOAT;
+        }
+        arg[i] = static_cast<void *>(argFloatArray);
+        break;
+      }
+    }
+  }
+
   vector<void *> argsBuffer;
   while (true) {
     char argBuffer[MAX_LENGTH_ARG] = {'\0'};
