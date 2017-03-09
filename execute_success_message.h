@@ -10,7 +10,7 @@ class ExecuteSuccessMessage: public Message {
   int *argTypes;
   void **args;
 
-  // Returns the
+  // Returns the length of the argument values
   unsigned int getArgsLength() const;
 
 public:

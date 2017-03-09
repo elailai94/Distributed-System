@@ -42,7 +42,7 @@ unsigned int ExecuteSuccessMessage::getArgsLength() const {
     int argTypeInformation =
       (argType & ARG_TYPE_INFORMATION_MASK) >> ARG_TYPE_INFORMATION_SHIFT_AMOUNT;
     int argTypeArrayLength = argType & ARG_TYPE_ARRAY_LENGTH_MASK;
-    argTypeArrayLength = argTypeArrayLength == 0 ? 1: argTypeArrayLength;
+    argTypeArrayLength = (argTypeArrayLength == 0) ? 1: argTypeArrayLength;
 
     switch (argTypeInformation) {
       case ARG_CHAR: {
@@ -105,8 +105,51 @@ int ExecuteSuccessMessage::send(int dataTransferSocket) {
 
   // Writes the arguments to the buffer
   unsigned int numOfArgs = numOfArgTypes - 1;
-  memcpy(messageBufferPointer, args,
-    numOfArgs * MAX_LENGTH_ARG);
+  for (unsigned int i = 0; i < numOfArgs; i++) {
+    int argType = argTypes[i];
+    int argTypeInformation =
+      (argType & ARG_TYPE_INFORMATION_MASK) >> ARG_TYPE_INFORMATION_SHIFT_AMOUNT;
+    int argTypeArrayLength = argType & ARG_TYPE_ARRAY_LENGTH_MASK;
+    argTypeArrayLength = (argTypeArrayLength == 0) ? 1: argTypeArrayLength;
+
+    switch (argTypeInformation) {
+      case ARG_CHAR: {
+        memcpy(messageBufferPointer, args[i], argTypeArrayLength * MAX_LENGTH_ARG_CHAR);
+        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_CHAR;
+        break;
+      }
+
+      case ARG_SHORT: {
+        memcpy(messageBufferPointer, args[i], argTypeArrayLength * MAX_LENGTH_ARG_SHORT);
+        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_SHORT;
+        break;
+      }
+
+      case ARG_INT: {
+        memcpy(messageBufferPointer, args[i], argTypeArrayLength * MAX_LENGTH_ARG_INT);
+        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_INT;
+        break;
+      }
+
+      case ARG_LONG: {
+        memcpy(messageBufferPointer, args[i], argTypeArrayLength * MAX_LENGTH_ARG_LONG);
+        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_LONG;
+        break;
+      }
+
+      case ARG_DOUBLE: {
+        memcpy(messageBufferPointer, args[i], argTypeArrayLength * MAX_LENGTH_ARG_DOUBLE);
+        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_DOUBLE;
+        break;
+      }
+
+      case ARG_FLOAT: {
+        memcpy(messageBufferPointer, args[i], argTypeArrayLength * MAX_LENGTH_ARG_FLOAT);
+        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_FLOAT;
+        break;
+      }
+    }
+  }
 
   // Writes the message from the buffer out to the data transfer socket
   unsigned int totalNumOfBytesMessage = getLength();
