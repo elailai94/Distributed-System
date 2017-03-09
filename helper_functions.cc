@@ -62,3 +62,28 @@ unsigned int toUnsignedInteger(string text) {
 
   return number;
 }
+
+// See interface (header file).
+short toShort(char *array) {
+  return *(static_cast<short *>(array));
+}
+
+// See interface (header file).
+int toInt(char *array) {
+  return *(static_cast<int *>(array));
+}
+
+// See interface (header file).
+long toLong(char *array) {
+  return *(static_cast<long *>(array));
+}
+
+// See interface (header file).
+double toDouble(char *array) {
+  return *(static_cast<double *>(array));
+}
+
+// See interface (header file).
+float toFloat(char *array) {
+  return *(static_cast<float *>(array));
+}
