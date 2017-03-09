@@ -54,8 +54,8 @@ void mapPrint(){
 
   cout << "Map Print: ";
 
-  for(map<procedure_signature, skeleton, ps_compare>::const_iterator it = proc_skele_dict.begin();
-   it != proc_skele_dict.end(); it++){
+  for(map<procedure_signature, skeleton, ps_compare>::iterator it = proc_skele_dict.begin();
+   it != proc_skele_dict.end(); ++it){
   
     cout << it->first.name << ", " ;
   }
@@ -215,8 +215,8 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
 
       proc_skele_dict[k] = f;
 
-      cout << "k: " << k.name << endl;
-      mapPrint();
+      //cout << "k: " << k.name << endl;
+      //mapPrint();
 
     }else if(parsedSegment->getType() == MSG_TYPE_REGISTER_FAILURE){
       return 0;
