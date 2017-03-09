@@ -185,7 +185,7 @@ int main() {
   // Creates the welcome socket
   int welcomeSocket = createSocket();
   int status = setUpToListen(welcomeSocket);
-
+  
   cout << "BINDER_ADDRESS " << getHostAddress() << endl;
   cout << "BINDER_PORT " << getSocketPort(welcomeSocket) << endl;
 

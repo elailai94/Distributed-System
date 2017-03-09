@@ -56,7 +56,7 @@ void mapPrint(){
 
   for(map<procedure_signature, skeleton>::iterator it = proc_skele_dict.begin();
    it != proc_skele_dict.end(); ++it){
-  
+
     cout << it->first.name << endl;
   }
 
@@ -215,7 +215,7 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
       RegisterSuccessMessage * rsm = dynamic_cast<RegisterSuccessMessage*>(cast);
 
       struct procedure_signature k(string(name), argTypes);
-      
+
 
       proc_skele_dict[k] = f;
 
@@ -236,6 +236,7 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
 
 
 int rpcExecute(void){
+	cout << "Running rpcExecute..." << endl;
   //Create connection socket ot be used for accepting clients
   vector<int> myConnections;
   vector<int> myToRemove;
@@ -244,9 +245,6 @@ int rpcExecute(void){
   int n;
   int status;
   struct sockaddr_storage their_addr;
-
-  cout << "rpcExecute" << endl;
-
 
   while(true){
     //CONNECTIONS VECTOR
