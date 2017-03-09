@@ -3,18 +3,9 @@
 #include <sys/socket.h>
 
 #include "execute_success_message.h"
+#include "helper_functions.h"
 
 using namespace std;
-
-// See interface (header file).
-unsigned int ExecuteSuccessMessage::countNumOfArgTypes(int *argTypes) const {
-  int count = 1;
-  while (argTypes[(count - 1)] != 0) {
-    count += 1;
-  }
-
-  return count;
-}
 
 // See interface (header file).
 ExecuteSuccessMessage::ExecuteSuccessMessage(string name, int *argTypes,

@@ -10,9 +10,6 @@ class ExecuteSuccessMessage: public Message {
   int *argTypes;
   void **args;
 
-  // Returns a count of the number of argument types
-  unsigned int countNumOfArgTypes(int *argTypes) const;
-
 public:
   ExecuteSuccessMessage(std::string name, int *argTypes, void **args);  // Constructor
   ~ExecuteSuccessMessage(); // Destructor
