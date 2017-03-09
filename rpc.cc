@@ -131,10 +131,10 @@ int sendExecute(int sock, string name, int* argTypes, void**args){
 
 // See interface (header file).
 int rpcCall(char *name, int *argTypes, void **args) {
-  cout << "Flag0" << endl;
+  cout << "Running rpcCall..." << endl;
 
 	string serverAddress;
-	unsigned int serverPort;
+	unsigned int serverPort = 0;
 	int status;
 
 	if(!connectedToBinder){
@@ -157,27 +157,25 @@ int rpcCall(char *name, int *argTypes, void **args) {
   //TODO: SEGMENT FAULT IF NOT IN THIS FOR LOOP
 	/**Server stuff **/
 	if(binder_status >= 0){
-    Segment * parsedSegment = 0;
+    Segment *parsedSegment = 0;
     int tempStatus = 0;
     tempStatus = Segment::receive(binderSocket, parsedSegment);
 
-    Message *messageFromBinder = parsedSegment->getMessage(); 
+    Message *messageFromBinder = parsedSegment->getMessage();
 		switch (parsedSegment->getType()) {
 			case MSG_TYPE_LOC_SUCCESS: {
+				LocSuccessMessage *lsm =
+				  dynamic_cast<LocSuccessMessage *>(messageFromBinder);
+				serverAddress = lsm->getServerIdentifier();
+				serverPort = lsm->getPort();
+				break;
+			}
 
+			case MSG_TYPE_LOC_FAILURE: {
+				return -1;
+				break;
 			}
 		}
-
-		if(parsedSegment->getType() == MSG_TYPE_LOC_SUCCESS) { //'LOC_REQUEST'
-  		cout << "Got success" << endl;
-      Message * cast = parsedSegment->getMessage();
-  		LocSuccessMessage * lcm = dynamic_cast<LocSuccessMessage*>(cast);
-	  	serverAddress = lcm->getServerIdentifier();
-	  	serverPort = lcm->getPort();
-	  }else if(parsedSegment->getType() == MSG_TYPE_LOC_FAILURE) {
-			//something bad happens
-	  	return 1;
-	  }
 	}
 
   int serverSocket = createSocket();
