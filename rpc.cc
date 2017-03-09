@@ -162,6 +162,8 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	  cout << "Flag2" << endl;
     Segment * segment = 0;
     status = Segment::receive(binderSocket, segment);
+    cout << "Flag2.5" << endl;
+
 
 		if(segment->getType() == MSG_TYPE_LOC_SUCCESS){ //'LOC_REQUEST'
   		cout << "Got success" << endl;
