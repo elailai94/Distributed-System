@@ -10,6 +10,9 @@ class ExecuteSuccessMessage: public Message {
   int *argTypes;
   void **args;
 
+  // Returns the
+  unsigned int getArgsLength() const;
+
 public:
   ExecuteSuccessMessage(std::string name, int *argTypes, void **args);  // Constructor
   ~ExecuteSuccessMessage(); // Destructor

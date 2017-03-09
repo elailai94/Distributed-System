@@ -4,6 +4,7 @@
 
 #include "execute_success_message.h"
 #include "helper_functions.h"
+#include "rpc.h"
 
 using namespace std;
 
@@ -31,11 +32,60 @@ void **ExecuteSuccessMessage::getArgs() const {
 }
 
 // See interface (header file).
+unsigned int ExecuteSuccessMessage::getArgsLength() const {
+  unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
+  unsigned int numOfArgs = numOfArgTypes - 1;
+  unsigned int argsLength = 0;
+
+  for (unsigned int i = 0; i < numOfArgs; i++) {
+    int argType = argTypes[i];
+    int argTypeInformation =
+      (argType & ARG_TYPE_INFORMATION_MASK) >> ARG_TYPE_INFORMATION_SHIFT_AMOUNT;
+    int argTypeArrayLength = argType & ARG_TYPE_ARRAY_LENGTH_MASK;
+    argTypeArrayLength = argTypeArrayLength == 0 ? 1: argTypeArrayLength;
+
+    switch (argTypeInformation) {
+      case ARG_CHAR: {
+        argsLength += argTypeArrayLength * MAX_LENGTH_ARG_CHAR;
+        break;
+      }
+
+      case ARG_SHORT: {
+        argsLength += argTypeArrayLength * MAX_LENGTH_ARG_SHORT;
+        break;
+      }
+
+      case ARG_INT: {
+        argsLength += argTypeArrayLength * MAX_LENGTH_ARG_INT;
+        break;
+      }
+
+      case ARG_LONG: {
+        argsLength += argTypeArrayLength * MAX_LENGTH_ARG_LONG;
+        break;
+      }
+
+      case ARG_DOUBLE: {
+        argsLength += argTypeArrayLength * MAX_LENGTH_ARG_DOUBLE;
+        break;
+      }
+
+      case ARG_FLOAT: {
+        argsLength += argTypeArrayLength * MAX_LENGTH_ARG_FLOAT;
+        break;
+      }
+    }
+  }
+
+  return argsLength;
+}
+
+// See interface (header file).
 unsigned int ExecuteSuccessMessage::getLength() const {
   unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
   unsigned int numOfArgs = numOfArgTypes - 1;
   return MAX_LENGTH_NAME + (numOfArgTypes * MAX_LENGTH_ARG_TYPE) +
-    (numOfArgs * MAX_LENGTH_ARG);
+    getArgsLength();
 }
 
 // See interface (header file).
