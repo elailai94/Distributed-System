@@ -9,6 +9,26 @@
 #include "message.h"
 #include "segment.h"
 #include "register_request_message.h"
+#include "execute_request_message.h"
+#include "execute_success_message.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define CHAR_ARRAY_LENGTH 100
+
+extern "C" {
+
+#define ARG_CHAR    1
+#define ARG_SHORT   2
+#define ARG_INT     3
+#define ARG_LONG    4
+#define ARG_DOUBLE  5
+#define ARG_FLOAT   6
+
+#define ARG_INPUT   31
+#define ARG_OUTPUT  30
 
 using namespace std;
 
