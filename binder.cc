@@ -137,12 +137,15 @@ void location_request_handler(LocRequestMessage * message, int sock){
     if((*it)->ps->name == message->getName() && compareArr((*it)->ps->argTypes, message->getArgTypes() )){
       exist = true;
 
+      cout << "Attempt to send locSuccessMsg" << endl;
+
       LocSuccessMessage locSuccessMsg = LocSuccessMessage((*it)->si->server_identifier, (*it)->si->port);
       Segment locSuccessSeg = Segment(locSuccessSeg.getLength(), MSG_TYPE_LOC_SUCCESS, &locSuccessMsg);
       locSuccessSeg.send(sock);
 
       //When we have identified the correct procedure_signature use splice and move that service to the end
       roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
+      cout << "Sent and splice" << endl;
       break;
  		}
 	}
