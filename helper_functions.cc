@@ -5,14 +5,9 @@
 #include <iostream>
 #include <sstream>
 
-#include <unistd.h>
-#include <vector>
-#include <algorithm>
 #include <string>
 
-#include <stdlib.h>
-
-#include "helper_function.h"
+#include "helper_functions.h"
 #include "constants.h"
 
 using namespace std;

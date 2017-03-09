@@ -1,5 +1,5 @@
-#ifndef __HELPER_FUNCTION__
-#define __HELPER_FUNCTION__
+#ifndef __HELPER_FUNCTIONS__
+#define __HELPER_FUNCTIONS__
 
 #include <string>
 

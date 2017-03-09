@@ -23,7 +23,7 @@
 
 #include "constants.h"
 #include "network.h"
-#include "helper_function.h"
+#include "helper_functions.h"
 
 using namespace std;
 
@@ -140,7 +140,7 @@ void location_request_handler(LocRequestMessage * message, int sock){
       cout << "Attempt to send locSuccessMsg" << endl;
       cout << "server_identifier: "<< (*it)->si->server_identifier << endl;
       cout << "port: " << (*it)->si->port<< endl;
-      
+
       LocSuccessMessage locSuccessMsg = LocSuccessMessage((*it)->si->server_identifier.c_str(), (*it)->si->port);
       Segment locSuccessSeg = Segment(locSuccessMsg.getLength(), MSG_TYPE_LOC_SUCCESS, &locSuccessMsg);
       locSuccessSeg.send(sock);
@@ -162,14 +162,14 @@ void location_request_handler(LocRequestMessage * message, int sock){
 
 int request_handler(Segment * segment, int sock){
   int retval = 0;
-  if(segment->getType() == MSG_TYPE_REGISTER_REQUEST){ 
+  if(segment->getType() == MSG_TYPE_REGISTER_REQUEST){
     Message * cast1 = segment->getMessage();
     RegisterRequestMessage * rrm = dynamic_cast<RegisterRequestMessage*>(cast1);
 
     registration_request_handler(rrm, sock);
 
-  }else if (segment->getType() == MSG_TYPE_LOC_REQUEST){ 
-    
+  }else if (segment->getType() == MSG_TYPE_LOC_REQUEST){
+
     cout << "Loc Request" << endl;
 
     Message * cast2 = segment->getMessage();
@@ -190,7 +190,7 @@ int main() {
   // Creates the welcome socket
   int welcomeSocket = createSocket();
   int status = setUpToListen(welcomeSocket);
-  
+
   cout << "BINDER_ADDRESS " << getHostAddress() << endl;
   cout << "BINDER_PORT " << getSocketPort(welcomeSocket) << endl;
 

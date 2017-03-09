@@ -32,7 +32,7 @@
 #include "rpc.h"
 #include "constants.h"
 #include "network.h"
-#include "helper_function.h"
+#include "helper_functions.h"
 
 using namespace std;
 
@@ -79,7 +79,6 @@ int rpcInit(){
 	unsigned int binderPort = getBinderPort();
 	setUpToConnect(binderSocket, binderAddress, binderPort);
   connectedToBinder = true;
-  cout << "binderSocket: " << binderSocket << endl;
 
   return 0;
 }
@@ -149,9 +148,10 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
   cout << "binderSocket: " << binderSocket << endl;
 
-  LocRequestMessage locReqMsg = LocRequestMessage(name, argTypes);
-  Segment locReqSeg = Segment(locReqMsg.getLength(), MSG_TYPE_LOC_REQUEST, &locReqMsg);
-  int binder_status = locReqSeg.send(binderSocket);
+  LocRequestMessage messageToBinder = LocRequestMessage(string(name), argTypes);
+  Segment segmentToBinder =
+	  Segment(messageToBinder.getLength(), MSG_TYPE_LOC_REQUEST, &messageToBinder);
+  int binder_status = segmentToBinder.send(binderSocket);
 
 	//maybe error check with binder_status
   //TODO: SEGMENT FAULT IF NOT IN THIS FOR LOOP
