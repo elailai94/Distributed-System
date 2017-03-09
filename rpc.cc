@@ -216,7 +216,7 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
       proc_skele_dict[k] = f;
 
       //cout << "k: " << k.name << endl;
-      //mapPrint();
+      mapPrint();
 
     }else if(parsedSegment->getType() == MSG_TYPE_REGISTER_FAILURE){
       return 0;
