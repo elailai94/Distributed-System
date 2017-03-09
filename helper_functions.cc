@@ -1,6 +1,5 @@
 #include <sstream>
 
-#include "rpc.h"
 #include "helper_functions.h"
 #include "constants.h"
 
