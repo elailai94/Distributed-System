@@ -237,13 +237,9 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
     switch (argTypeInformation) {
       case ARG_CHAR: {
         char *argCharArray = new char[argTypeArrayLength];
-        for (int j = 0; j < argTypeArrayLength; j++) {
-          char argCharBuffer[MAX_LENGTH_ARG_CHAR] = {'\0'};
-          memcpy(argCharBuffer, messageBufferPointer, MAX_LENGTH_ARG_CHAR);
-          argCharArray[j] =
-          messageBufferPointer += MAX_LENGTH_ARG_CHAR;
-        }
+        memcpy(argCharArray, messageBufferPointer, argTypeArrayLength);
         args[i] = static_cast<void *>argCharArray;
+        messageBufferPointer += argTypeArrayLength;
         break;
       }
 
