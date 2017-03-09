@@ -132,6 +132,7 @@ int sendExecute(int sock, string name, int* argTypes, void**args){
 
 
 int rpcCall(char * name, int * argTypes, void ** args) {
+  cout << "Flag0" << endl;
 
 	string serverAddress;
 	unsigned int serverPort;

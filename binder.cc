@@ -110,8 +110,8 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     }
   }
 
-  mapPrint();
-  roundRobinPrint();
+  //mapPrint();
+  //roundRobinPrint();
 
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
@@ -152,13 +152,16 @@ void location_request_handler(LocRequestMessage * message, int sock){
 
 int request_handler(Segment * segment, int sock){
   int retval = 0;
-  if(segment->getType() == MSG_TYPE_REGISTER_REQUEST){ //'LOC_REQUEST'
+  if(segment->getType() == MSG_TYPE_REGISTER_REQUEST){ 
     Message * cast1 = segment->getMessage();
     RegisterRequestMessage * rrm = dynamic_cast<RegisterRequestMessage*>(cast1);
 
     registration_request_handler(rrm, sock);
 
-  }else if (segment->getType() == MSG_TYPE_LOC_REQUEST){ //'REGISTER'
+  }else if (segment->getType() == MSG_TYPE_LOC_REQUEST){ 
+    
+    cout << "Loc Request" << endl;
+
     Message * cast2 = segment->getMessage();
     LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(cast2);
 
