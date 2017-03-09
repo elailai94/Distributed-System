@@ -44,7 +44,7 @@ int binderSocket = 0;
 struct addrinfo* servinfo;
 static map<procedure_signature, skeleton, ps_compare> proc_skele_dict;
 string serverIdentifier;
-unsigned int port;
+unsigned int port = 0;
 int welcomeSocket = 0;
 
 void mapPrint(){
@@ -70,9 +70,12 @@ int rpcInit(){
 	// from clients
 	welcomeSocket = createSocket();
 	setUpToListen(welcomeSocket);
+	serverIdentifier = getHostAddress();
+	port = getSocketPort(welcomeSocket);
+	cout << "SERVER IDENTIFIER: " << serverIdentifier << endl;
+	cout << "PORT: " << port << endl;
 
 	// Opens a connection to the binder
-
 	binderSocket = createSocket();
 	string binderAddress = getBinderAddress();
 	unsigned int binderPort = getBinderPort();
@@ -128,8 +131,8 @@ int sendExecute(int sock, string name, int* argTypes, void**args){
   return returnVal;
 }
 
-
-int rpcCall(char * name, int * argTypes, void ** args) {
+// See interface (header file).
+int rpcCall(char *name, int *argTypes, void **args) {
   cout << "Flag0" << endl;
 
 	string serverAddress;
