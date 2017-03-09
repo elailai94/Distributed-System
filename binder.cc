@@ -177,22 +177,8 @@ int main(){
   vector<int> myToRemove;
 
   int status;
-  struct addrinfo hints;
-  struct addrinfo* servinfo;
-  struct addrinfo* p;
-
-  memset(&hints, 0, sizeof hints);
-  hints.ai_family = AF_UNSPEC;
-  hints.ai_socktype = SOCK_STREAM;
-  hints.ai_flags = AI_PASSIVE;
-
-  status = getaddrinfo(NULL, "0", &hints, &servinfo);
-
-  p = servinfo;
-  int sock = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-
-  status = bind(sock, servinfo->ai_addr, servinfo->ai_addrlen);
-  status = listen(sock, SOMAXCONN);
+  sock = createSocket();
+  status = setUpToListen(sock);
 
   cout << "BINDER_ADDRESS " << getHostAddress() << endl;
   cout << "BINDER_PORT " << getSocketPort(sock) << endl;
