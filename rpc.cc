@@ -140,6 +140,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
 	int status;
 
 	if(!connectedToBinder){
+    cout << "Does it run" << endl;
 		binderSocket = createSocket();
 		string binderAddress = getBinderAddress();
 		unsigned int binderPort = getBinderPort();
@@ -147,6 +148,8 @@ int rpcCall(char *name, int *argTypes, void **args) {
 	  connectedToBinder = true;
 	}
 	//do something with returnVal
+
+  cout << "binderSocket: " <<binderSocket << endl;
 
   cout << "Flag1" << endl;
 
