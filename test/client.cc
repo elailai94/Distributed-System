@@ -9,6 +9,8 @@
 #include "message.h"
 #include "segment.h"
 #include "register_request_message.h"
+#include "execute_request_message.h"
+#include "execute_success_message.h"
 
 #include <stdio.h>
 #include <stdlib.h>
