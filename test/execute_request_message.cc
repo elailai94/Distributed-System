@@ -2,6 +2,7 @@
 #include <vector>
 #include <sys/socket.h>
 #include <iostream>
+#include <bitset>
 
 #include "execute_request_message.h"
 #include "helper_functions.h"
@@ -215,7 +216,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
     messageBufferPointer += MAX_LENGTH_ARG_TYPE;
 
     cout << "How many times" << endl;
-    cout << bin <<argType << dec <<endl;
+    cout << bitset<32>(argType)<< dec <<endl;
     
     if (argType == 0) {
       break;
