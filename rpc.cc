@@ -156,12 +156,13 @@ int rpcCall(char * name, int * argTypes, void ** args) {
   cout << "Flag1.5" << endl;
 
 	//maybe error check with binder_status
-
+  //TODO: SEGMENT FAULT IF NOT IN THIS FOR LOOP 
 	/**Server stuff **/
 	if(binder_status >= 0){
 	  cout << "Flag2.9999999999999999999" << endl;
-    Segment * segment = 0;
-    status = Segment::receive(binderSocket, segment);
+    Segment * parsedSegment = 0;
+    int tempStatus = 0;
+    tempStatus = Segment::receive(binderSocket, parsedSegment);
     cout << "Flag2.5" << endl;
 
 
