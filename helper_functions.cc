@@ -1,12 +1,6 @@
-#include <stdio.h>
-#include <string.h>
-#include "rpc.h"
-
-#include <iostream>
 #include <sstream>
 
-#include <string>
-
+#include "rpc.h"
 #include "helper_functions.h"
 #include "constants.h"
 
