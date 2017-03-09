@@ -161,24 +161,24 @@ int rpcCall(char * name, int * argTypes, void ** args) {
     Segment * segment = 0;
     status = Segment::receive(binderSocket, segment);
 
-		if(segment->getType() == MSG_TYPE_LOC_SUCCESS){ //'LOC_REQUEST'
+		if(segment->getType() == MSG_TYPE_LOC_SUCCESS) { //'LOC_REQUEST'
   		Message * cast = segment->getMessage();
   		LocSuccessMessage * lcm = dynamic_cast<LocSuccessMessage*>(cast);
 	  	serverAddress = lcm->getServerIdentifier();
 	  	serverPort = lcm->getPort();
 
-	  	}else if(segment->getType() == MSG_TYPE_LOC_FAILURE){
+	  	}else if(segment->getType() == MSG_TYPE_LOC_FAILURE) {
 			//something bad happens
 	  		return 1;
 	  	}
 	}
 
-  int server_sock = createConnection(serverAddress, serverPort);
-	int server_status = sendExecute(server_sock, string(name), argTypes, args);
+  int serverSocket = createSocket();
+	int status = setUpToConnect(serverSocket, serverAddress, serverPort);
+	status = sendExecute(serverSocket, string(name), argTypes, args);
 
-	return server_status;
+	return status;
 }
-
 
 
   //TODO:
@@ -244,7 +244,6 @@ int rpcExecute(void){
   fd_set readfds;
   int n;
   int status;
-  struct sockaddr_storage their_addr;
 
   while(true){
     //CONNECTIONS VECTOR
@@ -270,16 +269,13 @@ int rpcExecute(void){
     } else {
 
       if (FD_ISSET(welcomeSocket, &readfds)) {
-        socklen_t addr_size = sizeof their_addr;
-        int new_sock = accept(welcomeSocket, (struct sockaddr*)&their_addr, &addr_size);
-
-        if (new_sock < 0) {
+				int connectionSocket = acceptConnection(welcomeSocket);
+        if (connectionSocket < 0) {
           cerr << "ERROR: while accepting connection" << endl;
-          close(new_sock);
           continue;
         }
 
-        myConnections.push_back(new_sock);
+        myConnections.push_back(connectionSocket);
 
       } else {
 
