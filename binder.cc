@@ -46,6 +46,24 @@ ADD FUNCTION TO ROUND ROBIN
 IF FUNCTION EXISTS IN ROUND ROBIN DELETE OLD REPLACE WITH NEW (where)
 */
 
+void mapPrint(){
+  cout << "proc_loc_dict size: "<<proc_loc_dict.size() << endl;
+  cout << "Map Print: ";
+  for(map<procedure_signature, list<server_info *>, ps_compare> ::const_iterator it = proc_loc_dict.begin();
+   it != proc_loc_dict.end(); it++){
+  
+    cout << it->first.name << ", " ;
+  }
+
+  cout << endl;
+}
+
+void roundRobinPrint(){
+  cout << "roundRobin Print: ";
+  for(list<server_function_info *> ::const_iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
+    cout << (*it)->ps->name << endl;
+  }
+}
 
 void registration_request_handler(RegisterRequestMessage * message, int sock){
   const char * name = message->getName().c_str();
@@ -95,6 +113,9 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     }
   }
 
+  mapPrint();
+  roundRobinPrint();
+  
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
   regSuccessSeg.send(sock);
