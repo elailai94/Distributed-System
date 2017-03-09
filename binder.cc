@@ -68,7 +68,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   string server_identifier = message->getServerIdentifier();
   int port = message->getPort();
 
-  cout << "We are trying to register: " << name << endl;
+  cout << "We are trying to register: " << name  << ", " << server_identifier << ", " << port << endl;
 
   procedure_signature key(name, argTypes);
 
