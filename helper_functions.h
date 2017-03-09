@@ -15,7 +15,7 @@ int *copyArgTypes(int argTypes[]);
 std::string toString(unsigned int number);
 
 // Converts a string to an unsigned integer
-unsigned int toUnsignedInteger(std::string text);
+unsigned int toUnsignedInt(std::string text);
 
 // Converts a character array to a short
 short toShort(char *array);

@@ -119,7 +119,7 @@ string getBinderAddress() {
 // See interface (header file).
 unsigned int getBinderPort() {
   char *binderPort = getenv("BINDER_PORT");
-  return toUnsignedInteger(string(binderPort));
+  return toUnsignedInt(string(binderPort));
 }
 
 // See interface (header file).

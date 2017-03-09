@@ -53,7 +53,7 @@ string toString(unsigned int number) {
 }
 
 // See interface (header file).
-unsigned int toUnsignedInteger(string text) {
+unsigned int toUnsignedInt(string text) {
   stringstream ss;
   ss << text;
 
