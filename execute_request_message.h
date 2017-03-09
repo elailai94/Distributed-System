@@ -10,6 +10,9 @@ class ExecuteRequestMessage: public Message {
   int *argTypes;
   void **args;
 
+  // Returns the length of the argument values
+  unsigned int getArgsLength() const;
+
 public:
   ExecuteRequestMessage(std::string name, int *argTypes, void **args);  // Constructor
   ~ExecuteRequestMessage(); // Destructor
