@@ -153,6 +153,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
   LocRequestMessage locReqMsg = LocRequestMessage(name, argTypes);
   Segment locReqSeg = Segment(locReqMsg.getLength(), MSG_TYPE_LOC_REQUEST, &locReqMsg);
   int binder_status = locReqSeg.send(binderSocket);
+  cout << "Flag1.5" << endl;
 
 	//maybe error check with binder_status
 
