@@ -133,6 +133,9 @@ int main() {
         ExecuteRequestMessage *erm = dynamic_cast<ExecuteRequestMessage *>(msg);
         cout << "Received Execute Request Message!" << endl;
         cout << "Name: " << erm->getName() << endl;
+        
+        cout << "Name: " << erm->getArgs() << endl;
+        
         break;
       }
 
