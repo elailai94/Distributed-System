@@ -36,21 +36,19 @@
 
 using namespace std;
 
-//Global Variables for client
+// Global variables for client
 bool connectedToBinder = false;
 int binderSocket = 0;
 
-//Global Variables for server
+// Global variables for server
 struct addrinfo* servinfo;
 static map<procedure_signature, skeleton, ps_compare> proc_skele_dict;
-
 string serverIdentifier;
 unsigned int port;
 int welcomeSocket = 0;
 
 void mapPrint(){
   cout << "proc_skele_dict size: "<<proc_skele_dict.size() << endl;
-
 
   cout << "Map Print: ";
 

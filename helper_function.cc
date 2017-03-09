@@ -5,47 +5,17 @@
 #include <iostream>
 #include <sstream>
 
-#include <netinet/in.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
 #include <vector>
 #include <algorithm>
 #include <string>
 
-#include <netdb.h>
 #include <stdlib.h>
 
 #include "helper_function.h"
 #include "constants.h"
 
 using namespace std;
-
-int createConnection(string address, unsigned int port){
-
-  string data;
-  vector<string> buffer;
-
-  int sockfd, portno;
-  struct sockaddr_in serv_addr;
-  struct hostent *server;
-  portno = port;
-  sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  server = gethostbyname(address.c_str());
-
-  bzero((char *) &serv_addr, sizeof(serv_addr));
-  serv_addr.sin_family = AF_INET;
-  bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
-
-  serv_addr.sin_port = htons(portno);
-
-  connect(sockfd,(struct sockaddr *)&serv_addr, sizeof(serv_addr));
-
-
-  return sockfd;
-}
-
 
 bool compareArr(const int* array1, const int* array2){
   while (*array1 != 0 || *array2 != 0){
