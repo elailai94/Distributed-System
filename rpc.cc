@@ -153,25 +153,30 @@ int rpcCall(char *name, int *argTypes, void **args) {
   LocRequestMessage locReqMsg = LocRequestMessage(name, argTypes);
   Segment locReqSeg = Segment(locReqMsg.getLength(), MSG_TYPE_LOC_REQUEST, &locReqMsg);
   int binder_status = locReqSeg.send(binderSocket);
+  cout << "Flag1.5" << endl;
 
 	//maybe error check with binder_status
-
+  //TODO: SEGMENT FAULT IF NOT IN THIS FOR LOOP
 	/**Server stuff **/
-	if(binder_status == 0){
+	if(binder_status >= 0){
 	  cout << "Flag2" << endl;
-    Segment * segment = 0;
-    status = Segment::receive(binderSocket, segment);
+    Segment * parsedSegment = 0;
+    cout << "Flag2.1" << endl;
+    int tempStatus = 0;
+    cout << "Flag2.2" << endl;
+    tempStatus = Segment::receive(binderSocket, parsedSegment);
+    cout << "Flag2.5" << endl;
 
-		if(segment->getType() == MSG_TYPE_LOC_SUCCESS) { //'LOC_REQUEST'
-  		Message * cast = segment->getMessage();
+		if(parsedSegment->getType() == MSG_TYPE_LOC_SUCCESS) { //'LOC_REQUEST'
+  		cout << "Got success" << endl;
+      Message * cast = parsedSegment->getMessage();
   		LocSuccessMessage * lcm = dynamic_cast<LocSuccessMessage*>(cast);
 	  	serverAddress = lcm->getServerIdentifier();
 	  	serverPort = lcm->getPort();
-
-	  	}else if(segment->getType() == MSG_TYPE_LOC_FAILURE) {
+	  }else if(parsedSegment->getType() == MSG_TYPE_LOC_FAILURE) {
 			//something bad happens
-	  		return 1;
-	  	}
+	  	return 1;
+	  }
 	}
 
   int serverSocket = createSocket();
@@ -189,7 +194,9 @@ int rpcCall(char *name, int *argTypes, void **args) {
 int rpcRegister(char * name, int *argTypes, skeleton f){
 
   RegisterRequestMessage regReqMsg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
-  cout << "rpcRegister: " << name << endl;
+  cout << "rpcRegister name: " << name << endl;
+  cout << "rpcRegister serverIdentifier: " << serverIdentifier << endl;
+  cout << "rpcRegister port: " << port << endl;
 
   /*
   We should get seg.send to give us some feed back maybe

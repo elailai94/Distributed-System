@@ -68,7 +68,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   string server_identifier = message->getServerIdentifier();
   int port = message->getPort();
 
-  cout << "We are trying to register: " << name << endl;
+  cout << "We are trying to register: " << name  << ", " << server_identifier << ", " << port << endl;
 
   procedure_signature key(name, argTypes);
 
@@ -126,18 +126,28 @@ USE ROUND ROBIN TO ACCESS THE CORRECT SERVER/FUNCTION FOR THE CLIENT
 void location_request_handler(LocRequestMessage * message, int sock){
 
   bool exist = false;
-	for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
 
+  cout << "Hunted name names: " << message->getName() << endl;
+
+
+	for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
     //If the name are the same and argTypes
+    cout << "Iterator names: " << (*it)->ps->name << endl;
+
     if((*it)->ps->name == message->getName() && compareArr((*it)->ps->argTypes, message->getArgTypes() )){
       exist = true;
 
+      cout << "Attempt to send locSuccessMsg" << endl;
+      cout << "server_identifier: "<< (*it)->si->server_identifier << endl;
+      cout << "port: " << (*it)->si->port<< endl;
+      
       LocSuccessMessage locSuccessMsg = LocSuccessMessage((*it)->si->server_identifier, (*it)->si->port);
       Segment locSuccessSeg = Segment(locSuccessSeg.getLength(), MSG_TYPE_LOC_SUCCESS, &locSuccessMsg);
       locSuccessSeg.send(sock);
 
       //When we have identified the correct procedure_signature use splice and move that service to the end
       roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
+      cout << "Sent and splice" << endl;
       break;
  		}
 	}
