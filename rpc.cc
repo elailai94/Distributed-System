@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
+#include <bitset> 
 #include <sstream>
 
 #include <netinet/in.h>
@@ -52,12 +53,24 @@ void mapPrint(){
 
   cout << "Map Print: ";
 
+  /*
   for(map<procedure_signature, skeleton>::iterator it = procSkeleDict.begin();
    it != procSkeleDict.end(); ++it){
 
     cout << it->first.name << endl;
   }
+  */
 
+  cout << endl;
+}
+
+
+void printArgTypes(int * argTypes){
+  cout << " Printing argTypes: " ;
+
+  for(int i = 0; i < 2; i++){
+    cout << bitset<8>(*(argTypes+i)) << ", ";  
+  }
   cout << endl;
 }
 
@@ -252,7 +265,11 @@ int rpcExecute(void){
   int n;
   int status;
 
+  cout << "Flag1" << endl;
+
   while(true){
+
+
     //CONNECTIONS VECTOR
     FD_ZERO(&readfds);
     FD_SET(welcomeSocket, &readfds);
@@ -288,22 +305,35 @@ int rpcExecute(void){
 
         for (vector<int>::iterator it = myConnections.begin(); it != myConnections.end(); ++it) {
           int tempConnection = *it;
+
+          cout << "Flag2" << endl;
+
           if (FD_ISSET(tempConnection, &readfds)) {
 
             int reasonCode = 0;
             Segment * segment = 0;
             status = Segment::receive(tempConnection, segment);
 
+            cout << "Flag3" << endl;
+
             if(segment->getType() == MSG_TYPE_EXECUTE_REQUEST){
               Message * cast = segment->getMessage();
               ExecuteRequestMessage * eqm = dynamic_cast<ExecuteRequestMessage*>(cast);
 
+              cout << "Flag4" << endl;
+
               procedure_signature * ps = new procedure_signature(eqm->getName(), eqm->getArgTypes());
               skeleton skel = procSkeleDict[*ps];
 
+              cout << "Flag5" << endl;
+              cout << "procedure_signature: "<< ps->name << endl;
+              printArgTypes(ps->argTypes);
+
               int result = skel(eqm->getArgTypes(), eqm->getArgs());
 
-              if(result == 0 ){
+              cout << "Flag6  " << endl;
+
+              if(result >= 0 ){
                 ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(eqm->getName(), eqm->getArgTypes(), eqm->getArgs());
                 Segment exeSuccessSeg = Segment(exeSuccessMsg.getLength(), MSG_TYPE_EXECUTE_SUCCESS, &exeSuccessMsg);
                 status = exeSuccessSeg.send(tempConnection);
@@ -320,7 +350,6 @@ int rpcExecute(void){
               myToRemove.push_back(tempConnection);
               return status;
             }
-
           }
         }
       }
