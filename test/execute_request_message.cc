@@ -213,6 +213,10 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
 
   // Parses the argument types from the buffer
   vector<int> argTypesBuffer;
+
+  cout << "receive messageBuffer: " << endl;
+  cout << messageBuffer << endl;
+
   while (true) {
     char argTypeBuffer[MAX_LENGTH_ARG_TYPE] = {'\0'};
     memcpy(argTypeBuffer, messageBufferPointer, MAX_LENGTH_ARG_TYPE);
