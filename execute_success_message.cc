@@ -226,8 +226,9 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
   }
 
   // Parses the argument from the buffer
-  void **args = new void*[argTypesBuffer.size() - 1];
-  for (int i = 0; i < (argTypesBuffer.size() - 1); i++) {
+  unsigned int numOfArgs = argTypesBuffer.size() - 1;
+  void **args = new void*[numOfArgs];
+  for (int i = 0; i < numOfArgs; i++) {
     int argType = argTypes[i];
     int argTypeInformation =
       (argType & ARG_TYPE_INFORMATION_MASK) >> ARG_TYPE_INFORMATION_SHIFT_AMOUNT;
