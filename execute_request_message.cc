@@ -224,8 +224,9 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
   }
 
   // Parses the argument from the buffer
-  unsigned int numOfArgs = numOfArgTypes - 1;
-  for (unsigned int i = 0; i < numOfArgs; i++) {
+  unsigned int numOfArgs = argTypesBuffer.size() - 1;
+  void **args = new void*[numOfArgs];
+  for (int i = 0; i < numOfArgs; i++) {
     int argType = argTypes[i];
     int argTypeInformation =
       (argType & ARG_TYPE_INFORMATION_MASK) >> ARG_TYPE_INFORMATION_SHIFT_AMOUNT;
@@ -234,44 +235,70 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
 
     switch (argTypeInformation) {
       case ARG_CHAR: {
-        memcpy(messageBufferPointer, args[i],
-          argTypeArrayLength * MAX_LENGTH_ARG_CHAR);
-        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_CHAR;
+        char *argCharArray = new char[argTypeArrayLength];
+        memcpy(argCharArray, messageBufferPointer, argTypeArrayLength);
+        args[i] = static_cast<void *>argCharArray;
+        messageBufferPointer += argTypeArrayLength;
         break;
       }
 
       case ARG_SHORT: {
-        memcpy(messageBufferPointer, args[i],
-          argTypeArrayLength * MAX_LENGTH_ARG_SHORT);
-        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_SHORT;
+        short *argShortArray = new char[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          char argShortBuffer[MAX_LENGTH_ARG_SHORT] = {'\0'};
+          memcpy(argShortBuffer, messageBufferPointer, MAX_LENGTH_ARG_SHORT);
+          argShortArray[j] = toShort(argShortBuffer);
+          messageBufferPointer += MAX_LENGTH_ARG_SHORT;
+        }
+        args[i] = static_cast<void *>(argShortArray);
         break;
       }
 
       case ARG_INT: {
-        memcpy(messageBufferPointer, args[i],
-          argTypeArrayLength * MAX_LENGTH_ARG_INT);
-        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_INT;
+        int *argIntArray = new int[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          char argIntBuffer[MAX_LENGTH_ARG_INT] = {'\0'};
+          memcpy(argIntBuffer, messageBufferPointer, MAX_LENGTH_ARG_INT);
+          argIntArray[j] = toInt(argIntBuffer);
+          messageBufferPointer += MAX_LENGTH_ARG_INT;
+        }
+        args[i] = static_cast<void *>(argIntArray);
         break;
       }
 
       case ARG_LONG: {
-        memcpy(messageBufferPointer, args[i],
-          argTypeArrayLength * MAX_LENGTH_ARG_LONG);
-        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_LONG;
+        long *argLongArray = new long[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          char argLongBuffer[MAX_LENGTH_ARG_LONG] = {'\0'};
+          memcpy(argLongBuffer, messageBufferPointer, MAX_LENGTH_ARG_LONG);
+          argLongArray[j] = toLong(argLongArray);
+          messageBufferPointer += MAX_LENGTH_ARG_LONG;
+        }
+        args[i] = static_cast<void *>(argLongArray);
         break;
       }
 
       case ARG_DOUBLE: {
-        memcpy(messageBufferPointer, args[i],
-          argTypeArrayLength * MAX_LENGTH_ARG_DOUBLE);
-        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_DOUBLE;
+        double *argDoubleArray = new double[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          char argDoubleBuffer[MAX_LENGTH_ARG_DOUBLE] = {'\0'};
+          memcpy(argDoubleArray, messageBufferPointer, MAX_LENGTH_ARG_DOUBLE);
+          argDoubleArray[j] = toDouble(argDoubleArray);
+          messageBufferPointer += MAX_LENGTH_ARG_DOUBLE;
+        }
+        args[i] = static_cast<void *>(argDoubleArray);
         break;
       }
 
       case ARG_FLOAT: {
-        memcpy(messageBufferPointer, args[i],
-          argTypeArrayLength * MAX_LENGTH_ARG_FLOAT);
-        messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_FLOAT;
+        float *argFloatArray = new float[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          char argFloatBuffer[MAX_LENGTH_ARG_FLOAT] = {'\0'};
+          memcpy(argFloatBuffer, messageBufferPointer, MAX_LENGTH_ARG_FLOAT);
+          argFloatArray[j] = toFloat(argFloatArray);
+          messageBufferPointer += MAX_LENGTH_ARG_FLOAT;
+        }
+        arg[i] = static_cast<void *>(argFloatArray);
         break;
       }
     }
