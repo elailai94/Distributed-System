@@ -18,7 +18,7 @@ bool compareArr(const int* array1, const int* array2){
 
 // See interface (header file).
 unsigned int countNumOfArgTypes(int *argTypes) {
-  int count = 1;
+  unsigned int count = 1;
   while (argTypes[(count - 1)] != 0) {
     count += 1;
   }
