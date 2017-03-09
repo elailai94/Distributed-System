@@ -216,6 +216,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
 
   cout << "receive messageBuffer: " << endl;
   cout << messageBuffer << endl;
+  cout << "End of messageBuffer" << endl;
 
   while (true) {
     char argTypeBuffer[MAX_LENGTH_ARG_TYPE] = {'\0'};
