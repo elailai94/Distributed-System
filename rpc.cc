@@ -52,15 +52,15 @@ void mapPrint(){
   cout << "proc_skele_dict size: "<<proc_skele_dict.size() << endl;
 
 
-  cout << "Map Print: " << endl;
+  cout << "Map Print: ";
 
-  for(auto it = proc_skele_dict.cbegin();it != proc_skele_dict.cend(); ++it){
+  for(map<procedure_signature, skeleton>::iterator it = proc_skele_dict.begin();
+   it != proc_skele_dict.end(); ++it){
   
     cout << it->first.name << endl;
   }
 
   cout << endl;
-
 }
 
 
