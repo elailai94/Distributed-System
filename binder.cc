@@ -8,7 +8,6 @@
 #include <list>
 #include <map>
 
-#include <netdb.h>
 #include <cstdlib>
 #include <cstring>
 
@@ -171,8 +170,7 @@ int request_handler(Segment * segment, int sock){
 
 //TODO:
 //Create helper functions that can be used for rpcServer.cc
-int main(){
-
+int main() {
   vector<int> myConnections;
   vector<int> myToRemove;
 
