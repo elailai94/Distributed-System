@@ -134,7 +134,7 @@ int main() {
         cout << "Received Execute Request Message!" << endl;
         cout << "Name: " << erm->getName() << endl;
         
-        cout << "Name: " << erm->getArgs() << endl;
+        cout << "Args:  " << erm->getArgs() << endl;
         
         break;
       }

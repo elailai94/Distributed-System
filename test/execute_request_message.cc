@@ -268,11 +268,13 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
           memcpy(argIntBuffer, messageBufferPointer, MAX_LENGTH_ARG_INT);
           argIntArray[j] = toInt(argIntBuffer);
           messageBufferPointer += MAX_LENGTH_ARG_INT;
+          
+          cout << "Printing ints" << endl;
+          cout << argIntArray[j]  << endl;
+        
         }
         args[i] = static_cast<void *>(argIntArray);
         
-        cout << "Printing ints" << endl;
-        cout << args[i] << endl;
         
         break;
       }
