@@ -4,6 +4,7 @@
 
 #include "execute_request_message.h"
 #include "helper_functions.h"
+#include "rpc.h"
 
 using namespace std;
 
@@ -31,7 +32,7 @@ void **ExecuteRequestMessage::getArgs() const {
 }
 
 // See interface (header file).
-unsigned int ExecuteSuccessMessage::getArgsLength() const {
+unsigned int ExecuteRequestMessage::getArgsLength() const {
   unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
   unsigned int numOfArgs = numOfArgTypes - 1;
   unsigned int argsLength = 0;
