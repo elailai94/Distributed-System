@@ -199,7 +199,9 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 int rpcRegister(char * name, int *argTypes, skeleton f){
 
   RegisterRequestMessage regReqMsg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
-  cout << "rpcRegister: " << name << endl;
+  cout << "rpcRegister name: " << name << endl;
+  cout << "rpcRegister serverIdentifier: " << serverIdentifier << endl;
+  cout << "rpcRegister port: " << port << endl;
 
   /*
   We should get seg.send to give us some feed back maybe

@@ -65,7 +65,7 @@ void roundRobinPrint(){
 void registration_request_handler(RegisterRequestMessage * message, int sock){
   const char * name = message->getName().c_str();
   int * argTypes = message->getArgTypes();
-  const char * server_identifier = message->getServerIdentifier().c_str();
+  string server_identifier = message->getServerIdentifier();
   int port = message->getPort();
 
   cout << "We are trying to register: " << name  << ", " << server_identifier << ", " << port << endl;
