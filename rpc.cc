@@ -159,9 +159,13 @@ int rpcCall(char * name, int * argTypes, void ** args) {
   //TODO: SEGMENT FAULT IF NOT IN THIS FOR LOOP 
 	/**Server stuff **/
 	if(binder_status >= 0){
-	  cout << "Flag2.9999999999999999999" << endl;
+	  cout << "Flag2" << endl;
     Segment * parsedSegment = 0;
+    cout << "Flag2.1" << endl;
+
     int tempStatus = 0;
+    cout << "Flag2.2" << endl;
+
     tempStatus = Segment::receive(binderSocket, parsedSegment);
     cout << "Flag2.5" << endl;
 
