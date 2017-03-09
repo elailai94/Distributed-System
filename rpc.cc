@@ -158,7 +158,7 @@ int rpcCall(char * name, int * argTypes, void ** args) {
 	//maybe error check with binder_status
 
 	/**Server stuff **/
-	if(binder_status == 0){
+	if(binder_status >= 0){
 	  cout << "Flag2" << endl;
     Segment * segment = 0;
     status = Segment::receive(binderSocket, segment);
