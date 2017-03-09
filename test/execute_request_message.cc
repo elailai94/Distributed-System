@@ -271,6 +271,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
         }
         args[i] = static_cast<void *>(argIntArray);
         
+        cout << "Printing ints" << endl;
         cout << args[i] << endl;
         
         break;
