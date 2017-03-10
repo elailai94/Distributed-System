@@ -270,7 +270,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
         args[i] = newArgs[i];
       }
 
-      destroySocket(serverSocket);
+      //destroySocket(serverSocket);
 
     }else if(parsedSegmentEsm->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
       cout << "MSG_TYPE_EXECUTE_FAILURE " << endl;
@@ -279,7 +279,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
       ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
       returnVal = efm->getReasonCode();
 
-      destroySocket(serverSocket);
+      //destroySocket(serverSocket);
 
     }
 
