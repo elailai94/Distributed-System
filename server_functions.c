@@ -6,7 +6,7 @@
 
 /* return: OUT; a, b: IN */
 int f0(int a, int b) {
-  printf("%d" , a+b );
+
   return a + b;
 }   
 

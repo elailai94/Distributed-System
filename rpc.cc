@@ -178,40 +178,6 @@ int rpcInit(){
   return 0;
 }
 
-int sendExecute(int sock, string name, int* argTypes, void**args){
-
-  ExecuteRequestMessage exeReqMsg = ExecuteRequestMessage(name, argTypes, args);
-  Segment exeReqSeg = Segment(exeReqMsg.getLength(), MSG_TYPE_EXECUTE_REQUEST, &exeReqMsg);
-  int status =  exeReqSeg.send(sock);
-
-  int returnVal;
-
-  if(status == 0){
-    Segment * segment = 0;
-    status = Segment::receive(sock, segment);
-
-    if(segment->getType() == MSG_TYPE_EXECUTE_SUCCESS) {
-
-			Message * cast = segment->getMessage();
-	 		ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(cast);
-
-			name = esm->getName();
-			argTypes = esm->getArgTypes();
-			args = esm->getArgs();
-      
-    }else if(segment->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
-  		Message * cast = segment->getMessage();
-			ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
-    	returnVal = efm->getReasonCode();
-    }
-
-  }else{ //Something bad happened
-  	returnVal = 99;
-  }
-
-  return returnVal;
-}
-
 // See interface (header file).
 int rpcCall(char *name, int *argTypes, void **args) {
   cout << "Running rpcCall..." << endl;
@@ -275,9 +241,38 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
   int serverSocket = createSocket();
 	int status1 = setUpToConnect(serverSocket, serverAddress, serverPort);
-	status1 = sendExecute(serverSocket, string(name), argTypes, args);
 
-	return status1 ;
+  ExecuteRequestMessage exeReqMsg = ExecuteRequestMessage(name, argTypes, args);
+  Segment exeReqSeg = Segment(exeReqMsg.getLength(), MSG_TYPE_EXECUTE_REQUEST, &exeReqMsg);
+  int status2 =  exeReqSeg.send(sock);
+
+  int returnVal;
+
+  if(status == 0){
+    Segment * segment = 0;
+    status2 = Segment::receive(sock, segment);
+
+    if(segment->getType() == MSG_TYPE_EXECUTE_SUCCESS) {
+
+      Message * cast = segment->getMessage();
+      ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(cast);
+
+      name = esm->getName();
+      argTypes = esm->getArgTypes();
+      args = esm->getArgs();
+      
+    }else if(segment->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
+      Message * cast = segment->getMessage();
+      ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
+      returnVal = efm->getReasonCode();
+    }
+
+  }else{ //Something bad happened
+    returnVal = 99;
+  }
+
+  return returnVal;
+
 }
 
 
