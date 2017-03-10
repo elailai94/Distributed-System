@@ -256,12 +256,16 @@ int rpcCall(char *name, int *argTypes, void **args) {
       cout << " MSG_TYPE_EXECUTE_SUCCESS " << endl;
       Message * cast = segment->getMessage();
       ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(cast);
-      cout << " flag 2" << endl;
       // TODO FIX: name = esm->getName();
-      argTypes = esm->getArgTypes();
+      
+      int * tempArgTypes = esm->getArgTypes();
+      void ** tempArgs = esm->getArgs();
+
+      cout << " flag 2" << endl;
+      argTypes = tempArgTypes
       cout << " flag 2.5" << endl;
       
-      args = esm->getArgs();
+      args = tempArgs
       cout << " flag 3" << endl;
       
     }else if(segment->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
