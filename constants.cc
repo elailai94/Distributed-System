@@ -44,7 +44,7 @@ bool ps_compare::operator() (const procedure_signature& lhs, const procedure_sig
 }
 */
 
-bool procedure_signature::operator < (const procedure_signature &l, const procedure_signature &r)
+bool operator < (const procedure_signature &l, const procedure_signature &r)
 {
     if(l.name == r.name)
     {
