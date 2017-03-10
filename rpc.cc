@@ -256,14 +256,16 @@ int rpcCall(char *name, int *argTypes, void **args) {
     if(segment->getType() == MSG_TYPE_EXECUTE_SUCCESS) {
       cout << "MSG_TYPE_EXECUTE_SUCCESS " << endl;
 
-      Message * cast = segment->getMessage();
-      ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(cast);
+      Message * msg = segment->getMessage();
+      ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(msg);
 
       // TODO FIX: name = esm->getName();
       
       //int * tempArgTypes = esm->getArgTypes();
       void** tempArgs;
-      tempArgs = esm->getArgs();
+      cout << "The name before the storm: " <<esm->getName(); << endl;
+
+      //tempArgs = esm->getArgs();
 
       cout << " flag 2" << endl;
       //argTypes = tempArgTypes;
@@ -426,7 +428,7 @@ int rpcExecute(void){
                 Segment exeSuccessSeg = Segment(exeSuccessMsg.getLength(), MSG_TYPE_EXECUTE_SUCCESS, &exeSuccessMsg);
                 status = exeSuccessSeg.send(tempConnection);
                 cout << "ExecuteSuccessMessage status: " << status << endl;
-                sleep(2);
+
               }else{
                 ExecuteFailureMessage exeFailMsg = ExecuteFailureMessage(reasonCode);
                 Segment exeFailSeg = Segment(exeFailMsg.getLength(), MSG_TYPE_EXECUTE_FAILURE, &exeFailMsg);
