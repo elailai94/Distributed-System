@@ -264,7 +264,9 @@ int rpcCall(char *name, int *argTypes, void **args) {
 				  dynamic_cast<LocSuccessMessage *>(messageFromBinder);
 				serverAddress = lsm->getServerIdentifier();
 				serverPort = lsm->getPort();
-				break;
+				cout << "serverAddress: " << serverAddress << endl;
+        cout << "serverPort: " << serverPort << endl;
+        break;
 			}
 
 			case MSG_TYPE_LOC_FAILURE: {
@@ -405,10 +407,10 @@ int rpcExecute(void){
               procedure_signature * ps = new procedure_signature(erm->getName(), erm->getArgTypes());
               
               cout << "erm->getName(): " << erm->getName() << endl;
+              printArgTypes(erm->getArgTypes());
 
               skeleton skel = procSkeleDict[*ps];
 
-              printArgTypes(erm->getArgTypes());
 //              printArgs(erm->getArgTypes(), erm->getArgs());
 
               int result = skel(erm->getArgTypes(), erm->getArgs());
