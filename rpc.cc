@@ -424,7 +424,7 @@ int rpcExecute(void){
 
               int result = skel(erm->getArgTypes(), erm->getArgs());
 
-              cout << "Flag6  " << endl;
+              cout << "Result: " << result << endl;
 
               if(result == 0 ){
                 ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(erm->getName(), erm->getArgTypes(), erm->getArgs());
