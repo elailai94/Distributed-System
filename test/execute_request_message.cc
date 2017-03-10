@@ -104,6 +104,9 @@ int ExecuteRequestMessage::send(int dataTransferSocket) {
     numOfArgTypes * MAX_LENGTH_ARG_TYPE);
   messageBufferPointer += MAX_LENGTH_ARG_TYPE;
 
+  for(int i = 0; i < numOfArgTypes; i++){
+    cout << argTypes[i] << endl;
+  }
   cout << "numOfArgTypes: " << numOfArgTypes << endl;
 
   // Writes the arguments to the buffer
