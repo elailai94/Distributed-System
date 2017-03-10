@@ -246,7 +246,6 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
   int returnVal = 0;
 
-  if(status == 0){
     Segment * parsedSegmentEsm = 0;
     int status3 = 0;
     status3 = Segment::receive(serverSocket, parsedSegmentEsm);
@@ -280,9 +279,6 @@ int rpcCall(char *name, int *argTypes, void **args) {
         break;
       }
     }
-  }else{ //Something bad happened
-    returnVal = 99;
-  }
 
   return returnVal;
 
