@@ -224,7 +224,6 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
   // Parses the argument types from the buffer
   vector<int> argTypesBuffer;
 
-  /*
   while (true) {
     char argTypeBuffer[MAX_LENGTH_ARG_TYPE] = {'\0'};
     memcpy(argTypeBuffer, messageBufferPointer, MAX_LENGTH_ARG_TYPE);
@@ -238,20 +237,6 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
     if (argType == 0) {
       break;
     }
-  }
-  */
-
-  for(int i = 0; i < 4 ; i++){
-
-    char argTypeBuffer[MAX_LENGTH_ARG_TYPE] = {'\0'};
-    memcpy(argTypeBuffer, messageBufferPointer, MAX_LENGTH_ARG_TYPE);
-    int argType = *((int *) argTypeBuffer);
-    argTypesBuffer.push_back(argType);
-    messageBufferPointer += MAX_LENGTH_ARG_TYPE;
-
-    cout << "How many times" << endl;
-    cout << bitset<32>(argType) <<endl;
-      
   }
 
 
