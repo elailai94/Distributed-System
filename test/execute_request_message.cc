@@ -319,7 +319,6 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
           cout << "Printing Double: " << argDoubleArray[j]  << endl;
         }
         args[i] = static_cast<void *>(argDoubleArray);        
-        cout << *(args[i]) << endl;
         break;
       }
 

@@ -98,25 +98,20 @@ int main() {
    unsigned int port = 80;
    string name = "func";
 
-  float a2 = 3.14159;
-  double b2 = 1234.1001;
-  int count2 = 3;
-  char *return2 = (char *)malloc(CHAR_ARRAY_LENGTH * sizeof(char));
-  int argTypes2[count2 + 1];
-  void **args2;
+  long a3[11] = {11, 109, 107, 105, 103, 101, 102, 104, 106, 108, 110};
+  int count3 = 1;
+  int argTypes3[count3 + 1];
+  void **args3;
 
-  argTypes2[0] = (1 << ARG_OUTPUT) | (ARG_CHAR << 16) | CHAR_ARRAY_LENGTH;
-  argTypes2[1] = (1 << ARG_INPUT) | (ARG_FLOAT << 16);
-  argTypes2[2] = (1 << ARG_INPUT) | (ARG_DOUBLE << 16);
-  argTypes2[3] = 0;
+  argTypes3[0] = (1 << ARG_OUTPUT) | (1 << ARG_INPUT) | (ARG_LONG << 16) | 11;
+  argTypes3[1] = 0;
 
-  args2 = (void **)malloc(count2 * sizeof(void *));
-  args2[0] = (void *)return2;
-  args2[1] = (void *)&a2;
-  args2[2] = (void *)&b2;
+  args3 = (void **)malloc(count3 * sizeof(void *));
+  args3[0] = (void *)a3;
 
 
-   ExecuteRequestMessage msg = ExecuteRequestMessage(name, argTypes2, args2);
+
+   ExecuteRequestMessage msg = ExecuteRequestMessage(name, argTypes3, args3);
    //cout << "Server Identifier: " << msg.getServerIdentifier() << endl;
    //cout << "Port: " << msg.getPort() << endl;
    //cout << "Name: " << msg.getName() << endl;
