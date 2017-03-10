@@ -199,9 +199,6 @@ int sendExecute(int sock, string name, int* argTypes, void**args){
 			argTypes = esm->getArgTypes();
 			args = esm->getArgs();
 
-			if(retName == name){
-				//extractArgumentsMessage(replyMessageP, argTypes, args, argTypesLength, false);
-				returnVal = 0;
 			}else{
 				returnVal = 99;
 			}
