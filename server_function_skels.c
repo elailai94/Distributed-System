@@ -9,7 +9,7 @@ int f0_Skel(int *argTypes, void **args) {
 }
 
 int f1_Skel(int *argTypes, void **args) {
-
+  printf("Printing skeletons");
   printf("%d\n", *((short *)(*(args + 2))) );
   printf("%d\n",*((int *)(*(args + 3))) );
   printf("%d\n", *((long *)(*(args + 4))) );
