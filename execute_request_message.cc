@@ -267,6 +267,8 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
           cout << "Int: " <<  argIntArray[j] << endl;
         }
         args[i] = static_cast<void *>(argIntArray);
+
+        cout << * args[i] << endl;
         break;
       }
 
