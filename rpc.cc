@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#include <bitset> 
+#include <bitset>
 #include <sstream>
 
 #include <netinet/in.h>
@@ -71,19 +71,17 @@ void printArgTypes(int * argTypes){
   unsigned num = countNumOfArgTypes(argTypes);
 
   for(int i = 0; i < num; i++){
-    cout << argTypes[i] << ", ";  
+    cout << argTypes[i] << ", ";
   }
   cout << endl;
 }
 
 
 void printArgs(int * argTypes, void  ** args){
-  cout << " Printing args: " ;
-
-  void ** messageBufferPointer = args;
+  cout << "Printing args: " ;
 
   // Parses the argument from the buffer
-  unsigned numOfArgs = countNumOfArgTypes(argTypes) - 1 ;
+  unsigned numOfArgs = countNumOfArgTypes(argTypes) - 1;
 
 
   cout<<"Number of args: " << numOfArgs << endl;
@@ -94,76 +92,63 @@ void printArgs(int * argTypes, void  ** args){
       (argType & ARG_TYPE_INFORMATION_MASK) >> ARG_TYPE_INFORMATION_SHIFT_AMOUNT;
     int argTypeArrayLength = argType & ARG_TYPE_ARRAY_LENGTH_MASK;
     argTypeArrayLength = (argTypeArrayLength == 0) ? 1: argTypeArrayLength;
+    void *arg = args[i];
 
     switch (argTypeInformation) {
       case ARG_CHAR: {
-        char *argCharArray = new char[argTypeArrayLength];
-        memcpy(argCharArray, messageBufferPointer, argTypeArrayLength);
-        messageBufferPointer += argTypeArrayLength;
-        
-        cout << "Printing char: "<< messageBufferPointer << endl;
+        cout << "Printing ARG_CHAR: " << endl;
+        char *argCharArray = (char *) arg;
+        cout << argCharArray << endl;
         break;
       }
 
       case ARG_SHORT: {
-        short *argShortArray = new short[argTypeArrayLength];
+        cout << "Printing ARG_SHORT: " << endl;
+        short *argShortArray = (short *) arg;
         for (int j = 0; j < argTypeArrayLength; j++) {
-          char argShortBuffer[MAX_LENGTH_ARG_SHORT] = {'\0'};
-          memcpy(argShortBuffer, messageBufferPointer, MAX_LENGTH_ARG_SHORT);
-          argShortArray[j] = toShort(argShortBuffer);
-          messageBufferPointer += MAX_LENGTH_ARG_SHORT;
-          cout << "Printing short: "<< argShortArray[j]  << endl;
-        }        
+          cout << argShortArray[i] << ", ";
+        }
+        cout << endl;
         break;
       }
 
       case ARG_INT: {
-        int *argIntArray = new int[argTypeArrayLength];
+        cout << "Printing ARG_INT: " << endl;
+        int *argIntArray = (int *) arg;
         for (int j = 0; j < argTypeArrayLength; j++) {
-          char argIntBuffer[MAX_LENGTH_ARG_INT] = {'\0'};
-          memcpy(argIntBuffer, messageBufferPointer, MAX_LENGTH_ARG_INT);
-          argIntArray[j] = toInt(argIntBuffer);
-          messageBufferPointer += MAX_LENGTH_ARG_INT;
-          cout << "Printing ints: " << argIntArray[j]  << endl;
+          cout << argIntArray[j] << ", ";
         }
-        
-        
+        cout << endl;
         break;
       }
 
       case ARG_LONG: {
-        long *argLongArray = new long[argTypeArrayLength];
+        cout << "Printing ARG_LONG: " << endl;
+        long *argLongArray = (long *) arg;
         for (int j = 0; j < argTypeArrayLength; j++) {
-          char argLongBuffer[MAX_LENGTH_ARG_LONG] = {'\0'};
-          memcpy(argLongBuffer, messageBufferPointer, MAX_LENGTH_ARG_LONG);
-          argLongArray[j] = toLong(argLongBuffer);
-          messageBufferPointer += MAX_LENGTH_ARG_LONG;
-          cout << "Printing Long: " << argLongArray[j]  << endl;
+          cout << argLongArray[j] << ",";
         }
+        cout << endl;
         break;
       }
 
       case ARG_DOUBLE: {
-        double *argDoubleArray = new double[argTypeArrayLength];
+        cout << "Printing ARG_DOUBLE: " << endl;
+        double *argDoubleArray = (double *) arg;
         for (int j = 0; j < argTypeArrayLength; j++) {
-          char argDoubleBuffer[MAX_LENGTH_ARG_DOUBLE] = {'\0'};
-          memcpy(argDoubleBuffer, messageBufferPointer, MAX_LENGTH_ARG_DOUBLE);
-          argDoubleArray[j] = toDouble(argDoubleBuffer);
-          messageBufferPointer += MAX_LENGTH_ARG_DOUBLE;
-          cout << "Printing Double: " << argDoubleArray[j]  << endl;
+          cout << argDoubleArray[j] << ", ";
         }
+        cout << endl;
         break;
       }
 
       case ARG_FLOAT: {
-        float *argFloatArray = new float[argTypeArrayLength];
+        cout << "Printing ARG_FLOAT: " << endl;
+        float *argFloatArray = (float *) arg;
         for (int j = 0; j < argTypeArrayLength; j++) {
-          char argFloatBuffer[MAX_LENGTH_ARG_FLOAT] = {'\0'};
-          memcpy(argFloatBuffer, messageBufferPointer, MAX_LENGTH_ARG_FLOAT);
-          argFloatArray[j] = toFloat(argFloatBuffer);
-          messageBufferPointer += MAX_LENGTH_ARG_FLOAT;
-          cout << "Printing Float: " << argFloatArray[j]  << endl;
+          cout << argFloatArray[j] << ", ";
         }
+        cout << endl;
         break;
       }
     }
@@ -304,7 +289,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
 int rpcRegister(char * name, int *argTypes, skeleton f){
 
   RegisterRequestMessage regReqMsg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
-  
+
   /*
   cout << "rpcRegister name: " << name << endl;
   cout << "rpcRegister serverIdentifier: " << serverIdentifier << endl;
