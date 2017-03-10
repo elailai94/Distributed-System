@@ -68,7 +68,7 @@ void mapPrint(){
 void printArgTypes(int * argTypes){
   cout << " Printing argTypes: " ;
 
-  unsigned num = countArgTypes(argTypes);
+  unsigned num = countNumOfArgTypes(argTypes);
 
   for(int i = 0; i < num; i++){
     cout << argTypes[i] << ", ";  
@@ -80,11 +80,8 @@ void printArgTypes(int * argTypes){
 void printArgs(void  ** messageBufferPointer, int * argTypes){
   cout << " Printing args: " ;
 
-  unsigned num = countArgTypes(argTypes) - 1 ;
-
-
   // Parses the argument from the buffer
-  unsigned int numOfArgs = argTypesBuffer.size() - 1;
+  unsigned numOfArgs = countNumOfArgTypes(argTypes) - 1 ;
 
   cout<<"Number of args: " <<numOfArgs << endl;
 
@@ -101,7 +98,7 @@ void printArgs(void  ** messageBufferPointer, int * argTypes){
         memcpy(argCharArray, messageBufferPointer, argTypeArrayLength);
         messageBufferPointer += argTypeArrayLength;
         
-        cout << "Printing char: "<< args[i] << endl;
+        cout << "Printing char: "<< messageBufferPointer << endl;
 
         break;
       }
@@ -423,7 +420,7 @@ int rpcExecute(void){
               cout << "procedure_signature: "<< ps->name << endl;
               
               printArgTypes(eqm->getArgTypes());
-              printArg(eqm->getArgs());
+              printArg(eqm->getArgs(), eqm->getArgTypes());
 
               int result = skel(eqm->getArgTypes(), eqm->getArgs());
 
