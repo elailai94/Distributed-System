@@ -90,6 +90,9 @@ unsigned int ExecuteSuccessMessage::getLength() const {
 
 // See interface (header file).
 int ExecuteSuccessMessage::send(int dataTransferSocket) {
+
+  cout << "EXECUTE SUCCESS MESSAGE send" << endl;
+
   char messageBuffer[getLength()] = {'\0'};
   char *messageBufferPointer = messageBuffer;
 
@@ -183,7 +186,7 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
   Message *&parsedMessage, unsigned int length) {
   // Reads the message into a buffer from the data transfer socket
   
-  cout << "EXECUTE SUCCESS MESSAGE" << endl;
+  cout << "EXECUTE SUCCESS MESSAGE received" << endl;
   char messageBuffer[length];
   unsigned int totalNumOfBytesMessage = length;
   unsigned int numOfBytesLeft = totalNumOfBytesMessage;
