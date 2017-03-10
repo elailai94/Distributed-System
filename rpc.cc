@@ -87,7 +87,7 @@ void printArgs(int * argTypes, void  ** args){
 
 
   cout<<"Number of args: " << numOfArgs << endl;
-  
+
   for (unsigned int i = 0; i < numOfArgs; i++) {
     int argType = argTypes[i];
     int argTypeInformation =
@@ -426,7 +426,7 @@ int rpcExecute(void){
               cout << "Flag6  " << endl;
 
               if(result == 0 ){
-                ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(eqm->getName(), eqm->getArgTypes(), eqm->getArgs());
+                ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(erm->getName(), erm->getArgTypes(), ersm->getArgs());
                 Segment exeSuccessSeg = Segment(exeSuccessMsg.getLength(), MSG_TYPE_EXECUTE_SUCCESS, &exeSuccessMsg);
                 status = exeSuccessSeg.send(tempConnection);
 
