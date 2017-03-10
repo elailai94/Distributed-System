@@ -212,12 +212,12 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
   char *messageBufferPointer = messageBuffer;
   //
 
-  int tempBuffer[92] = {'\0'};
+  int tempBuffer[368] = {'\0'};
   memcpy(tempBuffer, messageBufferPointer, 92);
   int tempPrintBuffer = *((int *) tempBuffer);
 
   cout << "receive messageBuffer: " << endl;
-  cout << bitset<92>(tempPrintBuffer) << endl;
+  cout << bitset<736>(tempPrintBuffer) << endl;
   cout << "End of messageBuffer" << endl;
 
 
