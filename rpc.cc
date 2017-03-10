@@ -249,8 +249,19 @@ int rpcCall(char *name, int *argTypes, void **args) {
   int returnVal = 0;
 
   if(status == 0){
-    Segment * segment = 0;
-    status2 = Segment::receive(serverSocket, segment);
+    Segment * parsedSegment = 0;
+    status2 = Segment::receive(serverSocket, parsedSegment);
+
+    switch (parsedSegment->getType()) {
+      case MSG_TYPE_EXECUTE_SUCCESS: {
+        cout << "MSG_TYPE_EXECUTE_SUCCESS" <<
+        break;
+      }
+
+      case MSG_TYPE_EXECUTE_FAILURE: {
+        break;
+      }
+    }
 
     if(segment->getType() == MSG_TYPE_EXECUTE_SUCCESS) {
       cout << " MSG_TYPE_EXECUTE_SUCCESS " << endl;
@@ -260,10 +271,10 @@ int rpcCall(char *name, int *argTypes, void **args) {
       // TODO FIX: name = esm->getName();
       argTypes = esm->getArgTypes();
       cout << " flag 2.5" << endl;
-      
+
       args = esm->getArgs();
       cout << " flag 3" << endl;
-      
+
     }else if(segment->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
       Message * cast = segment->getMessage();
       ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
@@ -400,7 +411,7 @@ int rpcExecute(void){
               ExecuteRequestMessage * erm = dynamic_cast<ExecuteRequestMessage*>(cast);
 
               procedure_signature * ps = new procedure_signature(erm->getName(), erm->getArgTypes());
-              
+
               cout << "erm->getName(): " << erm->getName() << endl;
               printArgTypes(erm->getArgTypes());
 
