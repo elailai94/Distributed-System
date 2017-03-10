@@ -242,12 +242,14 @@ int rpcCall(char *name, int *argTypes, void **args) {
 	}
 	//do something with returnVal
 
-  cout << "binderSocket: " << binderSocket << endl;
 
   LocRequestMessage messageToBinder = LocRequestMessage(string(name), argTypes);
   Segment segmentToBinder =
 	  Segment(messageToBinder.getLength(), MSG_TYPE_LOC_REQUEST, &messageToBinder);
   int binder_status = segmentToBinder.send(binderSocket);
+
+  cout << "Successful binder"  << endl;
+
 
 	//maybe error check with binder_status
   //TODO: SEGMENT FAULT IF NOT IN THIS FOR LOOP
@@ -280,7 +282,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
 	int status1 = setUpToConnect(serverSocket, serverAddress, serverPort);
 	status1 = sendExecute(serverSocket, string(name), argTypes, args);
 
-	return status1;
+	return status1 ;
 }
 
 
@@ -411,7 +413,12 @@ int rpcExecute(void){
 
               skeleton skel = procSkeleDict[*ps];
 
+<<<<<<< HEAD
 //              printArgs(erm->getArgTypes(), erm->getArgs());
+=======
+              printArgTypes(erm->getArgTypes());
+              printArgs(erm->getArgTypes(), erm->getArgs());
+>>>>>>> c04e4c3452bf219552e712383f58b251b03f9047
 
               int result = skel(erm->getArgTypes(), erm->getArgs());
 
