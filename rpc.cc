@@ -179,7 +179,6 @@ int rpcInit(){
 // See interface (header file).
 int rpcCall(char *name, int *argTypes, void **args) {
   cout << "Running rpcCall..." << endl;
-  
 
 	string serverAddress;
 	unsigned int serverPort = 0;
@@ -253,30 +252,35 @@ int rpcCall(char *name, int *argTypes, void **args) {
     int status3 = 0;
     status3 = Segment::receive(serverSocket, parsedSegmentEsm);
 
-    if(parsedSegmentEsm->getType() == MSG_TYPE_EXECUTE_SUCCESS) {
-      cout << "MSG_TYPE_EXECUTE_SUCCESS " << endl;
+    switch (parsedSegmentEsm->getType()) {
+      case MSG_TYPE_EXECUTE_SUCCESS: {
+        cout << "MSG_TYPE_EXECUTE_SUCCESS received" << endl;
 
-      Message * msg = parsedSegmentEsm->getMessage();
-      ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(msg);
+        Message * msg = parsedSegmentEsm->getMessage();
+        ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(msg);
 
-      // TODO FIX: name = esm->getName();
-      //argTypes = esm->getArgTypes();
-      void** newArgs = esm->getArgs();
-      unsigned numOfArgs = countNumOfArgTypes(esm->getArgTypes()) - 1;
+        // TODO FIX: name = esm->getName();
+        //argTypes = esm->getArgTypes();
+        void** newArgs = esm->getArgs();
+        unsigned numOfArgs = countNumOfArgTypes(esm->getArgTypes()) - 1;
 
-      for (unsigned int i = 0; i < numOfArgs; i++) {
-        args[i] = newArgs[i];
+        for (unsigned int i = 0; i < numOfArgs; i++) {
+          args[i] = newArgs[i];
+        }
+
+        break;
       }
 
-      
-    }else if(parsedSegmentEsm->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
-      cout << "MSG_TYPE_EXECUTE_FAILURE " << endl;
+      case MSG_TYPE_EXECUTE_FAILURE: {
+        cout << "MSG_TYPE_EXECUTE_FAILURE " << endl;
 
-      Message * cast = parsedSegmentEsm->getMessage();
-      ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
-      returnVal = efm->getReasonCode();
+        Message * cast = parsedSegmentEsm->getMessage();
+        ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
+        returnVal = efm->getReasonCode();
+        break;
+      }
     }
-    
+
     destroySocket(serverSocket);
 
   }else{ //Something bad happened
@@ -310,7 +314,7 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
 
   Segment regReqSeg = Segment(regReqMsg.getLength(), MSG_TYPE_REGISTER_REQUEST, &regReqMsg);
   int status = regReqSeg.send(binderSocket);
-  
+
   //cout << "rpcRegister Status: " << status << endl;
 
   if(status >= 0){
@@ -329,7 +333,7 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
 
       //struct procedure_signature k(string(name), argTypes);
       struct procedure_signature k = procedure_signature(string(name), argTypes);
-      
+
       procSkeleDict[k] = f;
 
       cout << "k: " << k.name << ", "<< f << endl;
