@@ -261,15 +261,9 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
       // TODO FIX: name = esm->getName();
       
-      int * tempArgTypes = esm->getArgTypes();
-      void** tempArgs;
-      
-      tempArgs = esm->getArgs();
+      argTypes = esm->getArgTypes();
+      args = esm->getArgs();
 
-      cout << " flag 2" << endl;
-      argTypes = tempArgTypes;
-      args = tempArgs;
-      cout << " flag 3" << endl;
       
     }else if(parsedSegmentEsm->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
       Message * cast = parsedSegmentEsm->getMessage();
