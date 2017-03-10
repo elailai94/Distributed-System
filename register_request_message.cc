@@ -119,7 +119,7 @@ int RegisterRequestMessage::receive(int dataTransferSocket,
   // Parses the port from the buffer
   char portBuffer[MAX_LENGTH_PORT] = {'\0'};
   memcpy(portBuffer, messageBufferPointer, MAX_LENGTH_PORT);
-  unsigned int port = *((unsigned int *) portBuffer);
+  unsigned int port = toUnsignedInt(portBuffer);
   messageBufferPointer += MAX_LENGTH_PORT;
 
   // Parses the remote procedure name from the buffer
