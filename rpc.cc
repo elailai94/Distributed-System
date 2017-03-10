@@ -246,7 +246,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   Segment exeReqSeg = Segment(exeReqMsg.getLength(), MSG_TYPE_EXECUTE_REQUEST, &exeReqMsg);
   int status2 =  exeReqSeg.send(serverSocket);
 
-  int returnVal;
+  int returnVal = 0;
 
   if(status == 0){
     Segment * segment = 0;
@@ -260,6 +260,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
       // TODO FIX: name = esm->getName();
       argTypes = esm->getArgTypes();
       args = esm->getArgs();
+      cout << " flag 3" << endl;
       
     }else if(segment->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
       Message * cast = segment->getMessage();
