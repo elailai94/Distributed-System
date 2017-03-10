@@ -101,9 +101,9 @@ int main() {
 
   /* rpcCalls */
   
-  //int s0 = rpcCall("f0", argTypes0, args0);
+  int s0 = rpcCall("f0", argTypes0, args0);
   /* test the return f0 */
-  /*
+  
   printf("\nEXPECTED return of f0 is: %d\n", a0 + b0);
   if (s0 >= 0) {
     printf("ACTUAL return of f0 is: %d\n", *((int *)(args0[0])));
@@ -112,7 +112,6 @@ int main() {
     printf("Error: %d\n", s0);
   }
 
-  */
   int s1 = rpcCall("f1", argTypes1, args1);
   /* test the return of f1 */
   printf("\nEXPECTED return of f1 is: %ld\n", a1 + b1 * c1 - d1);
