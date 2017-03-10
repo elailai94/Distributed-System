@@ -352,6 +352,7 @@ int rpcExecute(void){
   mapPrint();
 
 
+
   //Create connection socket ot be used for accepting clients
   vector<int> myConnections;
   vector<int> myToRemove;
@@ -415,21 +416,16 @@ int rpcExecute(void){
               printArgTypes(erm->getArgTypes());
               printArgs(erm->getArgTypes(), erm->getArgs());
 
-              cout << "Skele name persumeably: " << ps->name << endl;
-
-              cout <<" flag 1" << endl;
               skeleton skel = procSkeleDict[*ps];
-              cout <<" flag 2" << endl;
 
               if(skel == 0){
                 cout << "Skel is null" << endl;
               }
 
               int result = skel(erm->getArgTypes(), erm->getArgs());
-              cout <<" flag 3" << endl;
-
 
               cout << "Result: " << result << endl;
+              printArgs(erm->getArgTypes(), erm->getArgs());
 
               if(result == 0 ){
                 ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(erm->getName(), erm->getArgTypes(), erm->getArgs());
