@@ -249,14 +249,14 @@ int rpcCall(char *name, int *argTypes, void **args) {
   int returnVal = 0;
 
   if(status == 0){
-    Segment * segment = 0;
+    Segment * parsedSegmentEsm = 0;
     int status3 = 0;
-    status3 = Segment::receive(serverSocket, segment);
+    status3 = Segment::receive(serverSocket, parsedSegmentEsm);
 
-    if(segment->getType() == MSG_TYPE_EXECUTE_SUCCESS) {
+    if(parsedSegmentEsm->getType() == MSG_TYPE_EXECUTE_SUCCESS) {
       cout << "MSG_TYPE_EXECUTE_SUCCESS " << endl;
 
-      Message * msg = segment->getMessage();
+      Message * msg = parsedSegmentEsm->getMessage();
       ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(msg);
 
       // TODO FIX: name = esm->getName();
