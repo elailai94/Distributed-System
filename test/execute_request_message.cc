@@ -136,9 +136,9 @@ int ExecuteRequestMessage::send(int dataTransferSocket) {
         memcpy(messageBufferPointer, args[i],
           argTypeArrayLength * MAX_LENGTH_ARG_INT);
        
-        cout << "argTypeArrayLength: " << argTypeArrayLength;
-        cout << messageBufferPointer << endl;
-       
+//        cout << messageBufferPointer << endl;
+        cout << bitset<32>(messageBufferPointer) <<endl;
+ 
         messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_INT;
         break;
       }
@@ -243,7 +243,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
     messageBufferPointer += MAX_LENGTH_ARG_TYPE;
 
     cout << "How many times" << endl;
-    cout << bitset<32>(argType)<< dec <<endl;
+    cout << bitset<32>(argType) <<endl;
     
     if (argType == 0) {
       break;
