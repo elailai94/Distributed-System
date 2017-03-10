@@ -135,7 +135,9 @@ int ExecuteRequestMessage::send(int dataTransferSocket) {
       case ARG_INT: {
         memcpy(messageBufferPointer, args[i],
           argTypeArrayLength * MAX_LENGTH_ARG_INT);
-        cout << args[i] << endl;
+       
+        cout << messageBufferPointer << endl;
+       
         messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_INT;
         break;
       }
