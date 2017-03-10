@@ -260,11 +260,13 @@ int rpcCall(char *name, int *argTypes, void **args) {
       ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(msg);
 
       // TODO FIX: name = esm->getName();
-      
-      argTypes = esm->getArgTypes();
-      args = esm->getArgs();
+      //argTypes = esm->getArgTypes();
+      void** newArgs = esm->getArgs();
 
-      
+      for (unsigned int i = 0; i < numOfArgs; i++) {
+        args[i] = newArgs[i];
+      }
+
     }else if(parsedSegmentEsm->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
       Message * cast = parsedSegmentEsm->getMessage();
       ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
