@@ -246,42 +246,41 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
   int returnVal = 0;
 
-    Segment * parsedSegmentEsm = 0;
-    int status3 = 0;
-    status3 = Segment::receive(serverSocket, parsedSegmentEsm);
-    destroySocket(serverSocket);
+  Segment * parsedSegmentEsm = 0;
+  int status3 = 0;
+  status3 = Segment::receive(serverSocket, parsedSegmentEsm);
+  destroySocket(serverSocket);
 
-    switch (parsedSegmentEsm->getType()) {
-      case MSG_TYPE_EXECUTE_SUCCESS: {
-        cout << "MSG_TYPE_EXECUTE_SUCCESS received" << endl;
+  switch (parsedSegmentEsm->getType()) {
+    case MSG_TYPE_EXECUTE_SUCCESS: {
+      cout << "MSG_TYPE_EXECUTE_SUCCESS received" << endl;
 
-        Message * msg = parsedSegmentEsm->getMessage();
-        ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(msg);
+      Message * msg = parsedSegmentEsm->getMessage();
+      ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(msg);
 
-        // TODO FIX: name = esm->getName();
-        //argTypes = esm->getArgTypes();
-        void** newArgs = esm->getArgs();
-        unsigned numOfArgs = countNumOfArgTypes(esm->getArgTypes()) - 1;
+      // TODO FIX: name = esm->getName();
+      //argTypes = esm->getArgTypes();
+      void** newArgs = esm->getArgs();
+      unsigned numOfArgs = countNumOfArgTypes(esm->getArgTypes()) - 1;
 
-        for (unsigned int i = 0; i < numOfArgs; i++) {
-          args[i] = newArgs[i];
-        }
-
-        break;
+      for (unsigned int i = 0; i < numOfArgs; i++) {
+        args[i] = newArgs[i];
       }
 
-      case MSG_TYPE_EXECUTE_FAILURE: {
-        cout << "MSG_TYPE_EXECUTE_FAILURE " << endl;
-
-        Message * cast = parsedSegmentEsm->getMessage();
-        ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
-        returnVal = efm->getReasonCode();
-        break;
-      }
+      break;
     }
 
-  return returnVal;
+    case MSG_TYPE_EXECUTE_FAILURE: {
+      cout << "MSG_TYPE_EXECUTE_FAILURE " << endl;
 
+      Message * cast = parsedSegmentEsm->getMessage();
+      ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
+      returnVal = efm->getReasonCode();
+      break;
+    }
+  }
+
+  return returnVal;
 }
 
 
