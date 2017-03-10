@@ -179,7 +179,9 @@ int rpcInit(){
 // See interface (header file).
 int rpcCall(char *name, int *argTypes, void **args) {
   cout << "Running rpcCall..." << endl;
-  //printArgs(argTypes, args);
+  
+  mapPrint();
+
 
 	string serverAddress;
 	unsigned int serverPort = 0;
@@ -328,12 +330,9 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
       RegisterSuccessMessage * rsm = dynamic_cast<RegisterSuccessMessage*>(cast);
 
       struct procedure_signature k(string(name), argTypes);
-
-
       procSkeleDict[k] = f;
 
       //cout << "k: " << k.name << endl;
-      mapPrint();
 
     }else if(parsedSegment->getType() == MSG_TYPE_REGISTER_FAILURE){
       return 0;
