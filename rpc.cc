@@ -250,7 +250,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
   if(status == 0){
     Segment * segment = 0;
-    status2 = Segment::receive(sock, segment);
+    status2 = Segment::receive(serverSocket, segment);
 
     if(segment->getType() == MSG_TYPE_EXECUTE_SUCCESS) {
 
