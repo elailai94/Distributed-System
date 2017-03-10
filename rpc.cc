@@ -420,7 +420,7 @@ int rpcExecute(void){
               cout << "procedure_signature: "<< ps->name << endl;
               
               printArgTypes(eqm->getArgTypes());
-              printArg(eqm->getArgs(), eqm->getArgTypes());
+              printArgs(eqm->getArgs(), eqm->getArgTypes());
 
               int result = skel(eqm->getArgTypes(), eqm->getArgs());
 
