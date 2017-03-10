@@ -140,5 +140,6 @@ int acceptConnection(int socket) {
 // See interface (header file).
 int destroySocket(int socket) {
   int result = close(socket);
+  cout << "Socket destoryed: " << result << endl;
   return result;
 }
