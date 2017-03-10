@@ -53,13 +53,11 @@ void mapPrint(){
 
   cout << "Map Print: ";
 
-  /*
   for(map<procedure_signature, skeleton>::iterator it = procSkeleDict.begin();
    it != procSkeleDict.end(); ++it){
 
-    cout << it->first.name << endl;
+    cout << it->first.name << ", ";
   }
-  */
 
   cout << endl;
 }
