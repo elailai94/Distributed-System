@@ -228,7 +228,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
     messageBufferPointer += MAX_LENGTH_ARG_TYPE;
 
     cout << "How many times" << endl;
-    cout << bitset<32>(argType)<< dec <<endl;
+    cout << bitset<92>(argType)<< dec <<endl;
     
     if (argType == 0) {
       break;
