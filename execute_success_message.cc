@@ -182,6 +182,8 @@ int ExecuteSuccessMessage::send(int dataTransferSocket) {
 int ExecuteSuccessMessage::receive(int dataTransferSocket,
   Message *&parsedMessage, unsigned int length) {
   // Reads the message into a buffer from the data transfer socket
+  
+  cout << "EXECUTE SUCCESS MESSAGE" << endl;
   char messageBuffer[length];
   unsigned int totalNumOfBytesMessage = length;
   unsigned int numOfBytesLeft = totalNumOfBytesMessage;
