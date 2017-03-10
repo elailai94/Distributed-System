@@ -148,7 +148,7 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
 
     case MSG_TYPE_EXECUTE_FAILURE:
       result =
-        ExecuteRequestMessage::receive(dataTransferSocket, parsedMessage,
+        ExecuteFailureMessage::receive(dataTransferSocket, parsedMessage,
           length);
       if (result < 0 || result == 0) {
         return result;
