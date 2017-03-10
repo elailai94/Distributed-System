@@ -419,9 +419,9 @@ int rpcExecute(void){
               cout <<" flag 2" << endl;
 
               int result = skel(erm->getArgTypes(), erm->getArgs());
+              cout <<" flag 3" << endl;
 
               printArgTypes(erm->getArgTypes());
-              cout <<" flag 3" << endl;
 
               printArgs(erm->getArgTypes(), erm->getArgs());
 
