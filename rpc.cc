@@ -444,7 +444,7 @@ int rpcExecute(void){
               }
             }
 
-            if (status >= 0) {
+            if (status == 0) {
               // client has closed the connection
               myToRemove.push_back(tempConnection);
               return status;
