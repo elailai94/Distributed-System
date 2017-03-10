@@ -98,30 +98,19 @@ int main() {
    unsigned int port = 80;
    string name = "func";
 
-   char a1 = 'a';
-   short b1 = 100;
-   int c1 = 1000;
-   long d1 = 10000;
-   int count1 = 5;
-   long return1;
-   int argTypes1[count1 + 1];
-   void **args1;
+  char *a4 = "non_exist_file_to_be_printed";
+  int count4 = 1;
+  int argTypes4[count4 + 1];
+  void **args4;
 
-   argTypes1[0] = (1 << ARG_OUTPUT) | (ARG_LONG << 16);
-   argTypes1[1] = (1 << ARG_INPUT) | (ARG_CHAR << 16);
-   argTypes1[2] = (1 << ARG_INPUT) | (ARG_SHORT << 16);
-   argTypes1[3] = (1 << ARG_INPUT) | (ARG_INT << 16);
-   argTypes1[4] = (1 << ARG_INPUT) | (ARG_LONG << 16);
-   argTypes1[5] = 0;
+  argTypes4[0] = (1 << ARG_INPUT) | (ARG_CHAR << 16) | strlen(a4);
+  argTypes4[1] = 0;
 
-   args1 = (void **)malloc(count1 * sizeof(void *));
-   args1[0] = (void *)&return1;
-   args1[1] = (void *)&a1;
-   args1[2] = (void *)&b1;
-   args1[3] = (void *)&c1;
-   args1[4] = (void *)&d1;
+  args4 = (void **)malloc(count4 * sizeof(void *));
+  args4[0] = (void *)a4;
 
-   ExecuteRequestMessage msg = ExecuteRequestMessage(name, argTypes1, args1);
+
+   ExecuteRequestMessage msg = ExecuteRequestMessage(name, argTypes4, args4);
    //cout << "Server Identifier: " << msg.getServerIdentifier() << endl;
    //cout << "Port: " << msg.getPort() << endl;
    //cout << "Name: " << msg.getName() << endl;
