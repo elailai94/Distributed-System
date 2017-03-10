@@ -42,7 +42,6 @@ bool connectedToBinder = false;
 int binderSocket = 0;
 
 // Global variables for server
-struct addrinfo* servinfo;
 static map<procedure_signature, skeleton, ps_compare> procSkeleDict;
 string serverIdentifier;
 unsigned int port = 0;
@@ -297,7 +296,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   // CONNECT TO BINDER
 
 int rpcRegister(char * name, int *argTypes, skeleton f){
-
+  cout << "Running rpcExecute..." << endl;
   RegisterRequestMessage regReqMsg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
 
   /*
@@ -354,8 +353,6 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
 int rpcExecute(void){
 	cout << "Running rpcExecute..." << endl;
   mapPrint();
-
-
 
   //Create connection socket ot be used for accepting clients
   vector<int> myConnections;
@@ -461,7 +458,7 @@ int rpcExecute(void){
     }
   }
 
-  freeaddrinfo(servinfo);
+  destroySocket(welcomeSocket);
   return 0;
 }
 
