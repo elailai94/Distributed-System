@@ -3,13 +3,14 @@
 #include <string.h>
 
 int f0_Skel(int *argTypes, void **args) {
-
+  printf("f0_skel");
+  
   *(int *)args[0] = f0(*(int *)args[1], *(int *)args[2]);
   return 0;
 }
 
 int f1_Skel(int *argTypes, void **args) {
-  printf("Printing skeletons");
+  printf("f1_skel");
   printf("%d\n", *((short *)(*(args + 2))) );
   printf("%d\n",*((int *)(*(args + 3))) );
   printf("%d\n", *((long *)(*(args + 4))) );
