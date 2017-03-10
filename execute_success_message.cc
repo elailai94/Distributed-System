@@ -1,6 +1,7 @@
 #include <cstring>
 #include <vector>
 #include <sys/socket.h>
+#include <iostream>
 
 #include "execute_success_message.h"
 #include "helper_functions.h"
@@ -89,6 +90,9 @@ unsigned int ExecuteSuccessMessage::getLength() const {
 
 // See interface (header file).
 int ExecuteSuccessMessage::send(int dataTransferSocket) {
+
+  cout << "EXECUTE SUCCESS MESSAGE send" << endl;
+
   char messageBuffer[getLength()] = {'\0'};
   char *messageBufferPointer = messageBuffer;
 
@@ -181,6 +185,8 @@ int ExecuteSuccessMessage::send(int dataTransferSocket) {
 int ExecuteSuccessMessage::receive(int dataTransferSocket,
   Message *&parsedMessage, unsigned int length) {
   // Reads the message into a buffer from the data transfer socket
+  
+  cout << "EXECUTE SUCCESS MESSAGE received" << endl;
   char messageBuffer[length];
   unsigned int totalNumOfBytesMessage = length;
   unsigned int numOfBytesLeft = totalNumOfBytesMessage;
@@ -264,6 +270,8 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
           messageBufferPointer += MAX_LENGTH_ARG_INT;
         }
         args[i] = static_cast<void *>(argIntArray);
+        cout << "Hi world" << endl;
+        cout << "Success Int: " <<  ((int *) args[i])[0] << endl;
         break;
       }
 

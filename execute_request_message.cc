@@ -264,11 +264,11 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
           memcpy(argIntBuffer, messageBufferPointer, MAX_LENGTH_ARG_INT);
           argIntArray[j] = toInt(argIntBuffer);
           messageBufferPointer += MAX_LENGTH_ARG_INT;
-          cout << "Int: " <<  argIntArray[j] << endl;
+          //cout << "Int: " <<  argIntArray[j] << endl;
         }
         args[i] = static_cast<void *>(argIntArray);
 
-        cout << ((int *) args[i])[0] << endl;
+        cout << "Int: " <<  ((int *) args[i])[0] << endl;
 
         break;
       }

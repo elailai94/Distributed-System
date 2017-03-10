@@ -203,15 +203,10 @@ int rpcCall(char *name, int *argTypes, void **args) {
 	  Segment(messageToBinder.getLength(), MSG_TYPE_LOC_REQUEST, &messageToBinder);
   int binder_status = segmentToBinder.send(binderSocket);
 
-  cout << "Successful binder"  << endl;
-
-
 	//maybe error check with binder_status
   //TODO: SEGMENT FAULT IF NOT IN THIS FOR LOOP
 	/**Server stuff **/
 	if(binder_status >= 0){
-
-    cout << "Successful binder 2" << endl;
 
     Segment *parsedSegment = 0;
     int tempStatus = 0;
@@ -239,44 +234,45 @@ int rpcCall(char *name, int *argTypes, void **args) {
 		}
 	}
 
+
+  cout << "Attempt to create socket and send msg" << endl;
   int serverSocket = createSocket();
 	int status1 = setUpToConnect(serverSocket, serverAddress, serverPort);
+
+  cout << "status1: " << status1 << endl;
 
   ExecuteRequestMessage exeReqMsg = ExecuteRequestMessage(name, argTypes, args);
   Segment exeReqSeg = Segment(exeReqMsg.getLength(), MSG_TYPE_EXECUTE_REQUEST, &exeReqMsg);
   int status2 =  exeReqSeg.send(serverSocket);
 
+  cout << "ExecuteRequestMessage: status2" << status2 << endl;
+
   int returnVal = 0;
 
-  if(status == 0){
-    Segment * parsedSegment = 0;
-    status2 = Segment::receive(serverSocket, parsedSegment);
+  if(status2 == 0){
+    Segment * parsedSegmentEsm = 0;
+    int status3 = 0;
+    status3 = Segment::receive(serverSocket, parsedSegmentEsm);
 
-    switch (parsedSegment->getType()) {
-      case MSG_TYPE_EXECUTE_SUCCESS: {
-        cout << "MSG_TYPE_EXECUTE_SUCCESS" <<
-        break;
-      }
+    if(parsedSegmentEsm->getType() == MSG_TYPE_EXECUTE_SUCCESS) {
+      cout << "MSG_TYPE_EXECUTE_SUCCESS " << endl;
 
-      case MSG_TYPE_EXECUTE_FAILURE: {
-        break;
-      }
-    }
+      Message * msg = parsedSegmentEsm->getMessage();
+      ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(msg);
 
-    if(segment->getType() == MSG_TYPE_EXECUTE_SUCCESS) {
-      cout << " MSG_TYPE_EXECUTE_SUCCESS " << endl;
-      Message * cast = segment->getMessage();
-      ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(cast);
-      cout << " flag 2" << endl;
       // TODO FIX: name = esm->getName();
-      argTypes = esm->getArgTypes();
-      cout << " flag 2.5" << endl;
+      //argTypes = esm->getArgTypes();
+      void** newArgs = esm->getArgs();
+      unsigned numOfArgs = countNumOfArgTypes(esm->getArgTypes()) - 1;
 
-      args = esm->getArgs();
-      cout << " flag 3" << endl;
+      for (unsigned int i = 0; i < numOfArgs; i++) {
+        args[i] = newArgs[i];
+      }
 
-    }else if(segment->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
-      Message * cast = segment->getMessage();
+    }else if(parsedSegmentEsm->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
+      cout << "MSG_TYPE_EXECUTE_FAILURE " << endl;
+
+      Message * cast = parsedSegmentEsm->getMessage();
       ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
       returnVal = efm->getReasonCode();
     }
@@ -362,7 +358,6 @@ int rpcExecute(void){
 
   while(true){
 
-
     //CONNECTIONS VECTOR
     FD_ZERO(&readfds);
     FD_SET(welcomeSocket, &readfds);
@@ -428,6 +423,7 @@ int rpcExecute(void){
                 ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(erm->getName(), erm->getArgTypes(), erm->getArgs());
                 Segment exeSuccessSeg = Segment(exeSuccessMsg.getLength(), MSG_TYPE_EXECUTE_SUCCESS, &exeSuccessMsg);
                 status = exeSuccessSeg.send(tempConnection);
+                cout << "ExecuteSuccessMessage status: " << status << endl;
 
               }else{
                 ExecuteFailureMessage exeFailMsg = ExecuteFailureMessage(reasonCode);
