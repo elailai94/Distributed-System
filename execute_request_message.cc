@@ -236,7 +236,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
 
     switch (argTypeInformation) {
       case ARG_CHAR: {
-        char *argCharArray = new char[argTypeArrayLength];
+        char *argCharArray = new char[argTypeArrayLength]();
         memcpy(argCharArray, messageBufferPointer, argTypeArrayLength);
         args[i] = static_cast<void *>(argCharArray);
         messageBufferPointer += argTypeArrayLength;
@@ -245,7 +245,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
       }
 
       case ARG_SHORT: {
-        short *argShortArray = new short[argTypeArrayLength];
+        short *argShortArray = new short[argTypeArrayLength]();
         for (int j = 0; j < argTypeArrayLength; j++) {
           char argShortBuffer[MAX_LENGTH_ARG_SHORT] = {'\0'};
           memcpy(argShortBuffer, messageBufferPointer, MAX_LENGTH_ARG_SHORT);
@@ -258,7 +258,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
       }
 
       case ARG_INT: {
-        int *argIntArray = new int[argTypeArrayLength];
+        int *argIntArray = new int[argTypeArrayLength]();
         for (int j = 0; j < argTypeArrayLength; j++) {
           char argIntBuffer[MAX_LENGTH_ARG_INT] = {'\0'};
           memcpy(argIntBuffer, messageBufferPointer, MAX_LENGTH_ARG_INT);
@@ -274,7 +274,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
       }
 
       case ARG_LONG: {
-        long *argLongArray = new long[argTypeArrayLength];
+        long *argLongArray = new long[argTypeArrayLength]();
         for (int j = 0; j < argTypeArrayLength; j++) {
           char argLongBuffer[MAX_LENGTH_ARG_LONG] = {'\0'};
           memcpy(argLongBuffer, messageBufferPointer, MAX_LENGTH_ARG_LONG);
@@ -287,7 +287,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
       }
 
       case ARG_DOUBLE: {
-        double *argDoubleArray = new double[argTypeArrayLength];
+        double *argDoubleArray = new double[argTypeArrayLength]();
         for (int j = 0; j < argTypeArrayLength; j++) {
           char argDoubleBuffer[MAX_LENGTH_ARG_DOUBLE] = {'\0'};
           memcpy(argDoubleBuffer, messageBufferPointer, MAX_LENGTH_ARG_DOUBLE);
@@ -300,7 +300,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
       }
 
       case ARG_FLOAT: {
-        float *argFloatArray = new float[argTypeArrayLength];
+        float *argFloatArray = new float[argTypeArrayLength]();
         for (int j = 0; j < argTypeArrayLength; j++) {
           char argFloatBuffer[MAX_LENGTH_ARG_FLOAT] = {'\0'};
           memcpy(argFloatBuffer, messageBufferPointer, MAX_LENGTH_ARG_FLOAT);
