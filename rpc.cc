@@ -332,7 +332,7 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
       
       procSkeleDict[k] = f;
 
-      cout << "k: " << k.name << endl;
+      cout << "k: " << k.name << f << endl;
 
     }else if(parsedSegment->getType() == MSG_TYPE_REGISTER_FAILURE){
       return 0;
