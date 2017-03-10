@@ -18,35 +18,9 @@ procedure_signature::procedure_signature(const struct procedure_signature & r) {
 
 server_function_info::server_function_info(struct server_info *si, struct procedure_signature *ps) : si(si), ps(ps){}
 
-/*
-bool ps_compare::operator() (const procedure_signature& lhs, const procedure_signature& rhs) const{
+bool ps_compare::operator() (const procedure_signature& l, const procedure_signature& r) const{
 
-	if(lhs.name == rhs.name){
-  		
-		int * array1 = lhs.argTypes;
-		int * array2 = rhs.argTypes;
-
-  		while (*array1 != 0 || *array2 != 0){
-	      if (*array1 != *array2){
-	          return false;
-	      }
-	      
-	      *array1++;
-	      *array2++;
-	  	}
-		
-		cout << "Good news from ps_compare" << endl;
-		return true;
-	}
-
-
-	return false;
-}
-*/
-
-bool operator < (const procedure_signature &l, const procedure_signature &r)
-{
-    if(l.name == r.name)
+if(l.name == r.name)
     {
         int i = 0;
         int lArgs = l.argTypes[i];
@@ -90,3 +64,9 @@ bool operator < (const procedure_signature &l, const procedure_signature &r)
         return (l.name < r.name);
     }
 }
+
+/*
+bool operator < (const procedure_signature &l, const procedure_signature &r) const {
+    
+}
+*/
