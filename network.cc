@@ -10,6 +10,8 @@
 #include <iostream>
 #include "network.h"
 #include "helper_functions.h"
+#include <errno.h>
+
 
 using namespace std;
 
@@ -83,7 +85,7 @@ int setUpToConnect(int socket, string address, unsigned int port) {
     hostAddressResults->ai_addrlen);
   if (result < 0) {
     cout << "Network error2" << endl;
-
+    cout << strerror(errno) << endl;
     return result;
   } // if
 
