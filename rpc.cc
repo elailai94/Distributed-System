@@ -250,12 +250,15 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
   if(status == 0){
     Segment * segment = 0;
-    status2 = Segment::receive(serverSocket, segment);
+    int status3 = 0;
+    status3 = Segment::receive(serverSocket, segment);
 
     if(segment->getType() == MSG_TYPE_EXECUTE_SUCCESS) {
       cout << "MSG_TYPE_EXECUTE_SUCCESS " << endl;
+
       Message * cast = segment->getMessage();
       ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(cast);
+
       // TODO FIX: name = esm->getName();
       
       //int * tempArgTypes = esm->getArgTypes();
