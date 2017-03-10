@@ -234,6 +234,8 @@ int rpcCall(char *name, int *argTypes, void **args) {
 		}
 	}
 
+
+  cout << "Attempt to create socket and send msg" << endl;
   int serverSocket = createSocket();
 	int status1 = setUpToConnect(serverSocket, serverAddress, serverPort);
 
