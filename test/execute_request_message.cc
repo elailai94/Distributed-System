@@ -217,7 +217,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
   vector<int> argTypesBuffer;
 
   cout << "receive messageBuffer: " << endl;
-  cout << bitset<32>(*messageBufferPointer) << endl;
+  cout << bitset<92>(*messageBufferPointer) << endl;
   cout << "End of messageBuffer" << endl;
 
   while (true) {
@@ -228,7 +228,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
     messageBufferPointer += MAX_LENGTH_ARG_TYPE;
 
     cout << "How many times" << endl;
-    cout << bitset<92>(argType)<< dec <<endl;
+    cout << bitset<32>(argType)<< dec <<endl;
     
     if (argType == 0) {
       break;
