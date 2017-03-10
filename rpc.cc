@@ -241,6 +241,7 @@ int sendExecute(int sock, string name, int* argTypes, void**args){
 // See interface (header file).
 int rpcCall(char *name, int *argTypes, void **args) {
   cout << "Running rpcCall..." << endl;
+  printArgs(argTypes, args);
 
 	string serverAddress;
 	unsigned int serverPort = 0;
@@ -303,9 +304,13 @@ int rpcCall(char *name, int *argTypes, void **args) {
 int rpcRegister(char * name, int *argTypes, skeleton f){
 
   RegisterRequestMessage regReqMsg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
+  
+  /*
   cout << "rpcRegister name: " << name << endl;
   cout << "rpcRegister serverIdentifier: " << serverIdentifier << endl;
   cout << "rpcRegister port: " << port << endl;
+  */
+
 
   /*
   We should get seg.send to give us some feed back maybe
@@ -415,11 +420,8 @@ int rpcExecute(void){
               procedure_signature * ps = new procedure_signature(erm->getName(), erm->getArgTypes());
               skeleton skel = procSkeleDict[*ps];
 
-              cout << "Flag5" << endl;
-              cout << "procedure_signature: "<< ps->name << endl;
-              
               printArgTypes(erm->getArgTypes());
-              printArgs(erm->getArgTypes(), erm->getArgs());
+//              printArgs(erm->getArgTypes(), erm->getArgs());
 
               int result = skel(erm->getArgTypes(), erm->getArgs());
 
