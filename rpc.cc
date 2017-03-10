@@ -409,7 +409,7 @@ int rpcExecute(void){
           
             if (status < 0) {
               cerr << "ERROR: receive failed" << endl;
-              return;
+              return -169;
             }
 
             if (status == 0) {
