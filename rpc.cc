@@ -258,7 +258,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
       ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(cast);
       // TODO FIX: name = esm->getName();
       
-      int * tempArgTypes = esm->getArgTypes();
+      //int * tempArgTypes = esm->getArgTypes();
       void ** tempArgs = esm->getArgs();
 
       cout << " flag 2" << endl;
