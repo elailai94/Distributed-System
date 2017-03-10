@@ -18,6 +18,8 @@ struct procedure_signature {
 
   procedure_signature(std::string name, int *argTypes);
   procedure_signature(const struct procedure_signature &r);
+  
+  bool operator < (const procedure_signature &l, const procedure_signature &r);
 };
 
 struct server_function_info {
