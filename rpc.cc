@@ -460,6 +460,7 @@ int rpcExecute(void){
 }
 
 int rpcCacheCall() {
+  cout << "Running rpcCacheCall..." << endl;
 	return 0;
 }
 
