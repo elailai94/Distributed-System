@@ -206,6 +206,12 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
     cout << "Total Bytes: "<< totalNumOfBytesReceived << endl;
   }
 
+
+
+  // Parses the remote procedure name from the buffer
+  char *messageBufferPointer = messageBuffer;
+  //
+
   int tempBuffer[92] = {'\0'};
   memcpy(tempBuffer, messageBufferPointer, 92);
   int tempPrintBuffer = *((int *) tempBuffer);
@@ -215,8 +221,9 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
   cout << "End of messageBuffer" << endl;
 
 
-  // Parses the remote procedure name from the buffer
-  char *messageBufferPointer = messageBuffer;
+  ///
+
+
   char nameBuffer[MAX_LENGTH_NAME + 1] = {'\0'};
   memcpy(nameBuffer, messageBufferPointer, MAX_LENGTH_NAME);
   string name(nameBuffer);
