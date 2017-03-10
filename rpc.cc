@@ -330,9 +330,9 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
       //struct procedure_signature k(string(name), argTypes);
       struct procedure_signature k = procedure_signature(string(name), argTypes);
       
-      procSkeleDict[k] = f;
+      procSkeleDict[k] = 45;
 
-      cout << "k: " << k.name << f << endl;
+      cout << "k: " << k.name << ", "<< f << endl;
 
     }else if(parsedSegment->getType() == MSG_TYPE_REGISTER_FAILURE){
       return 0;
