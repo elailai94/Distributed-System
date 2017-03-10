@@ -413,6 +413,7 @@ int rpcExecute(void){
 
               cout << "erm->getName(): " << erm->getName() << endl;
               printArgTypes(erm->getArgTypes());
+              printArgs(erm->getArgTypes(), erm->getArgs());
 
               cout <<" flag 1" << endl;
               skeleton skel = procSkeleDict[*ps];
@@ -421,9 +422,6 @@ int rpcExecute(void){
               int result = skel(erm->getArgTypes(), erm->getArgs());
               cout <<" flag 3" << endl;
 
-              printArgTypes(erm->getArgTypes());
-
-              printArgs(erm->getArgTypes(), erm->getArgs());
 
               cout << "Result: " << result << endl;
 
