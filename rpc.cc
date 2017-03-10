@@ -180,8 +180,6 @@ int rpcInit(){
 int rpcCall(char *name, int *argTypes, void **args) {
   cout << "Running rpcCall..." << endl;
   
-  mapPrint();
-
 
 	string serverAddress;
 	unsigned int serverPort = 0;
@@ -349,6 +347,9 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
 
 int rpcExecute(void){
 	cout << "Running rpcExecute..." << endl;
+  mapPrint();
+
+
   //Create connection socket ot be used for accepting clients
   vector<int> myConnections;
   vector<int> myToRemove;
