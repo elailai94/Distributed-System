@@ -68,8 +68,105 @@ void mapPrint(){
 void printArgTypes(int * argTypes){
   cout << " Printing argTypes: " ;
 
-  for(int i = 0; i < 2; i++){
-    cout << bitset<8>(*(argTypes+i)) << ", ";  
+  unsigned num = countNumOfArgTypes(argTypes);
+
+  for(int i = 0; i < num; i++){
+    cout << argTypes[i] << ", ";  
+  }
+  cout << endl;
+}
+
+
+void printArgs(int * argTypes, void  ** args){
+  cout << " Printing args: " ;
+
+  void ** messageBufferPointer = args;
+
+  // Parses the argument from the buffer
+  unsigned numOfArgs = countNumOfArgTypes(argTypes) - 1 ;
+
+
+  cout<<"Number of args: " << numOfArgs << endl;
+
+  for (unsigned int i = 0; i < numOfArgs; i++) {
+    int argType = argTypes[i];
+    int argTypeInformation =
+      (argType & ARG_TYPE_INFORMATION_MASK) >> ARG_TYPE_INFORMATION_SHIFT_AMOUNT;
+    int argTypeArrayLength = argType & ARG_TYPE_ARRAY_LENGTH_MASK;
+    argTypeArrayLength = (argTypeArrayLength == 0) ? 1: argTypeArrayLength;
+
+    switch (argTypeInformation) {
+      case ARG_CHAR: {
+        char *argCharArray = new char[argTypeArrayLength];
+        memcpy(argCharArray, messageBufferPointer, argTypeArrayLength);
+        messageBufferPointer += argTypeArrayLength;
+        
+        cout << "Printing char: "<< messageBufferPointer << endl;
+        break;
+      }
+
+      case ARG_SHORT: {
+        short *argShortArray = new short[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          char argShortBuffer[MAX_LENGTH_ARG_SHORT] = {'\0'};
+          memcpy(argShortBuffer, messageBufferPointer, MAX_LENGTH_ARG_SHORT);
+          argShortArray[j] = toShort(argShortBuffer);
+          messageBufferPointer += MAX_LENGTH_ARG_SHORT;
+          cout << "Printing short: "<< argShortArray[j]  << endl;
+        }        
+        break;
+      }
+
+      case ARG_INT: {
+        int *argIntArray = new int[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          char argIntBuffer[MAX_LENGTH_ARG_INT] = {'\0'};
+          memcpy(argIntBuffer, messageBufferPointer, MAX_LENGTH_ARG_INT);
+          argIntArray[j] = toInt(argIntBuffer);
+          messageBufferPointer += MAX_LENGTH_ARG_INT;
+          cout << "Printing ints: " << argIntArray[j]  << endl;
+        }
+        
+        
+        break;
+      }
+
+      case ARG_LONG: {
+        long *argLongArray = new long[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          char argLongBuffer[MAX_LENGTH_ARG_LONG] = {'\0'};
+          memcpy(argLongBuffer, messageBufferPointer, MAX_LENGTH_ARG_LONG);
+          argLongArray[j] = toLong(argLongBuffer);
+          messageBufferPointer += MAX_LENGTH_ARG_LONG;
+          cout << "Printing Long: " << argLongArray[j]  << endl;
+        }
+        break;
+      }
+
+      case ARG_DOUBLE: {
+        double *argDoubleArray = new double[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          char argDoubleBuffer[MAX_LENGTH_ARG_DOUBLE] = {'\0'};
+          memcpy(argDoubleBuffer, messageBufferPointer, MAX_LENGTH_ARG_DOUBLE);
+          argDoubleArray[j] = toDouble(argDoubleBuffer);
+          messageBufferPointer += MAX_LENGTH_ARG_DOUBLE;
+          cout << "Printing Double: " << argDoubleArray[j]  << endl;
+        }
+        break;
+      }
+
+      case ARG_FLOAT: {
+        float *argFloatArray = new float[argTypeArrayLength];
+        for (int j = 0; j < argTypeArrayLength; j++) {
+          char argFloatBuffer[MAX_LENGTH_ARG_FLOAT] = {'\0'};
+          memcpy(argFloatBuffer, messageBufferPointer, MAX_LENGTH_ARG_FLOAT);
+          argFloatArray[j] = toFloat(argFloatBuffer);
+          messageBufferPointer += MAX_LENGTH_ARG_FLOAT;
+          cout << "Printing Float: " << argFloatArray[j]  << endl;
+        }
+        break;
+      }
+    }
   }
   cout << endl;
 }
@@ -144,6 +241,7 @@ int sendExecute(int sock, string name, int* argTypes, void**args){
 // See interface (header file).
 int rpcCall(char *name, int *argTypes, void **args) {
   cout << "Running rpcCall..." << endl;
+  printArgs(argTypes, args);
 
 	string serverAddress;
 	unsigned int serverPort = 0;
@@ -206,9 +304,13 @@ int rpcCall(char *name, int *argTypes, void **args) {
 int rpcRegister(char * name, int *argTypes, skeleton f){
 
   RegisterRequestMessage regReqMsg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
+  
+  /*
   cout << "rpcRegister name: " << name << endl;
   cout << "rpcRegister serverIdentifier: " << serverIdentifier << endl;
   cout << "rpcRegister port: " << port << endl;
+  */
+
 
   /*
   We should get seg.send to give us some feed back maybe
@@ -265,8 +367,6 @@ int rpcExecute(void){
   int n;
   int status;
 
-  cout << "Flag1" << endl;
-
   while(true){
 
 
@@ -306,7 +406,6 @@ int rpcExecute(void){
         for (vector<int>::iterator it = myConnections.begin(); it != myConnections.end(); ++it) {
           int tempConnection = *it;
 
-          cout << "Flag2" << endl;
 
           if (FD_ISSET(tempConnection, &readfds)) {
 
@@ -314,27 +413,22 @@ int rpcExecute(void){
             Segment * segment = 0;
             status = Segment::receive(tempConnection, segment);
 
-            cout << "Flag3" << endl;
-
             if(segment->getType() == MSG_TYPE_EXECUTE_REQUEST){
               Message * cast = segment->getMessage();
-              ExecuteRequestMessage * eqm = dynamic_cast<ExecuteRequestMessage*>(cast);
+              ExecuteRequestMessage * erm = dynamic_cast<ExecuteRequestMessage*>(cast);
 
-              cout << "Flag4" << endl;
-
-              procedure_signature * ps = new procedure_signature(eqm->getName(), eqm->getArgTypes());
+              procedure_signature * ps = new procedure_signature(erm->getName(), erm->getArgTypes());
               skeleton skel = procSkeleDict[*ps];
 
-              cout << "Flag5" << endl;
-              cout << "procedure_signature: "<< ps->name << endl;
-              printArgTypes(ps->argTypes);
+              printArgTypes(erm->getArgTypes());
+//              printArgs(erm->getArgTypes(), erm->getArgs());
 
-              int result = skel(eqm->getArgTypes(), eqm->getArgs());
+              int result = skel(erm->getArgTypes(), erm->getArgs());
 
               cout << "Flag6  " << endl;
 
-              if(result >= 0 ){
-                ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(eqm->getName(), eqm->getArgTypes(), eqm->getArgs());
+              if(result == 0 ){
+                ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(erm->getName(), erm->getArgTypes(), erm->getArgs());
                 Segment exeSuccessSeg = Segment(exeSuccessMsg.getLength(), MSG_TYPE_EXECUTE_SUCCESS, &exeSuccessMsg);
                 status = exeSuccessSeg.send(tempConnection);
 
@@ -345,7 +439,7 @@ int rpcExecute(void){
               }
             }
 
-            if (status == 0) {
+            if (status >= 0) {
               // client has closed the connection
               myToRemove.push_back(tempConnection);
               return status;
