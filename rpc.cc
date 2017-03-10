@@ -77,14 +77,17 @@ void printArgTypes(int * argTypes){
 }
 
 
-void printArgs(void  ** messageBufferPointer, int * argTypes){
+void printArgs(int * argTypes, void  ** args){
   cout << " Printing args: " ;
+
+  void ** messageBufferPointer = args;
 
   // Parses the argument from the buffer
   unsigned numOfArgs = countNumOfArgTypes(argTypes) - 1 ;
 
-  cout<<"Number of args: " <<numOfArgs << endl;
 
+  cout<<"Number of args: " << numOfArgs << endl;
+  
   for (unsigned int i = 0; i < numOfArgs; i++) {
     int argType = argTypes[i];
     int argTypeInformation =
@@ -99,7 +102,6 @@ void printArgs(void  ** messageBufferPointer, int * argTypes){
         messageBufferPointer += argTypeArrayLength;
         
         cout << "Printing char: "<< messageBufferPointer << endl;
-
         break;
       }
 
@@ -111,9 +113,7 @@ void printArgs(void  ** messageBufferPointer, int * argTypes){
           argShortArray[j] = toShort(argShortBuffer);
           messageBufferPointer += MAX_LENGTH_ARG_SHORT;
           cout << "Printing short: "<< argShortArray[j]  << endl;
-        }
-        
-        
+        }        
         break;
       }
 
@@ -408,21 +408,20 @@ int rpcExecute(void){
             Segment * segment = 0;
             status = Segment::receive(tempConnection, segment);
 
-
             if(segment->getType() == MSG_TYPE_EXECUTE_REQUEST){
               Message * cast = segment->getMessage();
-              ExecuteRequestMessage * eqm = dynamic_cast<ExecuteRequestMessage*>(cast);
+              ExecuteRequestMessage * erm = dynamic_cast<ExecuteRequestMessage*>(cast);
 
-              procedure_signature * ps = new procedure_signature(eqm->getName(), eqm->getArgTypes());
+              procedure_signature * ps = new procedure_signature(erm->getName(), erm->getArgTypes());
               skeleton skel = procSkeleDict[*ps];
 
               cout << "Flag5" << endl;
               cout << "procedure_signature: "<< ps->name << endl;
               
-              printArgTypes(eqm->getArgTypes());
-              printArgs(eqm->getArgs(), eqm->getArgTypes());
+              printArgTypes(erm->getArgTypes());
+              printArgs(erm->getArgTypes(), erm->getArgs());
 
-              int result = skel(eqm->getArgTypes(), eqm->getArgs());
+              int result = skel(erm->getArgTypes(), erm->getArgs());
 
               cout << "Flag6  " << endl;
 
