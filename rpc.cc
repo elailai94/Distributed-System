@@ -203,15 +203,10 @@ int rpcCall(char *name, int *argTypes, void **args) {
 	  Segment(messageToBinder.getLength(), MSG_TYPE_LOC_REQUEST, &messageToBinder);
   int binder_status = segmentToBinder.send(binderSocket);
 
-  cout << "Successful binder"  << endl;
-
-
 	//maybe error check with binder_status
   //TODO: SEGMENT FAULT IF NOT IN THIS FOR LOOP
 	/**Server stuff **/
 	if(binder_status >= 0){
-
-    cout << "Successful binder 2" << endl;
 
     Segment *parsedSegment = 0;
     int tempStatus = 0;
@@ -269,6 +264,8 @@ int rpcCall(char *name, int *argTypes, void **args) {
       }
 
     }else if(parsedSegmentEsm->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
+      cout << "MSG_TYPE_EXECUTE_FAILURE " << endl;
+
       Message * cast = parsedSegmentEsm->getMessage();
       ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
       returnVal = efm->getReasonCode();
@@ -354,7 +351,6 @@ int rpcExecute(void){
   int status;
 
   while(true){
-
 
     //CONNECTIONS VECTOR
     FD_ZERO(&readfds);
