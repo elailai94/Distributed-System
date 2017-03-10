@@ -186,8 +186,6 @@ int sendExecute(int sock, string name, int* argTypes, void**args){
 
   int returnVal;
 
-	string retName;
-	
   if(status == 0){
     Segment * segment = 0;
     status = Segment::receive(sock, segment);
