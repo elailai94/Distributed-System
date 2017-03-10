@@ -415,6 +415,8 @@ int rpcExecute(void){
               printArgTypes(erm->getArgTypes());
               printArgs(erm->getArgTypes(), erm->getArgs());
 
+              cout << "Skele name persumeably: " << ps->name << endl;
+
               cout <<" flag 1" << endl;
               skeleton skel = procSkeleDict[*ps];
               cout <<" flag 2" << endl;
