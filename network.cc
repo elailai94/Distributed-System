@@ -7,8 +7,11 @@
 #include <netdb.h>
 #include <netinet/in.h>
 
+#include <iostream>
 #include "network.h"
 #include "helper_functions.h"
+#include <errno.h>
+
 
 using namespace std;
 
@@ -73,6 +76,7 @@ int setUpToConnect(int socket, string address, unsigned int port) {
   int result = getaddrinfo(address.c_str(), toString(port).c_str(),
     &hostAddressHints, &hostAddressResults);
   if (result != 0) {
+    cout << "Network error1" << endl;
     return result;
   } // if
 
@@ -80,6 +84,8 @@ int setUpToConnect(int socket, string address, unsigned int port) {
   result = connect(socket, hostAddressResults->ai_addr,
     hostAddressResults->ai_addrlen);
   if (result < 0) {
+    cout << "Network error2" << endl;
+    cout <<errno << endl;
     return result;
   } // if
 

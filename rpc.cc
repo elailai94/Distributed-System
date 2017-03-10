@@ -240,12 +240,13 @@ int rpcCall(char *name, int *argTypes, void **args) {
 	int status1 = setUpToConnect(serverSocket, serverAddress, serverPort);
 
   cout << "status1: " << status1 << endl;
+  cout <<serverSocket << ", " << serverAddress << ", " <<  serverPort << endl;
 
   ExecuteRequestMessage exeReqMsg = ExecuteRequestMessage(name, argTypes, args);
   Segment exeReqSeg = Segment(exeReqMsg.getLength(), MSG_TYPE_EXECUTE_REQUEST, &exeReqMsg);
   int status2 =  exeReqSeg.send(serverSocket);
 
-  cout << "ExecuteRequestMessage: status2" << status2 << endl;
+  cout << "ExecuteRequestMessage: status2: " << status2 << endl;
 
   int returnVal = 0;
 
@@ -269,18 +270,16 @@ int rpcCall(char *name, int *argTypes, void **args) {
         args[i] = newArgs[i];
       }
 
-      destroySocket(serverSocket);
-
+      
     }else if(parsedSegmentEsm->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
       cout << "MSG_TYPE_EXECUTE_FAILURE " << endl;
 
       Message * cast = parsedSegmentEsm->getMessage();
       ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
       returnVal = efm->getReasonCode();
-
-      destroySocket(serverSocket);
-
     }
+    
+    destroySocket(serverSocket);
 
   }else{ //Something bad happened
     returnVal = 99;
@@ -414,13 +413,15 @@ int rpcExecute(void){
 
               cout << "erm->getName(): " << erm->getName() << endl;
               printArgTypes(erm->getArgTypes());
+              printArgs(erm->getArgTypes(), erm->getArgs());
 
+              cout <<" flag 1" << endl;
               skeleton skel = procSkeleDict[*ps];
+              cout <<" flag 2" << endl;
 
               int result = skel(erm->getArgTypes(), erm->getArgs());
+              cout <<" flag 3" << endl;
 
-              printArgTypes(erm->getArgTypes());
-              printArgs(erm->getArgTypes(), erm->getArgs());
 
               cout << "Result: " << result << endl;
 
