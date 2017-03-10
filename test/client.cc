@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <bitset>
 
 #define CHAR_ARRAY_LENGTH 100
 
@@ -105,10 +106,15 @@ int main() {
    void **args0;
 
    argTypes0[0] = (1 << ARG_OUTPUT) | (ARG_INT << 16);
+   cout << bitset<32>(argTypes0[0]) << endl;
+   
    argTypes0[1] = (1 << ARG_INPUT) | (ARG_INT << 16);
+   cout << bitset<32>(argTypes0[1]) << endl;
    argTypes0[2] = (1 << ARG_INPUT) | (ARG_INT << 16);
+   cout << bitset<32>(argTypes0[2]) << endl;   
    argTypes0[3] = 0;
-
+   cout << bitset<32>(argTypes0[3]) << endl;
+   
    args0 = (void **)malloc(count0 * sizeof(void *));
    args0[0] = (void *)&return0;
    args0[1] = (void *)&a0;
