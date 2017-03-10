@@ -419,10 +419,10 @@ int rpcExecute(void){
 
               skeleton skel = procSkeleDict[*ps];
 
+              int result = skel(erm->getArgTypes(), erm->getArgs());
+
               printArgTypes(erm->getArgTypes());
               printArgs(erm->getArgTypes(), erm->getArgs());
-
-              int result = skel(erm->getArgTypes(), erm->getArgs());
 
               cout << "Result: " << result << endl;
 
