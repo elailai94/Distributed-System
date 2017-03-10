@@ -244,7 +244,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
   ExecuteRequestMessage exeReqMsg = ExecuteRequestMessage(name, argTypes, args);
   Segment exeReqSeg = Segment(exeReqMsg.getLength(), MSG_TYPE_EXECUTE_REQUEST, &exeReqMsg);
-  int status2 =  exeReqSeg.send(sock);
+  int status2 =  exeReqSeg.send(serverSocket);
 
   int returnVal;
 
