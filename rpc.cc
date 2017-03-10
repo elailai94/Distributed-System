@@ -403,6 +403,9 @@ int rpcExecute(void){
               ExecuteRequestMessage * erm = dynamic_cast<ExecuteRequestMessage*>(cast);
 
               procedure_signature * ps = new procedure_signature(erm->getName(), erm->getArgTypes());
+              
+              cout << "erm->getName(): " << erm->getName() << endl;
+
               skeleton skel = procSkeleDict[*ps];
 
               printArgTypes(erm->getArgTypes());
