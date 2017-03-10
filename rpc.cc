@@ -262,7 +262,8 @@ int rpcCall(char *name, int *argTypes, void **args) {
       // TODO FIX: name = esm->getName();
       //argTypes = esm->getArgTypes();
       void** newArgs = esm->getArgs();
-
+      unsigned numOfArgs = countNumOfArgTypes(esm->getArgTypes()) - 1;
+    
       for (unsigned int i = 0; i < numOfArgs; i++) {
         args[i] = newArgs[i];
       }
