@@ -310,14 +310,14 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
 
   Segment regReqSeg = Segment(regReqMsg.getLength(), MSG_TYPE_REGISTER_REQUEST, &regReqMsg);
   int status = regReqSeg.send(binderSocket);
-  cout << "rpcRegister Status: " << status << endl;
+  
+  //cout << "rpcRegister Status: " << status << endl;
 
   if(status >= 0){
     //Success
     Segment *parsedSegment = 0;
     int result = 0;
     result = Segment::receive(binderSocket, parsedSegment);
-
 
     if(parsedSegment->getType() == MSG_TYPE_REGISTER_SUCCESS){
 
@@ -327,10 +327,12 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
       //Error Checking maybe
       RegisterSuccessMessage * rsm = dynamic_cast<RegisterSuccessMessage*>(cast);
 
-      struct procedure_signature k(string(name), argTypes);
+      //struct procedure_signature k(string(name), argTypes);
+      struct procedure_signature k = procedure_signature(string(name), argTypes);
+      
       procSkeleDict[k] = f;
 
-      //cout << "k: " << k.name << endl;
+      cout << "k: " << k.name << endl;
 
     }else if(parsedSegment->getType() == MSG_TYPE_REGISTER_FAILURE){
       return 0;
