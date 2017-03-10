@@ -409,6 +409,17 @@ int rpcExecute(void){
             int reasonCode = 0;
             Segment * segment = 0;
             status = Segment::receive(tempConnection, segment);
+          
+            if (status < 0) {
+              cerr << "ERROR: receive failed" << endl;
+              return;
+            }
+
+            if (status == 0) {
+              // client has closed the connection
+              myToRemove.push_back(tempConnection);
+              return status;
+            }
 
             if(segment->getType() == MSG_TYPE_EXECUTE_REQUEST){
               Message * cast = segment->getMessage();
@@ -443,13 +454,8 @@ int rpcExecute(void){
                 status = exeFailSeg.send(tempConnection);
               }
             }
-
-            if (status == 0) {
-              // client has closed the connection
-              myToRemove.push_back(tempConnection);
-              return status;
-            }
           }
+
         }
       }
 
