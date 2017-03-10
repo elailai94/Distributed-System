@@ -263,7 +263,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
       
       //int * tempArgTypes = esm->getArgTypes();
       void** tempArgs;
-      cout << "The name before the storm: " <<esm->getName(); << endl;
+      cout << "The name before the storm: " <<esm->getName() << endl;
 
       //tempArgs = esm->getArgs();
 
