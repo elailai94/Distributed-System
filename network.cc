@@ -53,6 +53,7 @@ int setUpToListen(int socket) {
 
   // Listens for TCP connection requests from other hosts
   result = listen(socket, SOMAXCONN);
+  cout << "listen reuslts: " << result << endl;
   if (result < 0) {
     cout << "BAD LISTEN!!!!" << endl;
     return result;
