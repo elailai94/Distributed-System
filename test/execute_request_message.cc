@@ -317,7 +317,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
           memcpy(argDoubleBuffer, messageBufferPointer, MAX_LENGTH_ARG_DOUBLE);
           argDoubleArray[j] = toDouble(argDoubleBuffer);
           messageBufferPointer += MAX_LENGTH_ARG_DOUBLE;
-          cout << "Printing Long: " << argLongArray[j]  << endl;
+          cout << "Printing Double: " << argDoubleArray[j]  << endl;
         }
         args[i] = static_cast<void *>(argDoubleArray);        
         break;
