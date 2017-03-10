@@ -406,7 +406,7 @@ int rpcExecute(void){
               skeleton skel = procSkeleDict[*ps];
 
               printArgTypes(erm->getArgTypes());
-//              printArgs(erm->getArgTypes(), erm->getArgs());
+              printArgs(erm->getArgTypes(), erm->getArgs());
 
               int result = skel(erm->getArgTypes(), erm->getArgs());
 
