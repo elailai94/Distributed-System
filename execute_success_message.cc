@@ -265,6 +265,7 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
           messageBufferPointer += MAX_LENGTH_ARG_INT;
         }
         args[i] = static_cast<void *>(argIntArray);
+        cout << "Hi world" << endl;
         cout << "Success Int: " <<  ((int *) args[i])[0] << endl;
         break;
       }
