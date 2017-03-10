@@ -239,6 +239,8 @@ int rpcCall(char *name, int *argTypes, void **args) {
   int serverSocket = createSocket();
 	int status1 = setUpToConnect(serverSocket, serverAddress, serverPort);
 
+  cout << "status1: " << status1 << endl;
+
   ExecuteRequestMessage exeReqMsg = ExecuteRequestMessage(name, argTypes, args);
   Segment exeReqSeg = Segment(exeReqMsg.getLength(), MSG_TYPE_EXECUTE_REQUEST, &exeReqMsg);
   int status2 =  exeReqSeg.send(serverSocket);
