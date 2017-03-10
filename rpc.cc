@@ -198,11 +198,7 @@ int sendExecute(int sock, string name, int* argTypes, void**args){
 			name = esm->getName();
 			argTypes = esm->getArgTypes();
 			args = esm->getArgs();
-
-			}else{
-				returnVal = 99;
-			}
-
+      
     }else if(segment->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
   		Message * cast = segment->getMessage();
 			ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
