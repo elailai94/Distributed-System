@@ -104,8 +104,6 @@ int ExecuteRequestMessage::send(int dataTransferSocket) {
     numOfArgTypes * MAX_LENGTH_ARG_TYPE);
   messageBufferPointer += MAX_LENGTH_ARG_TYPE;
 
-
-  cout << "messageBuffer length" << getLength() << endl;
   cout << "numOfArgTypes: " << numOfArgTypes << endl;
 
   // Writes the arguments to the buffer
@@ -182,6 +180,7 @@ int ExecuteRequestMessage::send(int dataTransferSocket) {
     numOfBytesLeft += numOfBytesSent;
   }
 
+  cout << "totalNumOfBytesSent: " << totalNumOfBytesSent << endl;
   return totalNumOfBytesSent;
 }
 
@@ -218,7 +217,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
   vector<int> argTypesBuffer;
 
   cout << "receive messageBuffer: " << endl;
-  cout << totalNumOfBytesMessage << endl;
+  cout << bitset<32>(messageBuffer) << endl;
   cout << "End of messageBuffer" << endl;
 
   while (true) {
