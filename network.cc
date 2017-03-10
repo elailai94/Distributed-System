@@ -53,7 +53,9 @@ int setUpToListen(int socket) {
 
   // Listens for TCP connection requests from other hosts
   result = listen(socket, SOMAXCONN);
+  cout << "listen reuslts: " << result << endl;
   if (result < 0) {
+    cout << "BAD LISTEN!!!!" << endl;
     return result;
   } // if
 
@@ -140,5 +142,6 @@ int acceptConnection(int socket) {
 // See interface (header file).
 int destroySocket(int socket) {
   int result = close(socket);
+  cout << "Socket destoryed: " << result << endl;
   return result;
 }
