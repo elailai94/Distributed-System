@@ -98,17 +98,16 @@ int main() {
    unsigned int port = 80;
    string name = "func";
 
-  long a3[11] = {11, 109, 107, 105, 103, 101, 102, 104, 106, 108, 110};
-  int count3 = 1;
-  int argTypes3[count3 + 1];
-  void **args3;
+  char *a4 = "non_exist_file_to_be_printed";
+  int count4 = 1;
+  int argTypes4[count4 + 1];
+  void **args4;
 
-  argTypes3[0] = (1 << ARG_OUTPUT) | (1 << ARG_INPUT) | (ARG_LONG << 16) | 11;
-  argTypes3[1] = 0;
+  argTypes4[0] = (1 << ARG_INPUT) | (ARG_CHAR << 16) | strlen(a4);
+  argTypes4[1] = 0;
 
-  args3 = (void **)malloc(count3 * sizeof(void *));
-  args3[0] = (void *)a3;
-
+  args4 = (void **)malloc(count4 * sizeof(void *));
+  args4[0] = (void *)a4;
 
 
    ExecuteRequestMessage msg = ExecuteRequestMessage(name, argTypes3, args3);
