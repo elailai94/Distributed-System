@@ -3,18 +3,9 @@
 #include <sys/socket.h>
 
 #include "register_request_message.h"
+#include "helper_functions.h"
 
 using namespace std;
-
-// See interface (header file).
-unsigned int RegisterRequestMessage::countNumOfArgTypes(int *argTypes) const {
-  int count = 1;
-  while (argTypes[(count - 1)] != 0) {
-    count += 1;
-  }
-
-  return count;
-}
 
 // See interface (header file).
 RegisterRequestMessage::RegisterRequestMessage(string serverIdentifier,
@@ -142,7 +133,7 @@ int RegisterRequestMessage::receive(int dataTransferSocket,
   while (true) {
     char argTypeBuffer[MAX_LENGTH_ARG_TYPE] = {'\0'};
     memcpy(argTypeBuffer, messageBufferPointer, MAX_LENGTH_ARG_TYPE);
-    int argType = *((int *) argTypeBuffer);
+    int argType = toInt(argTypeBuffer);
     argTypesBuffer.push_back(argType);
     messageBufferPointer += MAX_LENGTH_ARG_TYPE;
 
