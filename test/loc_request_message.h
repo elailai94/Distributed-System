@@ -6,11 +6,8 @@
 
 // Object definition
 class LocRequestMessage: public Message {
-  std::string name; // NOTE: this field shouldn't execeed 64 characters in size
+  std::string name;
   int *argTypes;
-
-  // Returns a count of the number of argument types
-  unsigned int countNumOfArgTypes(int *argTypes) const;
 
 public:
   LocRequestMessage(std::string name, int *argTypes);  // Constructor

@@ -17,6 +17,9 @@ std::string toString(unsigned int number);
 // Converts a string to an unsigned integer
 unsigned int toUnsignedInt(std::string text);
 
+// Converts a character array to an unsigned integer
+unsigned int toUnsignedInt(char *array);
+
 // Converts a character array to a short
 short toShort(char *array);
 

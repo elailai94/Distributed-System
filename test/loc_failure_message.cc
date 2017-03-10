@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 
 #include "loc_failure_message.h"
+#include "helper_functions.h"
 
 // See interface (header file).
 LocFailureMessage::LocFailureMessage(int reasonCode)
@@ -73,7 +74,7 @@ int LocFailureMessage::receive(int dataTransferSocket,
   char *messageBufferPointer = messageBuffer;
   char reasonCodeBuffer[MAX_LENGTH_REASON_CODE] = {'\0'};
   memcpy(reasonCodeBuffer, messageBufferPointer, MAX_LENGTH_REASON_CODE);
-  int reasonCode = *((int *) reasonCodeBuffer);
+  int reasonCode = toInt(reasonCodeBuffer);
 
   parsedMessage = new LocFailureMessage(reasonCode);
   return totalNumOfBytesReceived;

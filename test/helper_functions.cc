@@ -64,6 +64,11 @@ unsigned int toUnsignedInt(string text) {
 }
 
 // See interface (header file).
+unsigned int toUnsignedInt(char *array) {
+  return *((unsigned int *) array);
+}
+
+// See interface (header file).
 short toShort(char *array) {
   return *((short *) array);
 }
