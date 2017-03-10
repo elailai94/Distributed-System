@@ -264,7 +264,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
       //argTypes = esm->getArgTypes();
       void** newArgs = esm->getArgs();
       unsigned numOfArgs = countNumOfArgTypes(esm->getArgTypes()) - 1;
-    
+
       for (unsigned int i = 0; i < numOfArgs; i++) {
         args[i] = newArgs[i];
       }
@@ -411,7 +411,7 @@ int rpcExecute(void){
               ExecuteRequestMessage * erm = dynamic_cast<ExecuteRequestMessage*>(cast);
 
               procedure_signature * ps = new procedure_signature(erm->getName(), erm->getArgTypes());
-              
+
               cout << "erm->getName(): " << erm->getName() << endl;
               printArgTypes(erm->getArgTypes());
 
