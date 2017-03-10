@@ -259,6 +259,8 @@ int rpcCall(char *name, int *argTypes, void **args) {
       cout << " flag 2" << endl;
       // TODO FIX: name = esm->getName();
       argTypes = esm->getArgTypes();
+      cout << " flag 2.5" << endl;
+      
       args = esm->getArgs();
       cout << " flag 3" << endl;
       
