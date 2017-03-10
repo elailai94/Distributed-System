@@ -219,14 +219,14 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
     }
   }
 
-  int *argTypes = new int[argTypesBuffer.size()];
+  int *argTypes = new int[argTypesBuffer.size()]();
   for (unsigned int i = 0; i < argTypesBuffer.size(); i++) {
     argTypes[i] = argTypesBuffer[i];
   }
 
   // Parses the argument from the buffer
   unsigned int numOfArgs = argTypesBuffer.size() - 1;
-  void **args = new void*[numOfArgs];
+  void **args = new void*[numOfArgs]();
   for (unsigned int i = 0; i < numOfArgs; i++) {
     int argType = argTypes[i];
     int argTypeInformation =
