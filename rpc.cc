@@ -242,17 +242,22 @@ int rpcCall(char *name, int *argTypes, void **args) {
 	}
 	//do something with returnVal
 
-  cout << "binderSocket: " << binderSocket << endl;
 
   LocRequestMessage messageToBinder = LocRequestMessage(string(name), argTypes);
   Segment segmentToBinder =
 	  Segment(messageToBinder.getLength(), MSG_TYPE_LOC_REQUEST, &messageToBinder);
   int binder_status = segmentToBinder.send(binderSocket);
 
+  cout << "Successful binder"  << endl;
+
+
 	//maybe error check with binder_status
   //TODO: SEGMENT FAULT IF NOT IN THIS FOR LOOP
 	/**Server stuff **/
 	if(binder_status >= 0){
+
+    cout << "Successful binder 2" << endl;
+
     Segment *parsedSegment = 0;
     int tempStatus = 0;
     tempStatus = Segment::receive(binderSocket, parsedSegment);
@@ -260,14 +265,19 @@ int rpcCall(char *name, int *argTypes, void **args) {
     Message *messageFromBinder = parsedSegment->getMessage();
 		switch (parsedSegment->getType()) {
 			case MSG_TYPE_LOC_SUCCESS: {
-				LocSuccessMessage *lsm =
+				cout << "LOC SUCCESS" << endl;
+        LocSuccessMessage *lsm =
 				  dynamic_cast<LocSuccessMessage *>(messageFromBinder);
 				serverAddress = lsm->getServerIdentifier();
 				serverPort = lsm->getPort();
-				break;
+				cout << "serverAddress: " << serverAddress << endl;
+        cout << "serverPort: " << serverPort << endl;
+        break;
 			}
 
 			case MSG_TYPE_LOC_FAILURE: {
+        cout << "LOC Failure" << endl;
+
 				return -1;
 				break;
 			}
@@ -278,7 +288,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
 	int status1 = setUpToConnect(serverSocket, serverAddress, serverPort);
 	status1 = sendExecute(serverSocket, string(name), argTypes, args);
 
-	return status1;
+	return status1 ;
 }
 
 
@@ -405,6 +415,7 @@ int rpcExecute(void){
               procedure_signature * ps = new procedure_signature(erm->getName(), erm->getArgTypes());
               
               cout << "erm->getName(): " << erm->getName() << endl;
+              printArgTypes(erm->getArgTypes());
 
               skeleton skel = procSkeleDict[*ps];
 
