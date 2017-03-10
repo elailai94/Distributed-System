@@ -210,7 +210,7 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
   while (true) {
     char argTypeBuffer[MAX_LENGTH_ARG_TYPE] = {'\0'};
     memcpy(argTypeBuffer, messageBufferPointer, MAX_LENGTH_ARG_TYPE);
-    int argType = *((int *) argTypeBuffer);
+    int argType = toInt(argTypeBuffer);
     argTypesBuffer.push_back(argType);
     messageBufferPointer += MAX_LENGTH_ARG_TYPE;
 
