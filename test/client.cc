@@ -121,7 +121,7 @@ int main() {
    args1[3] = (void *)&c1;
    args1[4] = (void *)&d1;
 
-   ExecuteRequestMessage msg = ExecuteRequestMessage(name, argTypes0, args0);
+   ExecuteRequestMessage msg = ExecuteRequestMessage(name, argTypes1, args1);
    //cout << "Server Identifier: " << msg.getServerIdentifier() << endl;
    //cout << "Port: " << msg.getPort() << endl;
    //cout << "Name: " << msg.getName() << endl;
