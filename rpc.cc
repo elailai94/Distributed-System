@@ -275,8 +275,8 @@ int rpcCall(char *name, int *argTypes, void **args) {
       args = tempArgs;
       cout << " flag 3" << endl;
       
-    }else if(segment->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
-      Message * cast = segment->getMessage();
+    }else if(parsedSegmentEsm->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
+      Message * cast = parsedSegmentEsm->getMessage();
       ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
       returnVal = efm->getReasonCode();
     }
