@@ -110,7 +110,7 @@ int main() {
   args4[0] = (void *)a4;
 
 
-   ExecuteRequestMessage msg = ExecuteRequestMessage(name, argTypes3, args3);
+   ExecuteRequestMessage msg = ExecuteRequestMessage(name, argTypes4, args4);
    //cout << "Server Identifier: " << msg.getServerIdentifier() << endl;
    //cout << "Port: " << msg.getPort() << endl;
    //cout << "Name: " << msg.getName() << endl;
