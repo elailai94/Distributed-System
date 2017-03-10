@@ -255,6 +255,9 @@ int rpcCall(char *name, int *argTypes, void **args) {
   //TODO: SEGMENT FAULT IF NOT IN THIS FOR LOOP
 	/**Server stuff **/
 	if(binder_status >= 0){
+
+    cout << "Successful binder 2" << endl;
+
     Segment *parsedSegment = 0;
     int tempStatus = 0;
     tempStatus = Segment::receive(binderSocket, parsedSegment);
@@ -262,7 +265,8 @@ int rpcCall(char *name, int *argTypes, void **args) {
     Message *messageFromBinder = parsedSegment->getMessage();
 		switch (parsedSegment->getType()) {
 			case MSG_TYPE_LOC_SUCCESS: {
-				LocSuccessMessage *lsm =
+				cout << "LOC SUCCESS" << endl;
+        LocSuccessMessage *lsm =
 				  dynamic_cast<LocSuccessMessage *>(messageFromBinder);
 				serverAddress = lsm->getServerIdentifier();
 				serverPort = lsm->getPort();
@@ -272,6 +276,8 @@ int rpcCall(char *name, int *argTypes, void **args) {
 			}
 
 			case MSG_TYPE_LOC_FAILURE: {
+        cout << "LOC Failure" << endl;
+
 				return -1;
 				break;
 			}
