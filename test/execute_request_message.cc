@@ -180,6 +180,7 @@ int ExecuteRequestMessage::send(int dataTransferSocket) {
     numOfBytesLeft += numOfBytesSent;
   }
 
+  cout << "totalNumOfBytesSent: " << totalNumOfBytesSent << endl;
   return totalNumOfBytesSent;
 }
 
@@ -202,6 +203,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
 
     totalNumOfBytesReceived += numOfBytesReceived;
     numOfBytesLeft -= numOfBytesReceived;
+    cout << "Total Bytes: "<< totalNumOfBytesReceived << endl;
   }
 
   // Parses the remote procedure name from the buffer
