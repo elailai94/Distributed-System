@@ -262,10 +262,10 @@ int rpcCall(char *name, int *argTypes, void **args) {
       void ** tempArgs = esm->getArgs();
 
       cout << " flag 2" << endl;
-      //argTypes = tempArgTypes
+      argTypes = tempArgTypes;
       cout << " flag 2.5" << endl;
       
-      args = tempArgs
+      args = tempArgs;
       cout << " flag 3" << endl;
       
     }else if(segment->getType() ==  MSG_TYPE_EXECUTE_FAILURE){
