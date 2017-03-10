@@ -404,7 +404,7 @@ int rpcExecute(void){
             int reasonCode = 0;
             Segment * segment = 0;
             status = Segment::receive(tempConnection, segment);
-          
+
             if (status < 0) {
               cerr << "ERROR: receive failed" << endl;
               return -169;
@@ -456,7 +456,7 @@ int rpcExecute(void){
 
       for (vector<int>::iterator it = myToRemove.begin(); it != myToRemove.end(); ++it) {
         myConnections.erase(remove(myConnections.begin(), myConnections.end(), *it), myConnections.end());
-        close(*it);
+        destroySocket(*it);
       }
       myToRemove.clear();
     }
