@@ -217,7 +217,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
   vector<int> argTypesBuffer;
 
   cout << "receive messageBuffer: " << endl;
-  cout << bitset<32>(messageBuffer) << endl;
+  cout << bitset<32>(*messageBufferPointer) << endl;
   cout << "End of messageBuffer" << endl;
 
   while (true) {
