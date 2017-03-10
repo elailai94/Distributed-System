@@ -27,15 +27,17 @@ bool ps_compare::operator() (const procedure_signature& lhs, const procedure_sig
 
   		while (*array1 != 0 || *array2 != 0){
 	      if (*array1 != *array2){
-	          return true;
+	          return false;
 	      }
 	      
 	      *array1++;
 	      *array2++;
 	  	}
 		
-		return false;
+		cout << "Good news from ps_compare" << endl;
+		return true;
 	}
 
-	return true;
+
+	return false;
 }

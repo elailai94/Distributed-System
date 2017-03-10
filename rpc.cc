@@ -330,7 +330,7 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
       //struct procedure_signature k(string(name), argTypes);
       struct procedure_signature k = procedure_signature(string(name), argTypes);
       
-      procSkeleDict[k] = 45;
+      procSkeleDict[k] = f;
 
       cout << "k: " << k.name << ", "<< f << endl;
 
