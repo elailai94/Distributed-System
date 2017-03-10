@@ -212,19 +212,6 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
 
   // Parses the remote procedure name from the buffer
   char *messageBufferPointer = messageBuffer;
-  //
-
-  char tempBuffer[92] = {'\0'};
-  memcpy(tempBuffer, messageBufferPointer, 92);
-  //int tempPrintBuffer = *((int *) tempBuffer);
-
-  cout << "receive messageBuffer: " << endl;
-  cout << tempBuffer << endl;
-  cout << "End of messageBuffer" << endl;
-
-
-  ///
-
 
   char nameBuffer[MAX_LENGTH_NAME + 1] = {'\0'};
   memcpy(nameBuffer, messageBufferPointer, MAX_LENGTH_NAME);
@@ -234,6 +221,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
   // Parses the argument types from the buffer
   vector<int> argTypesBuffer;
 
+  /*
   while (true) {
     char argTypeBuffer[MAX_LENGTH_ARG_TYPE] = {'\0'};
     memcpy(argTypeBuffer, messageBufferPointer, MAX_LENGTH_ARG_TYPE);
@@ -248,6 +236,21 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
       break;
     }
   }
+  */
+
+  for(int i = 0; i < 4 ; i++){
+
+    char argTypeBuffer[MAX_LENGTH_ARG_TYPE] = {'\0'};
+    memcpy(argTypeBuffer, messageBufferPointer, MAX_LENGTH_ARG_TYPE);
+    int argType = *((int *) argTypeBuffer);
+    argTypesBuffer.push_back(argType);
+    messageBufferPointer += MAX_LENGTH_ARG_TYPE;
+
+    cout << "How many times" << endl;
+    cout << bitset<32>(argType) <<endl;
+      
+  }
+
 
   int *argTypes = new int[argTypesBuffer.size()];
   for (unsigned int i = 0; i < argTypesBuffer.size(); i++) {
