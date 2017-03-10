@@ -421,6 +421,10 @@ int rpcExecute(void){
               skeleton skel = procSkeleDict[*ps];
               cout <<" flag 2" << endl;
 
+              if(skel == 0){
+                cout << "Skel is null" << endl;
+              }
+
               int result = skel(erm->getArgTypes(), erm->getArgs());
               cout <<" flag 3" << endl;
 
