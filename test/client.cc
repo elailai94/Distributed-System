@@ -98,30 +98,25 @@ int main() {
    unsigned int port = 80;
    string name = "func";
 
-   char a1 = 'a';
-   short b1 = 100;
-   int c1 = 1000;
-   long d1 = 10000;
-   int count1 = 5;
-   long return1;
-   int argTypes1[count1 + 1];
-   void **args1;
+  float a2 = 3.14159;
+  double b2 = 1234.1001;
+  int count2 = 3;
+  char *return2 = (char *)malloc(CHAR_ARRAY_LENGTH * sizeof(char));
+  int argTypes2[count2 + 1];
+  void **args2;
 
-   argTypes1[0] = (1 << ARG_OUTPUT) | (ARG_LONG << 16);
-   argTypes1[1] = (1 << ARG_INPUT) | (ARG_CHAR << 16);
-   argTypes1[2] = (1 << ARG_INPUT) | (ARG_SHORT << 16);
-   argTypes1[3] = (1 << ARG_INPUT) | (ARG_INT << 16);
-   argTypes1[4] = (1 << ARG_INPUT) | (ARG_LONG << 16);
-   argTypes1[5] = 0;
+  argTypes2[0] = (1 << ARG_OUTPUT) | (ARG_CHAR << 16) | CHAR_ARRAY_LENGTH;
+  argTypes2[1] = (1 << ARG_INPUT) | (ARG_FLOAT << 16);
+  argTypes2[2] = (1 << ARG_INPUT) | (ARG_DOUBLE << 16);
+  argTypes2[3] = 0;
 
-   args1 = (void **)malloc(count1 * sizeof(void *));
-   args1[0] = (void *)&return1;
-   args1[1] = (void *)&a1;
-   args1[2] = (void *)&b1;
-   args1[3] = (void *)&c1;
-   args1[4] = (void *)&d1;
+  args2 = (void **)malloc(count2 * sizeof(void *));
+  args2[0] = (void *)return2;
+  args2[1] = (void *)&a2;
+  args2[2] = (void *)&b2;
 
-   ExecuteRequestMessage msg = ExecuteRequestMessage(name, argTypes1, args1);
+
+   ExecuteRequestMessage msg = ExecuteRequestMessage(name, argTypes2, args2);
    //cout << "Server Identifier: " << msg.getServerIdentifier() << endl;
    //cout << "Port: " << msg.getPort() << endl;
    //cout << "Name: " << msg.getName() << endl;
