@@ -25,6 +25,7 @@ int f1_Skel(int *argTypes, void **args) {
 }
 
 int f2_Skel(int *argTypes, void **args) {
+  printf("f2_skel");
 
   /* (char *)*args = f2( *((float *)(*(args + 1))), *((double *)(*(args + 2))) ); */
   *args = f2( *((float *)(*(args + 1))), *((double *)(*(args + 2))) );
@@ -33,6 +34,7 @@ int f2_Skel(int *argTypes, void **args) {
 }
 
 int f3_Skel(int *argTypes, void **args) {
+  printf("f3_skel");
 
   f3((long *)(*args));
   return 0;
@@ -44,6 +46,7 @@ int f3_Skel(int *argTypes, void **args) {
  * server function execution, i.e. file not exist
  */
 int f4_Skel(int *argTypes, void **args) {
+  printf("f4_skel");
 
   return -1; /* can not print the file */
 }
