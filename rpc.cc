@@ -226,7 +226,7 @@ int sendExecute(int sock, string name, int* argTypes, void**args){
 // See interface (header file).
 int rpcCall(char *name, int *argTypes, void **args) {
   cout << "Running rpcCall..." << endl;
-  printArgs(argTypes, args);
+  //printArgs(argTypes, args);
 
 	string serverAddress;
 	unsigned int serverPort = 0;
