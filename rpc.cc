@@ -426,6 +426,7 @@ int rpcExecute(void){
                 Segment exeSuccessSeg = Segment(exeSuccessMsg.getLength(), MSG_TYPE_EXECUTE_SUCCESS, &exeSuccessMsg);
                 status = exeSuccessSeg.send(tempConnection);
                 cout << "ExecuteSuccessMessage status: " << status << endl;
+                sleep(2);
               }else{
                 ExecuteFailureMessage exeFailMsg = ExecuteFailureMessage(reasonCode);
                 Segment exeFailSeg = Segment(exeFailMsg.getLength(), MSG_TYPE_EXECUTE_FAILURE, &exeFailMsg);
