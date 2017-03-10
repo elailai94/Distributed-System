@@ -262,7 +262,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
         args[i] = static_cast<void *>(argCharArray);
         messageBufferPointer += argTypeArrayLength;
         
-        cout << args[i] << endl;
+        cout << "Printing char: "<< args[i] << endl;
 
         break;
       }
@@ -289,10 +289,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
           memcpy(argIntBuffer, messageBufferPointer, MAX_LENGTH_ARG_INT);
           argIntArray[j] = toInt(argIntBuffer);
           messageBufferPointer += MAX_LENGTH_ARG_INT;
-          
-          cout << "Printing ints" << endl;
-          cout << argIntArray[j]  << endl;
-        
+          cout << "Printing ints: " << argIntArray[j]  << endl;
         }
         args[i] = static_cast<void *>(argIntArray);
         
@@ -307,8 +304,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
           memcpy(argLongBuffer, messageBufferPointer, MAX_LENGTH_ARG_LONG);
           argLongArray[j] = toLong(argLongBuffer);
           messageBufferPointer += MAX_LENGTH_ARG_LONG;
-          cout << "printing long : "<<argLongArray[j]  << endl;
-        
+          cout << "Printing Long: " << argLongArray[j]  << endl;
         }
         args[i] = static_cast<void *>(argLongArray);
         break;
@@ -321,11 +317,9 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
           memcpy(argDoubleBuffer, messageBufferPointer, MAX_LENGTH_ARG_DOUBLE);
           argDoubleArray[j] = toDouble(argDoubleBuffer);
           messageBufferPointer += MAX_LENGTH_ARG_DOUBLE;
+          cout << "Printing Long: " << argLongArray[j]  << endl;
         }
-        args[i] = static_cast<void *>(argDoubleArray);
-        
-        cout << args[i]  << endl;
-        
+        args[i] = static_cast<void *>(argDoubleArray);        
         break;
       }
 
@@ -336,8 +330,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
           memcpy(argFloatBuffer, messageBufferPointer, MAX_LENGTH_ARG_FLOAT);
           argFloatArray[j] = toFloat(argFloatBuffer);
           messageBufferPointer += MAX_LENGTH_ARG_FLOAT;
-          cout << "printing  float" << argFloatArray[j] << endl;
-
+          cout << "Printing Float: " << argFloatArray[j]  << endl;
         }
         args[i] = static_cast<void *>(argFloatArray);
         break;
