@@ -217,7 +217,7 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
   //int tempPrintBuffer = *((int *) tempBuffer);
 
   cout << "receive messageBuffer: " << endl;
-  cout << bitset<736>(tempBuffer) << endl;
+  cout << tempBuffer << endl;
   cout << "End of messageBuffer" << endl;
 
 
