@@ -421,11 +421,12 @@ int rpcExecute(void){
 
               cout << "Result: " << result << endl;
 
-              if(result == 0 ){
+              if(result == 0 )
+
                 ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(erm->getName(), erm->getArgTypes(), erm->getArgs());
                 Segment exeSuccessSeg = Segment(exeSuccessMsg.getLength(), MSG_TYPE_EXECUTE_SUCCESS, &exeSuccessMsg);
                 status = exeSuccessSeg.send(tempConnection);
-
+                cout << "ExecuteSuccessMessage status: " << endl;
               }else{
                 ExecuteFailureMessage exeFailMsg = ExecuteFailureMessage(reasonCode);
                 Segment exeFailSeg = Segment(exeFailMsg.getLength(), MSG_TYPE_EXECUTE_FAILURE, &exeFailMsg);
