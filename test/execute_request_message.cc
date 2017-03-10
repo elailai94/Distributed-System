@@ -102,7 +102,7 @@ int ExecuteRequestMessage::send(int dataTransferSocket) {
   unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
   memcpy(messageBufferPointer, argTypes,
     numOfArgTypes * MAX_LENGTH_ARG_TYPE);
-  messageBufferPointer += MAX_LENGTH_ARG_TYPE *numOfArgTypes;
+  messageBufferPointer += MAX_LENGTH_ARG_TYPE * numOfArgTypes;
 
   cout << "numOfArgTypes: " << numOfArgTypes << endl;
 

@@ -100,7 +100,7 @@ int ExecuteSuccessMessage::send(int dataTransferSocket) {
   unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
   memcpy(messageBufferPointer, argTypes,
     numOfArgTypes * MAX_LENGTH_ARG_TYPE);
-  messageBufferPointer += MAX_LENGTH_ARG_TYPE;
+  messageBufferPointer += MAX_LENGTH_ARG_TYPE * numOfArgTypes;
 
   // Writes the arguments to the buffer
   unsigned int numOfArgs = numOfArgTypes - 1;
