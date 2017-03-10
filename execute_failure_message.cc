@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 
 #include "execute_failure_message.h"
+#include "helper_functions.h"
 
 // See interface (header file).
 ExecuteFailureMessage::ExecuteFailureMessage(int reasonCode)
@@ -73,7 +74,7 @@ int ExecuteFailureMessage::receive(int dataTransferSocket,
   char *messageBufferPointer = messageBuffer;
   char reasonCodeBuffer[MAX_LENGTH_REASON_CODE] = {'\0'};
   memcpy(reasonCodeBuffer, messageBufferPointer, MAX_LENGTH_REASON_CODE);
-  int reasonCode = *((int *) reasonCodeBuffer);
+  int reasonCode = toInt(reasonCodeBuffer);
 
   parsedMessage = new ExecuteFailureMessage(reasonCode);
   return totalNumOfBytesReceived;

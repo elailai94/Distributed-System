@@ -100,7 +100,7 @@ int ExecuteSuccessMessage::send(int dataTransferSocket) {
   unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
   memcpy(messageBufferPointer, argTypes,
     numOfArgTypes * MAX_LENGTH_ARG_TYPE);
-  messageBufferPointer += MAX_LENGTH_ARG_TYPE * numOfArgTypes;
+  messageBufferPointer += numOfArgTypes * MAX_LENGTH_ARG_TYPE;
 
   // Writes the arguments to the buffer
   unsigned int numOfArgs = numOfArgTypes - 1;
@@ -210,7 +210,7 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
   while (true) {
     char argTypeBuffer[MAX_LENGTH_ARG_TYPE] = {'\0'};
     memcpy(argTypeBuffer, messageBufferPointer, MAX_LENGTH_ARG_TYPE);
-    int argType = *((int *) argTypeBuffer);
+    int argType = toInt(argTypeBuffer);
     argTypesBuffer.push_back(argType);
     messageBufferPointer += MAX_LENGTH_ARG_TYPE;
 

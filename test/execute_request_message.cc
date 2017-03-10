@@ -1,8 +1,6 @@
 #include <cstring>
 #include <vector>
 #include <sys/socket.h>
-#include <iostream>
-#include <bitset>
 
 #include "execute_request_message.h"
 #include "helper_functions.h"
@@ -102,13 +100,9 @@ int ExecuteRequestMessage::send(int dataTransferSocket) {
   unsigned int numOfArgTypes = countNumOfArgTypes(argTypes);
   memcpy(messageBufferPointer, argTypes,
     numOfArgTypes * MAX_LENGTH_ARG_TYPE);
-  messageBufferPointer += MAX_LENGTH_ARG_TYPE * numOfArgTypes;
-
-  cout << "numOfArgTypes: " << numOfArgTypes << endl;
+  messageBufferPointer += numOfArgTypes * MAX_LENGTH_ARG_TYPE;
 
   // Writes the arguments to the buffer
-  cout << "args >>>>>>>>>>>>>" << endl;
-
   unsigned int numOfArgs = numOfArgTypes - 1;
   for (unsigned int i = 0; i < numOfArgs; i++) {
     int argType = argTypes[i];
@@ -135,9 +129,6 @@ int ExecuteRequestMessage::send(int dataTransferSocket) {
       case ARG_INT: {
         memcpy(messageBufferPointer, args[i],
           argTypeArrayLength * MAX_LENGTH_ARG_INT);
-  
-          cout << args[i] << endl;
-  
         messageBufferPointer += argTypeArrayLength * MAX_LENGTH_ARG_INT;
         break;
       }
@@ -182,7 +173,6 @@ int ExecuteRequestMessage::send(int dataTransferSocket) {
     numOfBytesLeft += numOfBytesSent;
   }
 
-  cout << "totalNumOfBytesSent: " << totalNumOfBytesSent << endl;
   return totalNumOfBytesSent;
 }
 
@@ -205,14 +195,10 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
 
     totalNumOfBytesReceived += numOfBytesReceived;
     numOfBytesLeft -= numOfBytesReceived;
-    cout << "Total Bytes: "<< totalNumOfBytesReceived << endl;
   }
-
-
 
   // Parses the remote procedure name from the buffer
   char *messageBufferPointer = messageBuffer;
-
   char nameBuffer[MAX_LENGTH_NAME + 1] = {'\0'};
   memcpy(nameBuffer, messageBufferPointer, MAX_LENGTH_NAME);
   string name(nameBuffer);
@@ -220,21 +206,17 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
 
   // Parses the argument types from the buffer
   vector<int> argTypesBuffer;
-
   while (true) {
     char argTypeBuffer[MAX_LENGTH_ARG_TYPE] = {'\0'};
     memcpy(argTypeBuffer, messageBufferPointer, MAX_LENGTH_ARG_TYPE);
-    int argType = *((int *) argTypeBuffer);
+    int argType = toInt(argTypeBuffer);
     argTypesBuffer.push_back(argType);
     messageBufferPointer += MAX_LENGTH_ARG_TYPE;
 
-    cout << bitset<32>(argType) <<endl;
-    
     if (argType == 0) {
       break;
     }
   }
-
 
   int *argTypes = new int[argTypesBuffer.size()];
   for (unsigned int i = 0; i < argTypesBuffer.size(); i++) {
@@ -244,9 +226,6 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
   // Parses the argument from the buffer
   unsigned int numOfArgs = argTypesBuffer.size() - 1;
   void **args = new void*[numOfArgs];
-
-  cout<<"Number of args: " <<numOfArgs << endl;
-
   for (unsigned int i = 0; i < numOfArgs; i++) {
     int argType = argTypes[i];
     int argTypeInformation =
@@ -260,9 +239,6 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
         memcpy(argCharArray, messageBufferPointer, argTypeArrayLength);
         args[i] = static_cast<void *>(argCharArray);
         messageBufferPointer += argTypeArrayLength;
-        
-        cout << "Printing char: "<< args[i] << endl;
-
         break;
       }
 
@@ -273,11 +249,8 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
           memcpy(argShortBuffer, messageBufferPointer, MAX_LENGTH_ARG_SHORT);
           argShortArray[j] = toShort(argShortBuffer);
           messageBufferPointer += MAX_LENGTH_ARG_SHORT;
-          cout << "Printing short: "<< argShortArray[j]  << endl;
         }
         args[i] = static_cast<void *>(argShortArray);
-        
-        
         break;
       }
 
@@ -288,11 +261,8 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
           memcpy(argIntBuffer, messageBufferPointer, MAX_LENGTH_ARG_INT);
           argIntArray[j] = toInt(argIntBuffer);
           messageBufferPointer += MAX_LENGTH_ARG_INT;
-          cout << "Printing ints: " << argIntArray[j]  << endl;
         }
         args[i] = static_cast<void *>(argIntArray);
-        
-        
         break;
       }
 
@@ -303,7 +273,6 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
           memcpy(argLongBuffer, messageBufferPointer, MAX_LENGTH_ARG_LONG);
           argLongArray[j] = toLong(argLongBuffer);
           messageBufferPointer += MAX_LENGTH_ARG_LONG;
-          cout << "Printing Long: " << argLongArray[j]  << endl;
         }
         args[i] = static_cast<void *>(argLongArray);
         break;
@@ -316,9 +285,8 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
           memcpy(argDoubleBuffer, messageBufferPointer, MAX_LENGTH_ARG_DOUBLE);
           argDoubleArray[j] = toDouble(argDoubleBuffer);
           messageBufferPointer += MAX_LENGTH_ARG_DOUBLE;
-          cout << "Printing Double: " << argDoubleArray[j]  << endl;
         }
-        args[i] = static_cast<void *>(argDoubleArray);        
+        args[i] = static_cast<void *>(argDoubleArray);
         break;
       }
 
@@ -329,7 +297,6 @@ int ExecuteRequestMessage::receive(int dataTransferSocket,
           memcpy(argFloatBuffer, messageBufferPointer, MAX_LENGTH_ARG_FLOAT);
           argFloatArray[j] = toFloat(argFloatBuffer);
           messageBufferPointer += MAX_LENGTH_ARG_FLOAT;
-          cout << "Printing Float: " << argFloatArray[j]  << endl;
         }
         args[i] = static_cast<void *>(argFloatArray);
         break;

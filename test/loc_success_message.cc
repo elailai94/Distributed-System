@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 
 #include "loc_success_message.h"
+#include "helper_functions.h"
 
 using namespace std;
 
@@ -93,7 +94,7 @@ int LocSuccessMessage::receive(int dataTransferSocket,
   // Parses the port from the buffer
   char portBuffer[MAX_LENGTH_PORT] = {'\0'};
   memcpy(portBuffer, messageBufferPointer, MAX_LENGTH_PORT);
-  unsigned int port = *((unsigned int *) portBuffer);
+  unsigned int port = toUnsignedInt(portBuffer);
 
   parsedMessage = new LocSuccessMessage(serverIdentifier, port);
   return totalNumOfBytesReceived;
