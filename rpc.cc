@@ -243,7 +243,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
   int returnVal = 0;
 
-  if(status == 0){
+  if(status2 == 0){
     Segment * parsedSegmentEsm = 0;
     int status3 = 0;
     status3 = Segment::receive(serverSocket, parsedSegmentEsm);
