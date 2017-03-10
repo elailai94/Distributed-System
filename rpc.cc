@@ -187,9 +187,7 @@ int sendExecute(int sock, string name, int* argTypes, void**args){
   int returnVal;
 
 	string retName;
-	int* retArgTypes;
-	void** retArgs;
-
+	
   if(status == 0){
     Segment * segment = 0;
     status = Segment::receive(sock, segment);
@@ -199,9 +197,9 @@ int sendExecute(int sock, string name, int* argTypes, void**args){
 			Message * cast = segment->getMessage();
 	 		ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(cast);
 
-			retName = esm->getName();
-			retArgTypes = esm->getArgTypes();
-			retArgs = esm->getArgs();
+			name = esm->getName();
+			argTypes = esm->getArgTypes();
+			args = esm->getArgs();
 
 			if(retName == name){
 				//extractArgumentsMessage(replyMessageP, argTypes, args, argTypesLength, false);
