@@ -103,9 +103,9 @@ int setUpToConnect(int socket, string address, unsigned int port) {
 // See interface (header file).
 int setUpToConnectServer(int socket, string address, unsigned int port, int oldSocket) {
 
-  if(oldSocket != 0){
-    close(oldSocket);
-  }
+  //if(oldSocket != 0){
+  //  close(oldSocket);
+  //}
 
 
 
