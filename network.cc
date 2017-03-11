@@ -52,7 +52,7 @@ int setUpToListen(int socket) {
 
   // Listens for TCP connection requests from other hosts
   result = listen(socket, SOMAXCONN);
-  cout << "listen reuslts: " << result << endl;
+  cout << "listen results: " << result << endl;
   if (result < 0) {
     cout << "BAD LISTEN!!!!" << endl;
     return result;
@@ -92,53 +92,6 @@ int setUpToConnect(int socket, string address, unsigned int port) {
     cout << errno << endl;
     return result;
   } // if
-
-  // Frees up memory allocated for the host address results
-  freeaddrinfo(hostAddressResults);
-
-  return result;
-}
-
-
-// See interface (header file).
-int setUpToConnectServer(int socket, string address, unsigned int port, int oldSocket) {
-
-  //if(oldSocket != 0){
-  //  close(oldSocket);
-  //}
-
-
-
-  struct addrinfo hostAddressHints;
-  struct addrinfo *hostAddressResults;
-
-  // Sets up the host address hints and results to perform the DNS
-  // lookup on the host's address to obtain the host's IP address
-  memset(&hostAddressHints, 0, sizeof(hostAddressHints));
-
-  hostAddressHints.ai_family = AF_INET;
-  hostAddressHints.ai_socktype = SOCK_STREAM;
-
-  // Performs a DNS lookup on the host's address to obtain the
-  // host's IP address
-  int result = getaddrinfo(address.c_str(), toString(port).c_str(),
-    &hostAddressHints, &hostAddressResults);
-  if (result != 0) {
-    cout << "Network error1" << endl;
-    return result;
-  } // if
-  cout << address.c_str() << endl;
-  cout << toString(port).c_str() << endl;
-
-  // Initiates the TCP connection request to another host
-  result = connect(socket, hostAddressResults->ai_addr,
-    hostAddressResults->ai_addrlen);
-  if (result < 0) {
-    cout << "Network error2" << endl;
-    cout << errno << endl;
-    return result;
-  } // if
-
 
   // Frees up memory allocated for the host address results
   freeaddrinfo(hostAddressResults);
