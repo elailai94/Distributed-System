@@ -161,7 +161,7 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
     case MSG_TYPE_TERMINATE:
       result = TerminateMessage::receive(dataTransferSocket, parsedMessage,
         length);
-      if (result < 0 || result == 0) {
+      if (result < 0) {
         return result;
       }
       break;
