@@ -99,11 +99,7 @@ int setUpToConnect(int socket, string address, unsigned int port) {
   return result;
 }
 
-<<<<<<< HEAD
-=======
 
-
->>>>>>> a4dcdfe82058bebb155caece2e1dbd8e6337b3aa
 // See interface (header file).
 string getHostAddress() {
   char hostname[MAXHOSTNAMELEN + 1] = {'\0'};
