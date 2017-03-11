@@ -295,7 +295,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   }
   oldSocket = serverSocket;
 
-  
+
   return returnVal;
 }
 
@@ -460,7 +460,14 @@ int rpcExecute(void){
                 Segment exeFailSeg = Segment(exeFailMsg.getLength(), MSG_TYPE_EXECUTE_FAILURE, &exeFailMsg);
                 status = exeFailSeg.send(tempConnection);
               }
+            
+            }else if{ segment->getType == MSG_TYPE_TERMINATE}{
+
+              break; 
+              //and other clean up
             }
+             
+
           }
 
         }
