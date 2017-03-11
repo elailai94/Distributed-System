@@ -40,7 +40,6 @@ using namespace std;
 // Global variables for client
 bool connectedToBinder = false;
 int binderSocket = 0;
-int oldSocket = 0;
 
 // Global variables for server
 static map<procedure_signature, skeleton, ps_compare> procSkeleDict;
@@ -233,10 +232,9 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
   cout << "Connecting to server..." << endl;
   int serverSocket = createSocket();
-	int status1 = setUpToConnectServer(serverSocket, serverAddress, serverPort, oldSocket);
+	int status1 = setUpToConnect(serverSocket, serverAddress, serverPort);
 
   cout << "status1: " << status1 << endl;
-  cout << "oldSocket: " << oldSocket << endl;
   cout << "Server Socket: " << serverSocket << endl;
   cout << "Server Address: " << serverAddress << endl;
   cout << "Server Port: " << serverPort << endl;
@@ -289,13 +287,6 @@ int rpcCall(char *name, int *argTypes, void **args) {
       break;
     }
   }
-
-  //if(oldSocket != 0){
-  //  close(oldSocket);
-  //}
-  
-  oldSocket = serverSocket;
-
 
   return returnVal;
 }
