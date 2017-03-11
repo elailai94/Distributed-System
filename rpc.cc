@@ -233,6 +233,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
 
   if(oldSocket != 0){
+    sleep(2);
     close(oldSocket);
   }
 
