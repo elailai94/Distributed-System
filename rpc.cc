@@ -247,7 +247,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   Segment exeReqSeg = Segment(exeReqMsg.getLength(), MSG_TYPE_EXECUTE_REQUEST, &exeReqMsg);
   int status2 =  exeReqSeg.send(serverSocket);
 
-  cout << "Statue of exeRegMsg send: " << status2 << end;
+  cout << "Status of exeRegMsg send: " << status2 << end:;
 
   int returnVal = 0;
 
