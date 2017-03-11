@@ -490,7 +490,7 @@ int rpcTerminate() {
 	  Segment(messageToBinder.getLength(), MSG_TYPE_TERMINATE, &messageToBinder);
 	segmentToBinder.send(binderSocket);
 
-  sleep(1);
+  //sleep(1);
   // Closes the connection to the binder
   destroySocket(binderSocket);
 

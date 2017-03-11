@@ -198,6 +198,7 @@ int request_handler(Segment * segment, int sock){
     LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(cast2);
 
     location_request_handler(lqm, sock);
+
   }else if (segment->getType() == MSG_TYPE_TERMINATE){
 
     cout << "Terminate Request" <<endl;
@@ -358,7 +359,7 @@ int main() {
               return status;
             }
             */
-            cout << "TO be handled" << endl;
+            cout << "TO be handled: " << segment->getType() << endl;
             request_handler(segment, tempConnection);
 
           }
