@@ -245,8 +245,6 @@ int rpcCall(char *name, int *argTypes, void **args) {
   Segment exeReqSeg = Segment(exeReqMsg.getLength(), MSG_TYPE_EXECUTE_REQUEST, &exeReqMsg);
   int status2 =  exeReqSeg.send(serverSocket);
 
-  cout << "ExecuteRequestMessage: status2: " << status2 << endl;
-
   int returnVal = 0;
 
   Segment * parsedSegmentEsm = 0;
@@ -404,6 +402,7 @@ int rpcExecute(void){
             status = Segment::receive(tempConnection, segment);
 
             if (status < 0) {
+              myToRemove.push_back(tempConnection);
               cerr << "ERROR: receive failed" << endl;
               return -169;
             }
