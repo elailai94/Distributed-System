@@ -85,6 +85,7 @@ int setUpToConnect(int socket, string address, unsigned int port) {
   // Sets up the host address hints and results to perform the DNS
   // lookup on the host's address to obtain the host's IP address
   memset(&hostAddressHints, 0, sizeof(hostAddressHints));
+
   hostAddressHints.ai_family = AF_INET;
   hostAddressHints.ai_socktype = SOCK_STREAM;
 

@@ -250,6 +250,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   Segment * parsedSegmentEsm = 0;
   int status3 = 0;
   status3 = Segment::receive(serverSocket, parsedSegmentEsm);
+  sleep(2);
   destroySocket(serverSocket);
 
   switch (parsedSegmentEsm->getType()) {
