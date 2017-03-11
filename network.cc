@@ -12,13 +12,19 @@
 #include "helper_functions.h"
 #include <errno.h>
 
-
 using namespace std;
 
 // See interface (header file).
 int createSocket() {
   int socket = ::socket(AF_INET, SOCK_STREAM, 0);
-  return socket;
+  if (socket < 0) {
+    return socket;
+  }
+
+  int optval = 1;
+  int result =
+    setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
+  return result;
 }
 
 // See interface (header file).
@@ -81,6 +87,8 @@ int setUpToConnect(int socket, string address, unsigned int port) {
     cout << "Network error1" << endl;
     return result;
   } // if
+  cout << address.c_str() << endl;
+  cout << toString(port).c_str() << endl;
 
   // Initiates the TCP connection request to another host
   result = connect(socket, hostAddressResults->ai_addr,
