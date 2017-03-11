@@ -257,7 +257,6 @@ int rpcCall(char *name, int *argTypes, void **args) {
   cout << "Flag 1" << endl;
 
   //instead we have
-  oldSocket = serverSocket;
 
   cout << "Flag 2" << endl;
   cout << parsedSegmentEsm->getType() << endl;
@@ -294,8 +293,9 @@ int rpcCall(char *name, int *argTypes, void **args) {
   if(oldSocket != 0){
     close(oldSocket);
   }
+  oldSocket = serverSocket;
 
-
+  
   return returnVal;
 }
 
