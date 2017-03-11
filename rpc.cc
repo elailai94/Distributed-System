@@ -489,6 +489,7 @@ int rpcTerminate() {
   Segment segmentToBinder =
     Segment(messageToBinder.getLength(), MSG_TYPE_TERMINATE, &messageToBinder);
   int binder_status = segmentToBinder.send(binderSocket);
+  cout << segmentToBinder.getType() << endl;
   
   cout << "binder_status: " << binder_status << endl;
   sleep(1);
