@@ -344,7 +344,7 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
 }
 
 
-int rpcExecute(void){
+int rpcExecute(){
 	cout << "Running rpcExecute..." << endl;
   mapPrint();
 
@@ -470,9 +470,15 @@ int rpcCacheCall() {
 
 int rpcTerminate() {
 	cout << "Running rpcTerminate..." << endl;
+
+  // Sends a terminate message to the binder
 	TerminateMessage messageToBinder = TerminateMessage();
 	Segment segmentToBinder =
 	  Segment(messageToBinder.getLength(), MSG_TYPE_TERMINATE, &messageToBinder);
 	segmentToBinder.send(binderSocket);
+
+  // Closes the connection to the binder
+  close(binderSocket);
+
 	return 0;
 }
