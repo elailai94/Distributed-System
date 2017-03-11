@@ -341,6 +341,7 @@ int main() {
             if (segment != 0){ 
               cout << "TO be handled: " << endl;
               if (segement->getType() == 0){
+                cout << "getType() is null" << endl;
               }else{
                 cout << segment->getType() << endl;
               }
