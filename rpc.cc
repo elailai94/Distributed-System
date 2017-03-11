@@ -461,8 +461,7 @@ int rpcExecute(){
                 status = exeFailSeg.send(tempConnection);
               }
             
-            }else if{ segment->getType == MSG_TYPE_TERMINATE}{
-
+            }else if(segment->getType == MSG_TYPE_TERMINATE){
               break; 
               //and other clean up
             }
