@@ -286,11 +286,13 @@ int main() {
                 return status;
             }
 
+            /*
             if (status == 0) {
               // client has closed the connection
               myToRemove.push_back(tempConnection);
               return status;
             }
+            */
 
             request_handler(segment, tempConnection);
           }
