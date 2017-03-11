@@ -290,9 +290,10 @@ int rpcCall(char *name, int *argTypes, void **args) {
     }
   }
 
-  if(oldSocket != 0){
-    close(oldSocket);
-  }
+  //if(oldSocket != 0){
+  //  close(oldSocket);
+  //}
+  
   oldSocket = serverSocket;
 
 

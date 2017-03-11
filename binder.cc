@@ -167,6 +167,7 @@ void location_request_handler(LocRequestMessage * message, int sock){
 
 
 void binder_terminate_handler() {
+  cout << "Binder set to execute" << endl;
 
   for (list<server_function_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
     
