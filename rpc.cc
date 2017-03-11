@@ -250,7 +250,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
   int returnVal = 0;
 
- 
+
   Segment * parsedSegmentEsm = 0;
   int status3 = 0;
   status3 = Segment::receive(serverSocket, parsedSegmentEsm);
@@ -295,7 +295,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   }
   oldSocket = serverSocket;
 
-  
+
   return returnVal;
 }
 
@@ -493,7 +493,7 @@ int rpcTerminate() {
 	segmentToBinder.send(binderSocket);
 
   // Closes the connection to the binder
-  close(binderSocket);
+  destroySocket(binderSocket);
 
 	return 0;
 }
