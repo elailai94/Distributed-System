@@ -337,30 +337,10 @@ int main() {
           if (FD_ISSET(tempConnection, &readfds)) {
             Segment * segment = 0;
             status = Segment::receive(tempConnection, segment);
-
-            //TODO: More sophisticaled error handling/replies
-            // Maybe status should be reasonacode instead
-            if (status < 0 && segment->getType() == MSG_TYPE_REGISTER_REQUEST) {
-                RegisterFailureMessage regFailMsg = RegisterFailureMessage(status);
-                Segment regFailSeg = Segment(regFailMsg.getLength(), MSG_TYPE_REGISTER_FAILURE, &regFailMsg);
-                regFailSeg.send(tempConnection);
-                return status;
-            } else if (status < 0 && segment->getType() == MSG_TYPE_LOC_REQUEST) {
-                LocFailureMessage locFailMsg = LocFailureMessage(status);
-                Segment regFailSeg = Segment(locFailMsg.getLength(), MSG_TYPE_LOC_FAILURE, &locFailMsg);
-                regFailSeg.send(tempConnection);
-                return status;
-            }
-
-            /*
-            if (status == 0) {
-              // client has closed the connection
-              myToRemove.push_back(tempConnection);
-              return status;
-            }
-            */
+            
             cout << "TO be handled: " << endl;
             cout << segment->getType() << endl;
+            
             request_handler(segment, tempConnection);
 
           }
