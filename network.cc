@@ -87,7 +87,7 @@ int setUpToConnect(int socket, string address, unsigned int port) {
     hostAddressResults->ai_addrlen);
   if (result < 0) {
     cout << "Network error2" << endl;
-    cout <<errno << endl;
+    cout << errno << endl;
     return result;
   } // if
 
