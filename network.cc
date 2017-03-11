@@ -52,7 +52,7 @@ int setUpToListen(int socket) {
 
   // Listens for TCP connection requests from other hosts
   result = listen(socket, SOMAXCONN);
-  cout << "listen reuslts: " << result << endl;
+  cout << "listen results: " << result << endl;
   if (result < 0) {
     cout << "BAD LISTEN!!!!" << endl;
     return result;
@@ -99,8 +99,11 @@ int setUpToConnect(int socket, string address, unsigned int port) {
   return result;
 }
 
+<<<<<<< HEAD
+=======
 
 
+>>>>>>> a4dcdfe82058bebb155caece2e1dbd8e6337b3aa
 // See interface (header file).
 string getHostAddress() {
   char hostname[MAXHOSTNAMELEN + 1] = {'\0'};
