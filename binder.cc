@@ -166,7 +166,7 @@ void location_request_handler(LocRequestMessage * message, int sock){
 }
 
 
-void terminate_handler() {
+void binder_terminate_handler() {
 
   for (list<server_function_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
     
@@ -202,7 +202,7 @@ int request_handler(Segment * segment, int sock){
 
     cout << "Terminate Request" <<endl;
 
-    terminate_handler();
+    binder_terminate_handler();
   }
 
 	return retval;
