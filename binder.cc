@@ -168,7 +168,7 @@ void location_request_handler(LocRequestMessage * message, int sock){
 
 void terminate_handler() {
 
-  for (list<server_function_info>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
+  for (list<server_function_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
     
     int sock = (*it)->si->socket;
 
@@ -198,7 +198,7 @@ int request_handler(Segment * segment, int sock){
     LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(cast2);
 
     location_request_handler(lqm, sock);
-  }else if (segement->getType() == MSG_TYPE_TERMINATE){
+  }else if (segment->getType() == MSG_TYPE_TERMINATE){
 
     cout << "Terminate Request" <<endl;
 
