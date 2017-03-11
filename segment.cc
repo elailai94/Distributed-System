@@ -47,7 +47,7 @@ int Segment::send(int dataTransferSocket) {
   // Writes the type of the message out to the data transfer socket
   result = ::send(dataTransferSocket, &type, sizeof(type), 0);
   if (result < 0) {
-    cout << "should send something" << endl;
+    std::cout << "should send something" << std::endl;
     return result;
   }
 
