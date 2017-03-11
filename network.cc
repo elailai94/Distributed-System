@@ -102,6 +102,13 @@ int setUpToConnect(int socket, string address, unsigned int port) {
 
 // See interface (header file).
 int setUpToConnectServer(int socket, string address, unsigned int port, int oldSocket) {
+
+  if(oldSocket != 0){
+    close(oldSocket);
+  }
+
+
+
   struct addrinfo hostAddressHints;
   struct addrinfo *hostAddressResults;
 
@@ -122,11 +129,6 @@ int setUpToConnectServer(int socket, string address, unsigned int port, int oldS
   } // if
   cout << address.c_str() << endl;
   cout << toString(port).c_str() << endl;
-
-  if(oldSocket != 0){
-    close(oldSocket);
-  }
-
 
   // Initiates the TCP connection request to another host
   result = connect(socket, hostAddressResults->ai_addr,
