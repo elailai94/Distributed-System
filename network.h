@@ -12,9 +12,6 @@ int setUpToListen(int socket);
 // Sets up a socket to initiate TCP connection request to another host
 int setUpToConnect(int socket, std::string address, unsigned int port);
 
-// Sets up a socket to initiate TCP connection request to another host
-int setUpToConnectServer(int socket, std::string address, unsigned int port, int oldSocket);
-
 // Returns the address of a host
 std::string getHostAddress();
 
