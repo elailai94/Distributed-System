@@ -1,4 +1,5 @@
 #include <sys/socket.h>
+#include <iostream>
 
 #include "segment.h"
 #include "message.h"
