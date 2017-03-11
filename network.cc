@@ -132,9 +132,9 @@ int setUpToConnectServer(int socket, string address, unsigned int port, int oldS
     return result;
   } // if
 
-  if(oldSocket != 0){
-    close(oldSocket);
-  }
+//  if(oldSocket != 0){
+//    close(oldSocket);
+//  }
 
   // Frees up memory allocated for the host address results
   freeaddrinfo(hostAddressResults);
