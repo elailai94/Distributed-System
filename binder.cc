@@ -359,7 +359,8 @@ int main() {
               return status;
             }
             */
-            cout << "TO be handled: " << segment->getType() << endl;
+            cout << "TO be handled: " << endl;
+            cout << segment->getType() << endl;
             request_handler(segment, tempConnection);
 
           }
