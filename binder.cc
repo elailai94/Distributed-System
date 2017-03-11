@@ -34,8 +34,8 @@ using namespace std;
 //ROUND ROBIN
 
 static map<procedure_signature, list<server_info *>, ps_compare> procLocDict;
-static list<server_function_info *> roundRobinList;
-static list<server_function_info *> serverList;
+static list<server_info *> roundRobinList;
+static list<server_info *> serverList;
 
 bool onSwitch = true;
 
@@ -87,16 +87,19 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
 
     //This is bad we shouldn't need a newKey and we should be able to use the key above
     //due to &* reasones I made a variable newKey for the 'info' object
-    procedure_signature * newKey = new procedure_signature(name, memArgTypes);
     server_info * entry = new server_info(server_identifier, port, sock);
 
-    //Adding to roundRobinList
-    server_function_info * info = new server_function_info(entry, newKey);
-    roundRobinList.push_back(info);
- 
+    //Adding to roundRobinList if server is not found
+    if( find(roundRobinList.begin(), roundRobinList.end(), entry) == roundRobinList.end()){
+      roundRobinList.push_back(entry);
+    }
 
-    serverList.push_back(info);
-    
+    //Adding to serverList if server is not found
+    if( find(serverList.begin(), serverList.end(), entry) == serverList.end()){
+      serverList.push_back(entry);
+    }
+
+
 
   } else {
     bool sameLoc = false;

@@ -65,8 +65,6 @@ if(l.name == r.name)
     }
 }
 
-/*
-bool operator < (const procedure_signature &l, const procedure_signature &r) const {
-    
+bool operator == (const server_info &l, const server_info &r) {
+    return (l.server_identifier == r.server_identifier && l.port == r.port);
 }
-*/

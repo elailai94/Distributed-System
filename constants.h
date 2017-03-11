@@ -12,6 +12,8 @@ struct server_info {
   server_info(std::string server_identifier, int port, int socket);
 };
 
+bool operator == (const server_info &l, const server_info &r);
+
 struct procedure_signature {
   std::string name;
   int *argTypes;
