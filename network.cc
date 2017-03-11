@@ -123,6 +123,11 @@ int setUpToConnectServer(int socket, string address, unsigned int port, int oldS
   cout << address.c_str() << endl;
   cout << toString(port).c_str() << endl;
 
+  if(oldSocket != 0){
+    close(oldSocket);
+  }
+
+
   // Initiates the TCP connection request to another host
   result = connect(socket, hostAddressResults->ai_addr,
     hostAddressResults->ai_addrlen);
@@ -132,9 +137,6 @@ int setUpToConnectServer(int socket, string address, unsigned int port, int oldS
     return result;
   } // if
 
-  if(oldSocket != 0){
-    close(oldSocket);
-  }
 
   // Frees up memory allocated for the host address results
   freeaddrinfo(hostAddressResults);
