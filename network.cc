@@ -24,7 +24,16 @@ int createSocket() {
   int optval = 1;
   int result =
     setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
-  return result;
+  if (result < 0) {
+    return result;
+  }
+
+  result = setsockopt(socket, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof(optval));
+  if (result < 0) {
+    result;
+  }
+  
+  return socket;
 }
 
 // See interface (header file).
@@ -150,6 +159,6 @@ int acceptConnection(int socket) {
 // See interface (header file).
 int destroySocket(int socket) {
   int result = close(socket);
-  cout << "Socket destoryed: " << result << endl;
+  cout << "Socket destroyed: " << result << endl;
   return result;
 }
