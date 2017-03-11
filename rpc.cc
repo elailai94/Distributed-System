@@ -232,6 +232,10 @@ int rpcCall(char *name, int *argTypes, void **args) {
 	}
 
 
+  if(oldSocket != 0){
+    close(oldSocket);
+  }
+
   cout << "Connecting to server..." << endl;
   int serverSocket = createSocket();
 	int status1 = setUpToConnectServer(serverSocket, serverAddress, serverPort, oldSocket);
@@ -292,7 +296,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
     }
   }
 
-  close(serverSocket);
+
   return returnVal;
 }
 
