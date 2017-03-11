@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
   rpcRegister("g1", argTypes1, *f1_Skel);
   rpcRegister("g2", argTypes2, *f2_Skel);
   rpcRegister("g3", argTypes3, *f3_Skel);
-  rpcRegister("G4", argTypes4, *f4_Skel);
+  rpcRegister("g4", argTypes4, *f4_Skel);
 
   /* call rpcExecute */
   rpcExecute();
