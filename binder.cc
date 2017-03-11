@@ -338,9 +338,14 @@ int main() {
             Segment * segment = 0;
             status = Segment::receive(tempConnection, segment);
             
-            cout << "TO be handled: " << endl;
-            cout << segment->getType() << endl;
-            
+            if (segment != 0){ 
+              cout << "TO be handled: " << endl;
+              if (segement->getType() == 0){
+              }else{
+                cout << segment->getType() << endl;
+              }
+            }
+
             request_handler(segment, tempConnection);
 
           }
