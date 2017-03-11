@@ -56,7 +56,6 @@ int Segment::send(int dataTransferSocket) {
   if (result < 0) {
     return result;
   }
-  std::cout << "should send something" << std::endl;
  
   return result;
 }

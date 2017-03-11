@@ -93,6 +93,8 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     //Adding to roundRobinList
     server_function_info * info = new server_function_info(entry, newKey);
     roundRobinList.push_back(info);
+ 
+
     serverList.push_back(info);
     
 
@@ -116,7 +118,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   }
 
   mapPrint();
-  //roundRobinPrint();
+  roundRobinPrint();
 
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
