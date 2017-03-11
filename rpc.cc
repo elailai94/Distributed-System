@@ -234,7 +234,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
   cout << "Connecting to server..." << endl;
   int serverSocket = createSocket();
-	int status1 = setUpToConnectServer(serverSocket, serverAddress, serverPort, oldSocket);
+	int status1 = setUpToConnect(serverSocket, serverAddress, serverPort);
 
   cout << "status1: " << status1 << endl;
   cout << "oldSocket: " << oldSocket << endl;
@@ -253,13 +253,14 @@ int rpcCall(char *name, int *argTypes, void **args) {
   Segment * parsedSegmentEsm = 0;
   int status3 = 0;
   status3 = Segment::receive(serverSocket, parsedSegmentEsm);
-  cout << "Flag 1" << endl;
+  //cout << "Flag 1" << endl;
 
   //instead we have
   oldSocket = serverSocket;
 
-  cout << "Flag 2" << endl;
-  cout << parsedSegmentEsm->getType() << endl;
+  //cout << "Flag 2" << endl;
+  //cout << parsedSegmentEsm->getType() << endl;
+
   switch (parsedSegmentEsm->getType()) {
     case MSG_TYPE_EXECUTE_SUCCESS: {
       cout << "EXECUTE SUCCESS message received..." << endl;
