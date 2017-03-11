@@ -40,6 +40,7 @@ using namespace std;
 // Global variables for client
 bool connectedToBinder = false;
 int binderSocket = 0;
+int oldSocket = 0;
 
 // Global variables for server
 static map<procedure_signature, skeleton, ps_compare> procSkeleDict;
@@ -230,12 +231,12 @@ int rpcCall(char *name, int *argTypes, void **args) {
 		}
 	}
 
-
   cout << "Connecting to server..." << endl;
   int serverSocket = createSocket();
-	int status1 = setUpToConnect(serverSocket, serverAddress, serverPort);
+	int status1 = setUpToConnectServer(serverSocket, serverAddress, serverPort, oldSocket);
 
   cout << "status1: " << status1 << endl;
+  cout << "oldSocket: " << oldSocket << endl;
   cout << "Server Socket: " << serverSocket << endl;
   cout << "Server Address: " << serverAddress << endl;
   cout << "Server Port: " << serverPort << endl;
@@ -245,12 +246,20 @@ int rpcCall(char *name, int *argTypes, void **args) {
   Segment exeReqSeg = Segment(exeReqMsg.getLength(), MSG_TYPE_EXECUTE_REQUEST, &exeReqMsg);
   int status2 =  exeReqSeg.send(serverSocket);
 
+  cout << "Status of exeRegMsg send: " << status2 << endl;
+
   int returnVal = 0;
 
+ 
   Segment * parsedSegmentEsm = 0;
   int status3 = 0;
   status3 = Segment::receive(serverSocket, parsedSegmentEsm);
-  //destroySocket(serverSocket);
+  cout << "Flag 1" << endl;
+
+  //instead we have
+
+  cout << "Flag 2" << endl;
+  cout << parsedSegmentEsm->getType() << endl;
 
   switch (parsedSegmentEsm->getType()) {
     case MSG_TYPE_EXECUTE_SUCCESS: {
@@ -281,6 +290,12 @@ int rpcCall(char *name, int *argTypes, void **args) {
     }
   }
 
+  if(oldSocket != 0){
+    close(oldSocket);
+  }
+  oldSocket = serverSocket;
+
+  
   return returnVal;
 }
 
