@@ -17,22 +17,6 @@ using namespace std;
 // See interface (header file).
 int createSocket() {
   int socket = ::socket(AF_INET, SOCK_STREAM, 0);
-  if (socket < 0) {
-    return socket;
-  }
-
-  int optval = 1;
-  int result =
-    setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval));
-  if (result < 0) {
-    return result;
-  }
-
-  result = setsockopt(socket, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof(optval));
-  if (result < 0) {
-    result;
-  }
-  
   return socket;
 }
 
