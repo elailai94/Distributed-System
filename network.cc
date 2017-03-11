@@ -27,6 +27,12 @@ int createSocket() {
   if (result < 0) {
     return result;
   }
+
+  result = setsockopt(socket, SOL_SOCKET, SO_REUSEPORT, &optval, sizeof(optval));
+  if (result < 0) {
+    result;
+  }
+  
   return socket;
 }
 
