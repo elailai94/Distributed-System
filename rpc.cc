@@ -249,11 +249,12 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
   int returnVal = 0;
 
-  cout << "Something happens" << endl;
-
+ 
   Segment * parsedSegmentEsm = 0;
   int status3 = 0;
   status3 = Segment::receive(serverSocket, parsedSegmentEsm);
+  cout << "Something happens" << endl;
+
   //instead we have
   oldSocket = serverSocket;
 
