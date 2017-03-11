@@ -485,12 +485,12 @@ int rpcTerminate() {
 	cout << "Running rpcTerminate..." << endl;
 
   // Sends a terminate message to the binder
-  TerminateMessage messageToBinder = TerminateMessage(string(name), argTypes);
+  TerminateMessage messageToBinder = TerminateMessage();
   Segment segmentToBinder =
     Segment(messageToBinder.getLength(), MSG_TYPE_TERMINATE, &messageToBinder);
   int binder_status = segmentToBinder.send(binderSocket);
   
-  cout < "binder_status: " << binder_status << endl;
+  cout << "binder_status: " << binder_status << endl;
   sleep(1);
   // Closes the connection to the binder
   destroySocket(binderSocket);
