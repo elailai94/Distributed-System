@@ -358,8 +358,9 @@ int main() {
               return status;
             }
             */
-
+            cout << "TO be handled" << endl;
             request_handler(segment, tempConnection);
+
           }
         }
       }
