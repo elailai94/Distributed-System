@@ -35,6 +35,9 @@ using namespace std;
 
 static map<procedure_signature, list<server_info *>, ps_compare> procLocDict;
 static list<server_function_info *> roundRobinList;
+static list<server_function_info *> serverList;
+
+bool onSwitch = true;
 
 /*
 TODO:
@@ -90,6 +93,8 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     //Adding to roundRobinList
     server_function_info * info = new server_function_info(entry, newKey);
     roundRobinList.push_back(info);
+    serverList.push_back(info);
+    
 
   } else {
     bool sameLoc = false;
@@ -160,6 +165,23 @@ void location_request_handler(LocRequestMessage * message, int sock){
   }
 }
 
+
+void binder_terminate_handler() {
+
+  for (list<server_function_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
+    
+    int sock = (*it)->si->socket;
+
+    TerminateMessage termMsg = TerminateMessage();
+    Segment termSeg = Segment(termMsg.getLength(), MSG_TYPE_TERMINATE, &termMsg);
+    termSeg.send(sock);    
+  }
+
+
+  onSwitch = false;
+
+}
+
 int request_handler(Segment * segment, int sock){
   int retval = 0;
   if(segment->getType() == MSG_TYPE_REGISTER_REQUEST){
@@ -176,10 +198,16 @@ int request_handler(Segment * segment, int sock){
     LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(cast2);
 
     location_request_handler(lqm, sock);
+  }else if (segment->getType() == MSG_TYPE_TERMINATE){
+
+    cout << "Terminate Request" <<endl;
+
+    binder_terminate_handler();
   }
 
 	return retval;
 }
+
 
 //TODO:
 //Create helper functions that can be used for rpcServer.cc
@@ -268,7 +296,7 @@ int main() {
   fd_set readfds;
   int n;
 
-  while(true){
+  while(onSwitch){
     //CONNECTIONS VECTOR
     FD_ZERO(&readfds);
     FD_SET(welcomeSocket, &readfds);
@@ -329,11 +357,13 @@ int main() {
                 return status;
             }
 
+            /*
             if (status == 0) {
               // client has closed the connection
               myToRemove.push_back(tempConnection);
               return status;
             }
+            */
 
             request_handler(segment, tempConnection);
           }
