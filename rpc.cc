@@ -232,10 +232,9 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
   cout << "Connecting to server..." << endl;
   int serverSocket = createSocket();
-	int status1 = setUpToConnectServer(serverSocket, serverAddress, serverPort, oldSocket);
+	int status1 = setUpToConnect(serverSocket, serverAddress, serverPort);
 
   cout << "status1: " << status1 << endl;
-  cout << "oldSocket: " << oldSocket << endl;
   cout << "Server Socket: " << serverSocket << endl;
   cout << "Server Address: " << serverAddress << endl;
   cout << "Server Port: " << serverPort << endl;
