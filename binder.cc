@@ -152,7 +152,6 @@ void location_request_handler(LocRequestMessage * message, int sock){
 
       //When we have identified the correct procedure_signature use splice and move that service to the end
       roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
-      cout << "Sent and splice" << endl;
       break;
  		}
 	}
@@ -334,13 +333,7 @@ int main() {
 
         for (vector<int>::iterator it = myConnections.begin(); it != myConnections.end(); ++it) {
           int tempConnection = *it;
-
-            cout << "Socket iterator" << endl;
-
           if (FD_ISSET(tempConnection, &readfds)) {
-
-            cout << "We in here" << endl;
-
             Segment * segment = 0;
             status = Segment::receive(tempConnection, segment);
 
