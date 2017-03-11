@@ -184,6 +184,77 @@ int request_handler(Segment * segment, int sock){
 //TODO:
 //Create helper functions that can be used for rpcServer.cc
 int main() {
+// Code refactoring
+/*
+  fd_set allSockets;
+  fd_set readSockets;
+
+  // Clears all entries from the all sockets set and the read
+  // sockets set
+  FD_ZERO(&allSockets);
+  FD_ZERO(&readSockets);
+
+  // Creates the welcome socket, adds it to the all sockets set and
+  // sets it as the maximum socket so far
+  int welcomeSocket = createSocket();
+  int status = setUpToListen(welcomeSocket);
+  FD_SET(welcomeSocket, &allSockets);
+  int maxSocket = welcomeSocket;
+
+  while (true) {
+    readSockets = allSockets;
+
+    // Checks if some of the sockets are ready to be read from
+    int result = select(maxSocket + 1, &readSockets, 0, 0, 0);
+    if (result < 0) {
+      continue;
+    }
+
+    for (int i = 0; i <= maxSocket; i++) {
+      if (!FD_ISSET(i, &readSockets)) {
+        continue;
+      }
+
+      if (i == welcomeSocket) {
+
+        // Creates the connection socket when a connection is made
+        // to the welcome socket
+        int connectionSocket = acceptConnection(i);
+        if (connectionSocket < 0) {
+          continue;
+        }
+
+        // Adds the connection socket to the all sockets set
+        FD_SET(connectionSocket, &allSockets);
+
+        // Sets the connection socket as the maximum socket so far
+        // if necessary
+        if (connectionSocket > maxSocket) {
+          maxSocket = connectionSocket;
+        }
+
+      } else {
+
+        // Creates a segment to receive data from the client and
+        // reads into it from the connection socket
+        Segment *segment = 0;
+        result = 0;
+        result = Segment::receive(i, segment);
+        if (result <= 0) {
+          // Closes the connection socket and removes it from the
+          // all sockets set
+          destroySocket(i);
+          FD_CLR(i, &allSockets);
+          continue;
+        }
+
+
+
+      }
+    }
+  }
+*/
+
   vector<int> myConnections;
   vector<int> myToRemove;
 
