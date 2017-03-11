@@ -110,7 +110,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     }
   }
 
-  //mapPrint();
+  mapPrint();
   //roundRobinPrint();
 
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
