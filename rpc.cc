@@ -491,7 +491,7 @@ int rpcTerminate() {
   int binder_status = segmentToBinder.send(binderSocket);
   cout << segmentToBinder.getType() << endl;
   
-  cout << "binder_status: " << binder_status << endl;
+  cout << "binderSocket: " << binderSocket << endl;
   sleep(1);
   // Closes the connection to the binder
   destroySocket(binderSocket);
