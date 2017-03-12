@@ -94,7 +94,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     server_function_info * info = new server_function_info(entry, newKey);
     roundRobinList.push_back(info);
     serverList.push_back(info);
-    
+
 
   } else {
     bool sameLoc = false;
@@ -169,12 +169,12 @@ void binder_terminate_handler() {
   cout << "Binder set to execute" << endl;
 
   for (list<server_function_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
-    
+
     int sock = (*it)->si->socket;
 
     TerminateMessage termMsg = TerminateMessage();
     Segment termSeg = Segment(termMsg.getLength(), MSG_TYPE_TERMINATE, &termMsg);
-    termSeg.send(sock);    
+    termSeg.send(sock);
   }
 
 
@@ -229,7 +229,12 @@ int main() {
   FD_SET(welcomeSocket, &allSockets);
   int maxSocket = welcomeSocket;
 
-  while (true) {
+  // Prints the binder address and the binder port on the binder's
+  // standard output
+  cout << "BINDER_ADDRESS " << getHostAddress() << endl;
+  cout << "BINDER_PORT " << getSocketPort(welcomeSocket) << endl;
+
+  while (onSwitch) {
     readSockets = allSockets;
 
     // Checks if some of the sockets are ready to be read from
@@ -263,7 +268,7 @@ int main() {
 
       } else {
 
-        // Creates a segment to receive data from the client and
+        // Creates a segment to receive data from the client/server and
         // reads into it from the connection socket
         Segment *segment = 0;
         result = 0;
@@ -276,13 +281,14 @@ int main() {
           continue;
         }
 
-
-
+        request_handler(segment, i);
       }
     }
   }
-*/
 
+  // Destroys the welcome socket
+  destroySocket(welcomeSocket);
+*/
   vector<int> myConnections;
   vector<int> myToRemove;
 

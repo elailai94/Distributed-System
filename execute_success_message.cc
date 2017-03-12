@@ -4,8 +4,9 @@
 #include <iostream>
 
 #include "execute_success_message.h"
-#include "helper_functions.h"
+#include "constants.h"
 #include "rpc.h"
+#include "helper_functions.h"
 
 using namespace std;
 
@@ -185,7 +186,7 @@ int ExecuteSuccessMessage::send(int dataTransferSocket) {
 int ExecuteSuccessMessage::receive(int dataTransferSocket,
   Message *&parsedMessage, unsigned int length) {
   // Reads the message into a buffer from the data transfer socket
-  
+
   cout << "EXECUTE SUCCESS MESSAGE received" << endl;
   char messageBuffer[length];
   unsigned int totalNumOfBytesMessage = length;

@@ -12,6 +12,7 @@
 #include "execute_success_message.h"
 #include "execute_failure_message.h"
 #include "terminate_message.h"
+#include "constants.h"
 
 // See interface (header file).
 Segment::Segment(unsigned int length, unsigned int type, Message *message)
@@ -158,7 +159,7 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
     case MSG_TYPE_TERMINATE:
       result = TerminateMessage::receive(dataTransferSocket, parsedMessage,
         length);
-      if (result < 0 || result == 0) {
+      if (result < 0) {
         return result;
       }
       break;
