@@ -42,22 +42,21 @@ int Segment::send(int dataTransferSocket) {
   // Writes the length of the message out to the data transfer socket
   int result = ::send(dataTransferSocket, &length, sizeof(length), 0);
   if (result < 0) {
-    return result;
+    return ERROR_CODE_SEND;
   }
 
   // Writes the type of the message out to the data transfer socket
   result = ::send(dataTransferSocket, &type, sizeof(type), 0);
- 
   if (result < 0) {
-    return result;
+    return ERROR_CODE_SEND;
   }
 
   // Writes the message out to the data transfer socket
   result = message->send(dataTransferSocket);
   if (result < 0) {
-    return result;
+    return ERROR_CODE_SEND;
   }
- 
+
   return result;
 }
 
@@ -66,15 +65,15 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
   // Reads the length of the message from the data transfer socket
   unsigned int length = 0;
   int result = ::recv(dataTransferSocket, &length, sizeof(length), 0);
-  if (result < 0 || result == 0) {
-    return result;
+  if (result <= 0) {
+    return ERROR_CODE_RECV;
   }
 
   // Reads the type of the message from the data transfer socket
   unsigned int type = 0;
   result = ::recv(dataTransferSocket, &type, sizeof(type), 0);
-  if (result < 0 || result == 0) {
-    return result;
+  if (result <= 0) {
+    return ERROR_CODE_RECV;
   }
 
   // Reads the message from the data transfer socket
@@ -84,8 +83,8 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
       result =
         RegisterRequestMessage::receive(dataTransferSocket, parsedMessage,
           length);
-      if (result < 0 || result == 0) {
-        return result;
+      if (result < 0) {
+        return ERROR_CODE_RECV;
       }
       break;
 
@@ -93,8 +92,8 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
       result =
         RegisterSuccessMessage::receive(dataTransferSocket, parsedMessage,
           length);
-      if (result < 0 || result == 0) {
-        return result;
+      if (result < 0) {
+        return ERROR_CODE_RECV;
       }
       break;
 
@@ -102,32 +101,32 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
       result =
         RegisterFailureMessage::receive(dataTransferSocket, parsedMessage,
           length);
-      if (result < 0 || result == 0) {
-        return result;
+      if (result < 0) {
+        return ERROR_CODE_RECV;
       }
       break;
 
     case MSG_TYPE_LOC_REQUEST:
       result = LocRequestMessage::receive(dataTransferSocket, parsedMessage,
         length);
-      if (result < 0 || result == 0) {
-        return result;
+      if (result < 0) {
+        return ERROR_CODE_RECV;
       }
       break;
 
     case MSG_TYPE_LOC_SUCCESS:
       result = LocSuccessMessage::receive(dataTransferSocket, parsedMessage,
         length);
-      if (result < 0 || result == 0) {
-        return result;
+      if (result < 0) {
+        return ERROR_CODE_RECV;
       }
       break;
 
     case MSG_TYPE_LOC_FAILURE:
       result = LocFailureMessage::receive(dataTransferSocket, parsedMessage,
         length);
-      if (result < 0 || result == 0) {
-        return result;
+      if (result < 0) {
+        return ERROR_CODE_RECV;
       }
       break;
 
@@ -135,8 +134,8 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
       result =
         ExecuteRequestMessage::receive(dataTransferSocket, parsedMessage,
           length);
-      if (result < 0 || result == 0) {
-        return result;
+      if (result < 0) {
+        return ERROR_CODE_RECV;
       }
       break;
 
@@ -144,8 +143,8 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
       result =
         ExecuteSuccessMessage::receive(dataTransferSocket, parsedMessage,
           length);
-      if (result < 0 || result == 0) {
-        return result;
+      if (result < 0) {
+        return ERROR_CODE_RECV;
       }
       break;
 
@@ -153,8 +152,8 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
       result =
         ExecuteFailureMessage::receive(dataTransferSocket, parsedMessage,
           length);
-      if (result < 0 || result == 0) {
-        return result;
+      if (result < 0) {
+        return ERROR_CODE_RECV;
       }
       break;
 
@@ -162,7 +161,7 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
       result = TerminateMessage::receive(dataTransferSocket, parsedMessage,
         length);
       if (result < 0) {
-        return result;
+        return ERROR_CODE_RECV;
       }
       break;
   }

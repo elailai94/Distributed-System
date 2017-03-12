@@ -55,14 +55,14 @@ int LocRequestMessage::send(int dataTransferSocket) {
       ::send(dataTransferSocket, messageBuffer + totalNumOfBytesSent,
         numOfBytesLeft, 0);
     if (numOfBytesSent < 0) {
-      return numOfBytesSent;
+      return ERROR_CODE_SEND;
     }
 
     totalNumOfBytesSent += numOfBytesSent;
     numOfBytesLeft += numOfBytesSent;
   }
 
-  return totalNumOfBytesSent;
+  return SUCCESS_CODE;
 }
 
 // See interface (header file).
@@ -78,8 +78,8 @@ int LocRequestMessage::receive(int dataTransferSocket,
     int numOfBytesReceived =
       ::recv(dataTransferSocket, messageBuffer + totalNumOfBytesReceived,
         numOfBytesLeft, 0);
-    if (numOfBytesReceived < 0 || numOfBytesReceived == 0) {
-      return numOfBytesReceived;
+    if (numOfBytesReceived <= 0) {
+      return ERROR_CODE_RECV;
     }
 
     totalNumOfBytesReceived += numOfBytesReceived;
@@ -113,5 +113,5 @@ int LocRequestMessage::receive(int dataTransferSocket,
   }
 
   parsedMessage = new LocRequestMessage(name, argTypes);
-  return totalNumOfBytesReceived;
+  return SUCCESS_CODE;
 }

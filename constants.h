@@ -39,6 +39,12 @@
 #define ARG_TYPE_ARRAY_LENGTH_MASK        0x0000FFFF
 #define ARG_TYPE_INFORMATION_SHIFT_AMOUNT 16
 
+/************************ Success code *************************/
+#define SUCCESS_CODE                      0
+
+/************************ Warning codes ************************/
+#define WARNING_CODE_DUPLICATED_PROCEDURE 1
+
 /************************* Error codes *************************/
 /* Network error codes */
 #define ERROR_CODE_SOCKET                 -2
