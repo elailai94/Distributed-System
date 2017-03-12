@@ -415,7 +415,8 @@ int rpcExecute(){
             }
 
             cout <<"before segment->getType()" << endl;
-            cout << segment->getType() << endl;
+            cout << segment->getType() << endl; 
+            
             if(segment->getType() == MSG_TYPE_EXECUTE_REQUEST){
               Message * cast = segment->getMessage();
               ExecuteRequestMessage * erm = dynamic_cast<ExecuteRequestMessage*>(cast);
