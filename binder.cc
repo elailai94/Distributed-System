@@ -98,7 +98,6 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     if( find(serverList.begin(), serverList.end(), entry) == serverList.end()){
       serverList.push_back(entry);
     }
-<<<<<<< HEAD
 
 
     bool exists = false;
@@ -115,8 +114,6 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     }
 
 
-=======
->>>>>>> b966eb97fcb303c255cd2a53bc079d6789087a6b
   } else {
     bool sameLoc = false;
     list<server_info *> hostList = procLocDict[key];
