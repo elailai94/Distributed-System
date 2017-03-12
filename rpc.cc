@@ -416,6 +416,7 @@ int rpcExecute(){
 
             if (status == 0) {
               // client has closed the connection
+              cout << "Status was 0 for some reason" << endl;
               myToRemove.push_back(tempConnection);
               return status;
             }
