@@ -367,6 +367,7 @@ int rpcExecute(){
    * Adds the welcome socket to the all sockets set and sets
    * it as the maximum socket so far
    */
+  FD_SET(binderSocket, &allSockets);
   FD_SET(welcomeSocket, &allSockets);
   int maxSocket = welcomeSocket;
 
