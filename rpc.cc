@@ -477,6 +477,7 @@ int rpcExecute(){
   }
 
   // Destroys the welcome socket
+  cout << "We are destorying the welcomeSocket: " << welcomeSocket << endl;
   destroySocket(welcomeSocket);
 
   return SUCCESS_CODE;
