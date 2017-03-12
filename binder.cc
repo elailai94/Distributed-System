@@ -101,6 +101,19 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     }
 
 
+    bool exists = false;
+    for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
+    
+      if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port ){
+          exists = true;
+          break;      
+        }
+    }
+
+    if(!exists){
+      serverList.push_back(entry);
+    }
+
 
   } else {
     bool sameLoc = false;
