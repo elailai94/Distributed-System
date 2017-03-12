@@ -71,3 +71,8 @@ void f4(char a[]) {
 
   /* print file a to a printer */
 }
+
+int g5(int a, int b) {
+
+  return a * b;
+}   
