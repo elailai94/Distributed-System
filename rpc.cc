@@ -258,7 +258,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   //instead we have
 
   cout << "Flag 2" << endl;
-  
+
   switch (parsedSegmentEsm->getType()) {
     case MSG_TYPE_EXECUTE_SUCCESS: {
       cout << "EXECUTE SUCCESS message received..." << endl;
@@ -353,26 +353,22 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
 
 int rpcExecute(){
   cout << "Running rpcExecute..." << endl;
-
-  // Code refactoring
-
   fd_set allSockets;
   fd_set readSockets;
 
-  // Clears all entries from the all sockets set and the read
-  // sockets set
+  /*
+   * Clears all entries from the all sockets set and the read
+   * sockets set
+   */
   FD_ZERO(&allSockets);
   FD_ZERO(&readSockets);
 
-  // Creates the welcome socket, adds it to the all sockets set and
-  // sets it as the maximum socket so far
+  /*
+   * Adds the welcome socket to the all sockets set and sets
+   * it as the maximum socket so far
+   */
   FD_SET(welcomeSocket, &allSockets);
   int maxSocket = welcomeSocket;
-
-  // Prints the binder address and the binder port on the binder's
-  // standard output
-  cout << "BINDER_ADDRESS " << getHostAddress() << endl;
-  cout << "BINDER_PORT " << getSocketPort(welcomeSocket) << endl;
 
   while (onSwitch) {
     readSockets = allSockets;
@@ -390,8 +386,10 @@ int rpcExecute(){
 
       if (i == welcomeSocket) {
 
-        // Creates the connection socket when a connection is made
-        // to the welcome socket
+        /*
+         * Creates the connection socket when a connection is made
+         * to the welcome socket
+         */
         int connectionSocket = acceptConnection(i);
         if (connectionSocket < 0) {
           continue;
@@ -400,8 +398,10 @@ int rpcExecute(){
         // Adds the connection socket to the all sockets set
         FD_SET(connectionSocket, &allSockets);
 
-        // Sets the connection socket as the maximum socket so far
-        // if necessary
+        /*
+         * Sets the connection socket as the maximum socket so far
+         * if necessary
+         */
         if (connectionSocket > maxSocket) {
           maxSocket = connectionSocket;
         }
@@ -413,7 +413,7 @@ int rpcExecute(){
         Segment *segment = 0;
         result = 0;
         result = Segment::receive(i, segment);
-        if (result <= 0) {
+        if (result < 0) {
           // Closes the connection socket and removes it from the
           // all sockets set
           destroySocket(i);
@@ -458,7 +458,7 @@ int rpcExecute(){
           cout << "Got to terminate" << endl;
           onSwitch = false;
           //and other clean up
-        }   
+        }
       }
     }
   }
@@ -483,7 +483,7 @@ int rpcTerminate() {
     Segment(messageToBinder.getLength(), MSG_TYPE_TERMINATE, &messageToBinder);
   int binder_status = segmentToBinder.send(binderSocket);
   cout << segmentToBinder.getType() << endl;
-  
+
   cout << "binderSocket: " << binderSocket << endl;
   sleep(1);
   // Closes the connection to the binder
