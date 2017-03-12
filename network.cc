@@ -10,7 +10,6 @@
 #include "network.h"
 #include "constants.h"
 #include "helper_functions.h"
-#include <errno.h>
 #include <iostream>
 
 using namespace std;
@@ -62,7 +61,7 @@ int setUpToListen(int socket) {
     return ERROR_CODE_LISTEN;
   }
 
-  return result;
+  return SUCCESS_CODE;
 }
 
 // See interface (header file).
@@ -88,7 +87,6 @@ int setUpToConnect(int socket, string address, unsigned int port) {
   result = connect(socket, hostAddressResults->ai_addr,
     hostAddressResults->ai_addrlen);
   if (result < 0) {
-    cout << "Network Error: " << errno << endl;
     freeaddrinfo(hostAddressResults);
     return ERROR_CODE_CONNECT;
   }
@@ -96,7 +94,7 @@ int setUpToConnect(int socket, string address, unsigned int port) {
   // Frees up memory allocated for the host address results
   freeaddrinfo(hostAddressResults);
 
-  return result;
+  return SUCCESS_CODE;
 }
 
 // See interface (header file).

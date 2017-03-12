@@ -156,18 +156,35 @@ int rpcInit(){
 	 * from clients
    */
 	welcomeSocket = createSocket();
-	setUpToListen(welcomeSocket);
+  if (welcomeSocket < 0) {
+    return welcomeSocket;
+  }
+	int result = setUpToListen(welcomeSocket);
+  if (result < 0) {
+    return result;
+  }
 	serverIdentifier = getHostAddress();
+  if (serverIdentifier == "") {
+    return ERROR_CODE_GETHOSTNAME;
+  }
 	port = getSocketPort(welcomeSocket);
+  if (port < 0) {
+    return port;
+  }
 
 	// Opens a connection to the binder
 	binderSocket = createSocket();
+  if (binderSocket < 0) {
+    return binderSocket;
+  }
 	string binderAddress = getBinderAddress();
 	unsigned int binderPort = getBinderPort();
-	setUpToConnect(binderSocket, binderAddress, binderPort);
-  connectedToBinder = true;
+	result = setUpToConnect(binderSocket, binderAddress, binderPort);
+  if (result < 0) {
+    return result;
+  }
 
-  return 0;
+  return SUCCESS_CODE;
 }
 
 // See interface (header file).
