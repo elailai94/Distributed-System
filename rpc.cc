@@ -350,7 +350,7 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
   return 1;
 }
 
-
+// See interface (header file).
 int rpcExecute(){
   cout << "Running rpcExecute..." << endl;
   fd_set allSockets;
@@ -409,58 +409,68 @@ int rpcExecute(){
 
       } else {
 
-        // Creates a segment to receive data from the client/server and
-        // reads into it from the connection socket
+        /*
+         * Creates a segment to receive data from the client/binder and
+         * reads into it from the connection socket
+         */
         Segment *segment = 0;
         result = 0;
         result = Segment::receive(i, segment);
         if (result < 0) {
-          // Closes the connection socket and removes it from the
-          // all sockets set
-          cout << "Bad result, im closing, i is: "<< i << endl;
+          /*
+           * Closes the connection socket and removes it from the
+           * all sockets set
+           */
+          cout << "Bad result, I'm closing, i is: "<< i << endl;
           destroySocket(i);
           FD_CLR(i, &allSockets);
           continue;
         }
 
-        if(segment->getType() == MSG_TYPE_EXECUTE_REQUEST){
-          Message * cast = segment->getMessage();
-          ExecuteRequestMessage * erm = dynamic_cast<ExecuteRequestMessage*>(cast);
+        switch (segment->getType()) {
+          case MSG_TYPE_EXECUTE_REQUEST: {
+            Message * cast = segment->getMessage();
+            ExecuteRequestMessage * erm = dynamic_cast<ExecuteRequestMessage*>(cast);
 
-          procedure_signature * ps = new procedure_signature(erm->getName(), erm->getArgTypes());
+            procedure_signature * ps = new procedure_signature(erm->getName(), erm->getArgTypes());
 
-          cout << "erm->getName(): " << erm->getName() << endl;
-          printArgTypes(erm->getArgTypes());
-          printArgs(erm->getArgTypes(), erm->getArgs());
+            cout << "erm->getName(): " << erm->getName() << endl;
+            printArgTypes(erm->getArgTypes());
+            printArgs(erm->getArgTypes(), erm->getArgs());
 
-          skeleton skel = procSkeleDict[*ps];
+            skeleton skel = procSkeleDict[*ps];
 
-          if(skel == 0){
-            cout << "Skel is null" << endl;
+            if(skel == 0){
+              cout << "Skel is null" << endl;
+            }
+
+            int result = skel(erm->getArgTypes(), erm->getArgs());
+
+            cout << "Result: " << result << endl;
+            printArgs(erm->getArgTypes(), erm->getArgs());
+
+            if(result == 0 ){
+              ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(erm->getName(), erm->getArgTypes(), erm->getArgs());
+              Segment exeSuccessSeg = Segment(exeSuccessMsg.getLength(), MSG_TYPE_EXECUTE_SUCCESS, &exeSuccessMsg);
+              int tstatus = exeSuccessSeg.send(i);
+              cout << "ExecuteSuccessMessage status: " << tstatus << endl;
+
+            }else{
+              ExecuteFailureMessage exeFailMsg = ExecuteFailureMessage(result);
+              Segment exeFailSeg = Segment(exeFailMsg.getLength(), MSG_TYPE_EXECUTE_FAILURE, &exeFailMsg);
+              int tstatus = exeFailSeg.send(i);
+            }
+
+            break;
           }
 
-          int result = skel(erm->getArgTypes(), erm->getArgs());
-
-          cout << "Result: " << result << endl;
-          printArgs(erm->getArgTypes(), erm->getArgs());
-
-          if(result == 0 ){
-            ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(erm->getName(), erm->getArgTypes(), erm->getArgs());
-            Segment exeSuccessSeg = Segment(exeSuccessMsg.getLength(), MSG_TYPE_EXECUTE_SUCCESS, &exeSuccessMsg);
-            int tstatus = exeSuccessSeg.send(i);
-            cout << "ExecuteSuccessMessage status: " << tstatus << endl;
-
-          }else{
-            ExecuteFailureMessage exeFailMsg = ExecuteFailureMessage(result);
-            Segment exeFailSeg = Segment(exeFailMsg.getLength(), MSG_TYPE_EXECUTE_FAILURE, &exeFailMsg);
-            int tstatus = exeFailSeg.send(i);
+          case MSG_TYPE_TERMINATE: {
+            cout << "Got to terminate" << endl;
+            onSwitch = false;
+            break;
           }
-
-        }else if(segment->getType() == MSG_TYPE_TERMINATE){
-          cout << "Got to terminate" << endl;
-          onSwitch = false;
-          //and other clean up
         }
+
       }
     }
   }
@@ -468,12 +478,12 @@ int rpcExecute(){
   // Destroys the welcome socket
   destroySocket(welcomeSocket);
 
-  return 0;
+  return SUCCESS_CODE;
 }
 
 int rpcCacheCall() {
   cout << "Running rpcCacheCall..." << endl;
-	return 0;
+	return SUCCESS_CODE;
 }
 
 int rpcTerminate() {
@@ -487,9 +497,8 @@ int rpcTerminate() {
   cout << segmentToBinder.getType() << endl;
 
   cout << "binderSocket: " << binderSocket << endl;
-  sleep(1);
   // Closes the connection to the binder
   destroySocket(binderSocket);
 
-	return 0;
+	return SUCCESS_CODE;
 }
