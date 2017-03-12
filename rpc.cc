@@ -414,13 +414,6 @@ int rpcExecute(){
               return -169;
             }
 
-            if (status == 0) {
-              // client has closed the connection
-              cout << "Status was 0 for some reason" << endl;
-              myToRemove.push_back(tempConnection);
-              return status;
-            }
-
             if(segment->getType() == MSG_TYPE_EXECUTE_REQUEST){
               Message * cast = segment->getMessage();
               ExecuteRequestMessage * erm = dynamic_cast<ExecuteRequestMessage*>(cast);
