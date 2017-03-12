@@ -318,7 +318,13 @@ int rpcCall(char *name, int *argTypes, void **args) {
 int rpcRegister(char *name, int *argTypes, skeleton f){
   cout << "Running rpcRegister..." << endl;
 
-  // TODO: Need to a check here to make sure serverBinderSocket is created beforehand
+  /*
+   * Checks if this server is connected to the binder already
+   * (i.e.: rpcInit is called before rpcRegister)
+   */
+  if (serverBinderSocket < 0) {
+    return ERROR_CODE_NOT_CONNECTED_TO_BINDER;
+  }
 
   /*
    * Sends a register request message to the binder informing it

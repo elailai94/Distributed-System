@@ -62,7 +62,8 @@
 #define ERROR_CODE_GETBINDERADDRESS       -13
 #define ERROR_CODE_GETBINDERPORT          -14
 /* Server error codes */
-#define ERROR_CODE_TERMINATE              -15
+#define ERROR_CODE_NOT_CONNECTED_TO_BINDER -15
+#define ERROR_CODE_TERMINATE               -16
 
 /* Message codes */
 /*
