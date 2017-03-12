@@ -1,4 +1,5 @@
 #include <sys/socket.h>
+#include <iostream>
 
 #include "segment.h"
 #include "message.h"
@@ -46,6 +47,7 @@ int Segment::send(int dataTransferSocket) {
 
   // Writes the type of the message out to the data transfer socket
   result = ::send(dataTransferSocket, &type, sizeof(type), 0);
+ 
   if (result < 0) {
     return result;
   }
@@ -55,7 +57,7 @@ int Segment::send(int dataTransferSocket) {
   if (result < 0) {
     return result;
   }
-
+ 
   return result;
 }
 

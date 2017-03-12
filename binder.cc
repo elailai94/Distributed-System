@@ -35,7 +35,7 @@ using namespace std;
 
 static map<procedure_signature, list<server_info *>, ps_compare> procLocDict;
 static list<server_function_info *> roundRobinList;
-static list<server_function_info *> serverList;
+static list<server_info *> serverList;
 
 bool onSwitch = true;
 
@@ -89,13 +89,15 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     //due to &* reasones I made a variable newKey for the 'info' object
     procedure_signature * newKey = new procedure_signature(name, memArgTypes);
     server_info * entry = new server_info(server_identifier, port, sock);
-
-    //Adding to roundRobinList
     server_function_info * info = new server_function_info(entry, newKey);
+
+    //Adding to roundRobinList if server is not found
     roundRobinList.push_back(info);
-    serverList.push_back(info);
 
-
+    //Adding to serverList if server is not found
+    if( find(serverList.begin(), serverList.end(), entry) == serverList.end()){
+      serverList.push_back(entry);
+    }
   } else {
     bool sameLoc = false;
     list<server_info *> hostList = procLocDict[key];
@@ -116,7 +118,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   }
 
   mapPrint();
-  //roundRobinPrint();
+  roundRobinPrint();
 
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
@@ -131,6 +133,9 @@ USE ROUND ROBIN TO ACCESS THE CORRECT SERVER/FUNCTION FOR THE CLIENT
 void location_request_handler(LocRequestMessage * message, int sock){
 
   bool exist = false;
+  string serverIdToPushBack;
+  int portToPushBack;
+  int socketToPushBack;
 
   cout << "Hunted name names: " << message->getName() << endl;
 
@@ -146,6 +151,10 @@ void location_request_handler(LocRequestMessage * message, int sock){
       cout << "server_identifier: "<< (*it)->si->server_identifier << endl;
       cout << "port: " << (*it)->si->port<< endl;
 
+      serverIdToPushBack = (*it)->si->server_identifier;
+      portToPushBack = (*it)->si->port;
+      socketToPushBack = (*it)->si->socket;
+
       LocSuccessMessage locSuccessMsg = LocSuccessMessage((*it)->si->server_identifier.c_str(), (*it)->si->port);
       Segment locSuccessSeg = Segment(locSuccessMsg.getLength(), MSG_TYPE_LOC_SUCCESS, &locSuccessMsg);
       locSuccessSeg.send(sock);
@@ -156,7 +165,14 @@ void location_request_handler(LocRequestMessage * message, int sock){
  		}
 	}
 
-  if(!exist){
+  if(exist){
+    for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
+
+       if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
+          roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
+       }
+    }
+  }else {
     int reasoncode = -5; // Need actual reasoncode
     LocFailureMessage locFailMsg = LocFailureMessage(reasoncode);
     Segment locFailSeg = Segment(locFailMsg.getLength(), MSG_TYPE_LOC_FAILURE, &locFailMsg);
@@ -171,7 +187,6 @@ void binder_terminate_handler() {
   for (list<server_function_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
 
     int sock = (*it)->si->socket;
-
     TerminateMessage termMsg = TerminateMessage();
     Segment termSeg = Segment(termMsg.getLength(), MSG_TYPE_TERMINATE, &termMsg);
     termSeg.send(sock);
@@ -198,6 +213,7 @@ int request_handler(Segment * segment, int sock){
     LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(cast2);
 
     location_request_handler(lqm, sock);
+
   }else if (segment->getType() == MSG_TYPE_TERMINATE){
 
     cout << "Terminate Request" <<endl;
@@ -343,29 +359,17 @@ int main() {
             Segment * segment = 0;
             status = Segment::receive(tempConnection, segment);
 
-            //TODO: More sophisticaled error handling/replies
-            // Maybe status should be reasonacode instead
-            if (status < 0 && segment->getType() == MSG_TYPE_REGISTER_REQUEST) {
-                RegisterFailureMessage regFailMsg = RegisterFailureMessage(status);
-                Segment regFailSeg = Segment(regFailMsg.getLength(), MSG_TYPE_REGISTER_FAILURE, &regFailMsg);
-                regFailSeg.send(tempConnection);
-                return status;
-            } else if (status < 0 && segment->getType() == MSG_TYPE_LOC_REQUEST) {
-                LocFailureMessage locFailMsg = LocFailureMessage(status);
-                Segment regFailSeg = Segment(locFailMsg.getLength(), MSG_TYPE_LOC_FAILURE, &locFailMsg);
-                regFailSeg.send(tempConnection);
-                return status;
+            if (segment != 0){
+              cout << "TO be handled: " << endl;
+              if (segment->getType() == 0){
+                cout << "getType() is null" << endl;
+              }else{
+                cout << segment->getType() << endl;
+              }
             }
-
-            /*
-            if (status == 0) {
-              // client has closed the connection
-              myToRemove.push_back(tempConnection);
-              return status;
-            }
-            */
 
             request_handler(segment, tempConnection);
+
           }
         }
       }
