@@ -401,14 +401,14 @@ int rpcExecute(){
           maxSocket = connectionSocket;
         }
 
-      }
+      } else {
 
         // Creates a segment to receive data from the client/server and
         // reads into it from the connection socket
         Segment *segment = 0;
         result = 0;
         result = Segment::receive(i, segment);
-        if (result <= 0) {
+        if (result < 0) {
           // Closes the connection socket and removes it from the
           // all sockets set
           destroySocket(i);
@@ -456,7 +456,7 @@ int rpcExecute(){
         }   
       }
     }
-  
+  }
 
   // Destroys the welcome socket
   destroySocket(welcomeSocket);
