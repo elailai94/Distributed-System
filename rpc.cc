@@ -410,6 +410,7 @@ int rpcExecute(){
 
             
             if (status < 0) {
+              cout << "No terminate message received..." << endl;
               myToRemove.push_back(tempConnection);
               continue;              
             }
