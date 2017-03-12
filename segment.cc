@@ -15,6 +15,8 @@
 #include "terminate_message.h"
 #include "constants.h"
 
+using namespace std;
+
 // See interface (header file).
 Segment::Segment(unsigned int length, unsigned int type, Message *message)
   : length(length), type(type), message(message) {} // Constructor
