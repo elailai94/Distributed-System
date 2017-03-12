@@ -484,7 +484,7 @@ int rpcExecute(){
           }
 
           case MSG_TYPE_TERMINATE: {
-            cout << "Got to terminate" << endl;
+            cout << "Got to terminate!" << endl;
             if (i != serverBinderSocket) {
                return ERROR_CODE_TERMINATE;
             }
