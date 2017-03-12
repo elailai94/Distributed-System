@@ -175,9 +175,7 @@ void location_request_handler(LocRequestMessage * message, int sock){
     if((*it)->ps->name == message->getName() && compareArr((*it)->ps->argTypes, message->getArgTypes() )){
       exist = true;
 
-      //cout << "Attempt to send locSuccessMsg" << endl;
-      //cout << "server_identifier: "<< (*it)->si->server_identifier << endl;
-      //cout << "port: " << (*it)->si->port<< endl;
+      cout << "Sending to server: " << (*it)->si->server_identifier << ", "<< (*it)->si->port<< endl;
 
       serverIdToPushBack = (*it)->si->server_identifier;
       portToPushBack = (*it)->si->port;
