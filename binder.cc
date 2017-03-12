@@ -114,7 +114,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
 
     cout << "entry->server_identifier: " <<entry->server_identifier << endl;
     cout << "entry->port: " <<entry->port << endl;
-    cout << " entry->socket: " << entry->socket << endl;
+    cout << "entry->socket: " << entry->socket << endl;
 
     if(!serverExist){
       serverList.push_back(entry);

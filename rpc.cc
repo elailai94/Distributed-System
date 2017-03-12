@@ -170,6 +170,9 @@ int rpcInit(){
 	setUpToConnect(binderSocket, binderAddress, binderPort);
   connectedToBinder = true;
 
+  cout << "This servers binderSocket is: " << binderSocket << endl;
+
+
   return 0;
 }
 
