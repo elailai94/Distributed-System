@@ -32,13 +32,14 @@ using namespace std;
 // Global variables for client
 static bool connectedToBinder = false;
 static int clientBinderSocket = -1;
-static int serverBinderSocket = -1;
 
 
 // Global variables for server
 static map<procedure_signature, skeleton, ps_compare> procSkeleDict;
 static string serverIdentifier;
 static unsigned int port = 0;
+
+static int serverBinderSocket = -1;
 static int welcomeSocket = 0;
 static bool onSwitch = true;
 
