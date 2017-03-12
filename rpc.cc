@@ -297,7 +297,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   // CONNECT TO BINDER
 
 int rpcRegister(char * name, int *argTypes, skeleton f){
-  cout << "Running rpcExecute..." << endl;
+  cout << "Running rpcRegister..." << endl;
   RegisterRequestMessage regReqMsg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
 
   /*
