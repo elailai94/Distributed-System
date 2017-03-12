@@ -37,7 +37,7 @@ static map<procedure_signature, list<server_info *>, ps_compare> procLocDict;
 static list<server_function_info *> roundRobinList;
 static list<server_info *> serverList;
 
-bool onSwitch = true;
+static bool onSwitch = true;
 
 /*
 TODO:
