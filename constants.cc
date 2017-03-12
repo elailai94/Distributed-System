@@ -65,6 +65,3 @@ if(l.name == r.name)
     }
 }
 
-bool operator == (const server_info &l, const server_info &r) {
-    return (l.server_identifier == r.server_identifier && l.port == r.port);
-}
