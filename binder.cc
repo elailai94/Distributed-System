@@ -105,10 +105,10 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     //Adding to serverList if server is not found
     bool serverExist = false;
     for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
-    
+
       if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
           serverExist = true;
-          break;      
+          break;
         }
     }
 
@@ -143,7 +143,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   //mapPrint();
   //roundRobinPrint();
   serverListPrint();
-  
+
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
   regSuccessSeg.send(sock);
@@ -212,8 +212,8 @@ void binder_terminate_handler() {
     cout << "Terminating server: " << (*it)->server_identifier << ", " <<  (*it)->port << ", " <<  (*it)->socket<< endl;
     TerminateMessage termMsg = TerminateMessage();
     Segment termSeg = Segment(termMsg.getLength(), MSG_TYPE_TERMINATE, &termMsg);
-    //termSeg.send((*it)->socket);
-    termSeg.send(6);
+    termSeg.send((*it)->socket);
+    //termSeg.send(6);
 
   }
 
