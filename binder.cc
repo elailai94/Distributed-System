@@ -87,7 +87,9 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
 
     //This is bad we shouldn't need a newKey and we should be able to use the key above
     //due to &* reasones I made a variable newKey for the 'info' object
+    procedure_signature * newKey = new procedure_signature(name, memArgTypes);
     server_info * entry = new server_info(server_identifier, port, sock);
+    
     server_function_info * info = new server_function_info(entry, newKey);    
  
     //Adding to roundRobinList if server is not found
