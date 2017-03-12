@@ -517,7 +517,7 @@ int rpcTerminate() {
 
   string binderAddress = getBinderAddress();
   unsigned int binderPort = getBinderPort();
-  status = setUpToConnect(clientBinderSocket, binderAddress, binderPort);
+  int status = setUpToConnect(clientBinderSocket, binderAddress, binderPort);
 
   cout << "Connected to binder..." << endl;
 
