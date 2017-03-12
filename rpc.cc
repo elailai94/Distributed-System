@@ -29,11 +29,6 @@
 
 using namespace std;
 
-// Global variables for client
-static bool connectedToBinder = false;
-static int clientBinderSocket = -1;
-
-
 // Global variables for server
 static map<procedure_signature, skeleton, ps_compare> procSkeleDict;
 static string serverIdentifier;
@@ -205,15 +200,14 @@ int rpcCall(char *name, int *argTypes, void **args) {
 	unsigned int serverPort = 0;
 	int status;
 
-	if(!connectedToBinder){
-    cout << "Connecting to binder..." << endl;
-		clientBinderSocket = createSocket();
-		string binderAddress = getBinderAddress();
-		unsigned int binderPort = getBinderPort();
-		status = setUpToConnect(clientBinderSocket, binderAddress, binderPort);
-	  connectedToBinder = true;
-    cout << "Connected to binder..." << endl;
-	}
+  cout << "Connecting to binder..." << endl;
+	int clientBinderSocket = createSocket();
+
+	string binderAddress = getBinderAddress();
+	unsigned int binderPort = getBinderPort();
+	status = setUpToConnect(clientBinderSocket, binderAddress, binderPort);
+
+  cout << "Connected to binder..." << endl;
 	//do something with returnVal
 
   LocRequestMessage messageToBinder = LocRequestMessage(string(name), argTypes);
@@ -251,6 +245,8 @@ int rpcCall(char *name, int *argTypes, void **args) {
 			}
 		}
 	}
+
+  destroySocket(clientBinderSocket);
 
   cout << "Connecting to server..." << endl;
   int serverSocket = createSocket();
@@ -309,7 +305,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
     }
   }
 
-  close(serverSocket);
+  destroySocket(serverSocket);
   return returnVal;
 }
 
@@ -515,6 +511,16 @@ int rpcCacheCall() {
 
 int rpcTerminate() {
 	cout << "Running rpcTerminate..." << endl;
+
+  cout << "Connecting to binder..." << endl;
+  int clientBinderSocket = createSocket();
+
+  string binderAddress = getBinderAddress();
+  unsigned int binderPort = getBinderPort();
+  status = setUpToConnect(clientBinderSocket, binderAddress, binderPort);
+
+  cout << "Connected to binder..." << endl;
+
 
   // Sends a terminate message to the binder
   TerminateMessage messageToBinder = TerminateMessage();
