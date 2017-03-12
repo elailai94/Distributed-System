@@ -151,6 +151,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
   regSuccessSeg.send(sock);
 
+  cout << "sock: " << sock << endl;
 }
 
 /*
