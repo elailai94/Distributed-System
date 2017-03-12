@@ -316,6 +316,7 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
   Segment regReqSeg = Segment(regReqMsg.getLength(), MSG_TYPE_REGISTER_REQUEST, &regReqMsg);
   int status = regReqSeg.send(binderSocket);
 
+  cout << "When we register we use this binderSocket: " << binderSocket;
   //cout << "rpcRegister Status: " << status << endl;
 
   if(status >= 0){
