@@ -167,7 +167,7 @@ int ExecuteSuccessMessage::send(int dataTransferSocket) {
       ::send(dataTransferSocket, messageBuffer + totalNumOfBytesSent,
         numOfBytesLeft, 0);
     if (numOfBytesSent < 0) {
-      return ERROR_CODE_SEND;
+      return ERROR_CODE_SOCKET_SENDING_FAILED;
     }
 
     totalNumOfBytesSent += numOfBytesSent;
@@ -192,7 +192,7 @@ int ExecuteSuccessMessage::receive(int dataTransferSocket,
       ::recv(dataTransferSocket, messageBuffer + totalNumOfBytesReceived,
         numOfBytesLeft, 0);
     if (numOfBytesReceived <= 0) {
-      return ERROR_CODE_RECV;
+      return ERROR_CODE_SOCKET_RECEIVING_FAILED;
     }
 
     totalNumOfBytesReceived += numOfBytesReceived;

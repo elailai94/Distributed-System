@@ -41,13 +41,13 @@ int Segment::send(int dataTransferSocket) {
   // Writes the length of the message out to the data transfer socket
   int result = ::send(dataTransferSocket, &length, sizeof(length), 0);
   if (result < 0) {
-    return ERROR_CODE_SEND;
+    return ERROR_CODE_SOCKET_SENDING_FAILED;
   }
 
   // Writes the type of the message out to the data transfer socket
   result = ::send(dataTransferSocket, &type, sizeof(type), 0);
   if (result < 0) {
-    return ERROR_CODE_SEND;
+    return ERROR_CODE_SOCKET_SENDING_FAILED;
   }
 
   // Writes the message out to the data transfer socket
@@ -65,14 +65,14 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
   unsigned int length = 0;
   int result = ::recv(dataTransferSocket, &length, sizeof(length), 0);
   if (result <= 0) {
-    return ERROR_CODE_RECV;
+    return ERROR_CODE_SOCKET_RECEIVING_FAILED;
   }
 
   // Reads the type of the message from the data transfer socket
   unsigned int type = 0;
   result = ::recv(dataTransferSocket, &type, sizeof(type), 0);
   if (result <= 0) {
-    return ERROR_CODE_RECV;
+    return ERROR_CODE_SOCKET_RECEIVING_FAILED;
   }
 
   // Reads the message from the data transfer socket
