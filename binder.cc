@@ -312,7 +312,7 @@ int main() {
         Segment *segment = 0;
         result = 0;
         result = Segment::receive(i, segment);
-        if (result <= 0) {
+        if (result < 0) {
           // Closes the connection socket and removes it from the
           // all sockets set
           destroySocket(i);
