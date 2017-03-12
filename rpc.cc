@@ -258,8 +258,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   //instead we have
 
   cout << "Flag 2" << endl;
-  cout << parsedSegmentEsm->getType() << endl;
-
+  
   switch (parsedSegmentEsm->getType()) {
     case MSG_TYPE_EXECUTE_SUCCESS: {
       cout << "EXECUTE SUCCESS message received..." << endl;
