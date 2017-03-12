@@ -352,122 +352,122 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
 
 
 int rpcExecute(){
-	cout << "Running rpcExecute..." << endl;
-  mapPrint();
+  cout << "Running rpcExecute..." << endl;
 
-  //Create connection socket ot be used for accepting clients
-  vector<int> myConnections;
-  vector<int> myToRemove;
+  // Code refactoring
 
-  fd_set readfds;
-  int n;
-  int status;
+  fd_set allSockets;
+  fd_set readSockets;
 
-  while(true){
+  // Clears all entries from the all sockets set and the read
+  // sockets set
+  FD_ZERO(&allSockets);
+  FD_ZERO(&readSockets);
 
-    //CONNECTIONS VECTOR
-    FD_ZERO(&readfds);
-    FD_SET(welcomeSocket, &readfds);
+  // Creates the welcome socket, adds it to the all sockets set and
+  // sets it as the maximum socket so far
+  int welcomeSocket = createSocket();
+  int status = setUpToListen(welcomeSocket);
+  FD_SET(welcomeSocket, &allSockets);
+  int maxSocket = welcomeSocket;
 
-    n = welcomeSocket;
+  // Prints the binder address and the binder port on the binder's
+  // standard output
+  cout << "BINDER_ADDRESS " << getHostAddress() << endl;
+  cout << "BINDER_PORT " << getSocketPort(welcomeSocket) << endl;
 
-    for (vector<int>::iterator it = myConnections.begin();it != myConnections.end(); ++it) {
-      int connection = *it;
-      FD_SET(connection, &readfds);
-       if (connection > n){
-        n = connection;
-      }
+  while (onSwitch) {
+    readSockets = allSockets;
+
+    // Checks if some of the sockets are ready to be read from
+    int result = select(maxSocket + 1, &readSockets, 0, 0, 0);
+    if (result < 0) {
+      continue;
     }
 
-    n = n+1;
+    for (int i = 0; i <= maxSocket; i++) {
+      if (!FD_ISSET(i, &readSockets)) {
+        continue;
+      }
 
-    status = select(n, &readfds, NULL, NULL, NULL);
+      if (i == welcomeSocket) {
 
-    if (status == -1) {
-      cerr << "ERROR: select failed." << endl;
-    } else {
-
-      if (FD_ISSET(welcomeSocket, &readfds)) {
-				int connectionSocket = acceptConnection(welcomeSocket);
+        // Creates the connection socket when a connection is made
+        // to the welcome socket
+        int connectionSocket = acceptConnection(i);
         if (connectionSocket < 0) {
-          cerr << "ERROR: while accepting connection" << endl;
           continue;
         }
 
-        myConnections.push_back(connectionSocket);
+        // Adds the connection socket to the all sockets set
+        FD_SET(connectionSocket, &allSockets);
+
+        // Sets the connection socket as the maximum socket so far
+        // if necessary
+        if (connectionSocket > maxSocket) {
+          maxSocket = connectionSocket;
+        }
 
       } else {
 
-        for (vector<int>::iterator it = myConnections.begin(); it != myConnections.end(); ++it) {
-          int tempConnection = *it;
-
-
-          if (FD_ISSET(tempConnection, &readfds)) {
-
-            int reasonCode = 0;
-            Segment * segment = 0;
-            status = Segment::receive(tempConnection, segment);
-
-            
-            if (status < 0) {
-              cout << "No terminate message received..." << endl;
-              myToRemove.push_back(tempConnection);
-              continue;              
-            }
-
-
-            if(segment->getType() == MSG_TYPE_EXECUTE_REQUEST){
-              Message * cast = segment->getMessage();
-              ExecuteRequestMessage * erm = dynamic_cast<ExecuteRequestMessage*>(cast);
-
-              procedure_signature * ps = new procedure_signature(erm->getName(), erm->getArgTypes());
-
-              cout << "erm->getName(): " << erm->getName() << endl;
-              printArgTypes(erm->getArgTypes());
-              printArgs(erm->getArgTypes(), erm->getArgs());
-
-              skeleton skel = procSkeleDict[*ps];
-
-              if(skel == 0){
-                cout << "Skel is null" << endl;
-              }
-
-              int result = skel(erm->getArgTypes(), erm->getArgs());
-
-              cout << "Result: " << result << endl;
-              printArgs(erm->getArgTypes(), erm->getArgs());
-
-              if(result == 0 ){
-                ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(erm->getName(), erm->getArgTypes(), erm->getArgs());
-                Segment exeSuccessSeg = Segment(exeSuccessMsg.getLength(), MSG_TYPE_EXECUTE_SUCCESS, &exeSuccessMsg);
-                status = exeSuccessSeg.send(tempConnection);
-                cout << "ExecuteSuccessMessage status: " << status << endl;
-
-              }else{
-                ExecuteFailureMessage exeFailMsg = ExecuteFailureMessage(reasonCode);
-                Segment exeFailSeg = Segment(exeFailMsg.getLength(), MSG_TYPE_EXECUTE_FAILURE, &exeFailMsg);
-                status = exeFailSeg.send(tempConnection);
-              }
-
-            }else if(segment->getType() == MSG_TYPE_TERMINATE){
-              cout << "Got to terminate" << endl;
-              break;
-              //and other clean up
-            }
-          }
+        // Creates a segment to receive data from the client/server and
+        // reads into it from the connection socket
+        Segment *segment = 0;
+        result = 0;
+        result = Segment::receive(i, segment);
+        if (result <= 0) {
+          // Closes the connection socket and removes it from the
+          // all sockets set
+          destroySocket(i);
+          FD_CLR(i, &allSockets);
+          continue;
         }
-      }
 
+        if(segment->getType() == MSG_TYPE_EXECUTE_REQUEST){
+          Message * cast = segment->getMessage();
+          ExecuteRequestMessage * erm = dynamic_cast<ExecuteRequestMessage*>(cast);
 
-      for (vector<int>::iterator it = myToRemove.begin(); it != myToRemove.end(); ++it) {
-        myConnections.erase(remove(myConnections.begin(), myConnections.end(), *it), myConnections.end());
-        destroySocket(*it);
+          procedure_signature * ps = new procedure_signature(erm->getName(), erm->getArgTypes());
+
+          cout << "erm->getName(): " << erm->getName() << endl;
+          printArgTypes(erm->getArgTypes());
+          printArgs(erm->getArgTypes(), erm->getArgs());
+
+          skeleton skel = procSkeleDict[*ps];
+
+          if(skel == 0){
+            cout << "Skel is null" << endl;
+          }
+
+          int result = skel(erm->getArgTypes(), erm->getArgs());
+
+          cout << "Result: " << result << endl;
+          printArgs(erm->getArgTypes(), erm->getArgs());
+
+          if(result == 0 ){
+            ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(erm->getName(), erm->getArgTypes(), erm->getArgs());
+            Segment exeSuccessSeg = Segment(exeSuccessMsg.getLength(), MSG_TYPE_EXECUTE_SUCCESS, &exeSuccessMsg);
+            int tstatus = exeSuccessSeg.send(tempConnection);
+            cout << "ExecuteSuccessMessage status: " << tstatus << endl;
+
+          }else{
+            ExecuteFailureMessage exeFailMsg = ExecuteFailureMessage(reasonCode);
+            Segment exeFailSeg = Segment(exeFailMsg.getLength(), MSG_TYPE_EXECUTE_FAILURE, &exeFailMsg);
+            int tstatus = exeFailSeg.send(tempConnection);
+          }
+
+        }else if(segment->getType() == MSG_TYPE_TERMINATE){
+          cout << "Got to terminate" << endl;
+          break;
+          //and other clean up
+        }   
       }
-      myToRemove.clear();
     }
   }
 
+  // Destroys the welcome socket
   destroySocket(welcomeSocket);
+
   return 0;
 }
 
