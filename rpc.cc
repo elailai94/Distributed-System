@@ -1,21 +1,14 @@
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <bitset>
 #include <sstream>
-
-#include <netinet/in.h>
 #include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
 #include <vector>
 #include <algorithm>
 #include <list>
 #include <map>
-
-#include <netdb.h>
-#include <cstdlib>
 
 #include "segment.h"
 #include "message.h"
@@ -29,7 +22,6 @@
 #include "register_failure_message.h"
 #include "register_request_message.h"
 #include "terminate_message.h"
-
 #include "rpc.h"
 #include "constants.h"
 #include "network.h"
@@ -159,8 +151,10 @@ void printArgs(int * argTypes, void  ** args){
 int rpcInit(){
 	cout << "Running rpcInit..." << endl;
 
-	// Creates a connection socket to be used for accepting connections
-	// from clients
+	/*
+   * Creates a connection socket to be used for accepting connections
+	 * from clients
+   */
 	welcomeSocket = createSocket();
 	setUpToListen(welcomeSocket);
 	serverIdentifier = getHostAddress();
@@ -466,6 +460,9 @@ int rpcExecute(){
 
           case MSG_TYPE_TERMINATE: {
             cout << "Got to terminate" << endl;
+            if (i != binderSocket) {
+               return ERROR_CODE_TERMINATE;
+            }
             onSwitch = false;
             break;
           }
