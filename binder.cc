@@ -89,16 +89,16 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     //due to &* reasones I made a variable newKey for the 'info' object
     procedure_signature * newKey = new procedure_signature(name, memArgTypes);
     server_info * entry = new server_info(server_identifier, port, sock);
-    
-    server_function_info * info = new server_function_info(entry, newKey);    
- 
+    server_function_info * info = new server_function_info(entry, newKey);
+
     //Adding to roundRobinList if server is not found
-    roundRobinList.push_back(info);    
+    roundRobinList.push_back(info);
 
     //Adding to serverList if server is not found
     if( find(serverList.begin(), serverList.end(), entry) == serverList.end()){
       serverList.push_back(entry);
     }
+<<<<<<< HEAD
 
 
     bool exists = false;
@@ -115,6 +115,8 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     }
 
 
+=======
+>>>>>>> b966eb97fcb303c255cd2a53bc079d6789087a6b
   } else {
     bool sameLoc = false;
     list<server_info *> hostList = procLocDict[key];
@@ -150,9 +152,9 @@ USE ROUND ROBIN TO ACCESS THE CORRECT SERVER/FUNCTION FOR THE CLIENT
 void location_request_handler(LocRequestMessage * message, int sock){
 
   bool exist = false;
-  string serverIdToPushBack; 
+  string serverIdToPushBack;
   int portToPushBack;
-  int socketToPushBack; 
+  int socketToPushBack;
 
   cout << "Hunted name names: " << message->getName() << endl;
 
@@ -184,7 +186,7 @@ void location_request_handler(LocRequestMessage * message, int sock){
 
   if(exist){
     for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
-    
+
        if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
           roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
        }
@@ -201,13 +203,12 @@ void location_request_handler(LocRequestMessage * message, int sock){
 void binder_terminate_handler() {
   cout << "Binder set to execute" << endl;
 
-  for (list<server_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
-    
-    int sock = (*it)->socket;
+  for (list<server_function_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
 
+    int sock = (*it)->si->socket;
     TerminateMessage termMsg = TerminateMessage();
     Segment termSeg = Segment(termMsg.getLength(), MSG_TYPE_TERMINATE, &termMsg);
-    termSeg.send(sock);    
+    termSeg.send(sock);
   }
 
 
@@ -263,7 +264,12 @@ int main() {
   FD_SET(welcomeSocket, &allSockets);
   int maxSocket = welcomeSocket;
 
-  while (true) {
+  // Prints the binder address and the binder port on the binder's
+  // standard output
+  cout << "BINDER_ADDRESS " << getHostAddress() << endl;
+  cout << "BINDER_PORT " << getSocketPort(welcomeSocket) << endl;
+
+  while (onSwitch) {
     readSockets = allSockets;
 
     // Checks if some of the sockets are ready to be read from
@@ -297,7 +303,7 @@ int main() {
 
       } else {
 
-        // Creates a segment to receive data from the client and
+        // Creates a segment to receive data from the client/server and
         // reads into it from the connection socket
         Segment *segment = 0;
         result = 0;
@@ -310,13 +316,14 @@ int main() {
           continue;
         }
 
-
-
+        request_handler(segment, i);
       }
     }
   }
-*/
 
+  // Destroys the welcome socket
+  destroySocket(welcomeSocket);
+*/
   vector<int> myConnections;
   vector<int> myToRemove;
 
@@ -370,8 +377,8 @@ int main() {
           if (FD_ISSET(tempConnection, &readfds)) {
             Segment * segment = 0;
             status = Segment::receive(tempConnection, segment);
-            
-            if (segment != 0){ 
+
+            if (segment != 0){
               cout << "TO be handled: " << endl;
               if (segment->getType() == 0){
                 cout << "getType() is null" << endl;

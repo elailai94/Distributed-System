@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 
 #include "register_success_message.h"
+#include "constants.h"
 #include "helper_functions.h"
 
 // See interface (header file).

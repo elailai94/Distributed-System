@@ -13,6 +13,7 @@
 #include "execute_success_message.h"
 #include "execute_failure_message.h"
 #include "terminate_message.h"
+#include "constants.h"
 
 // See interface (header file).
 Segment::Segment(unsigned int length, unsigned int type, Message *message)

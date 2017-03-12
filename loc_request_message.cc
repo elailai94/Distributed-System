@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 
 #include "loc_request_message.h"
+#include "constants.h"
 #include "helper_functions.h"
 
 using namespace std;

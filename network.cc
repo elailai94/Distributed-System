@@ -7,16 +7,21 @@
 #include <netdb.h>
 #include <netinet/in.h>
 
-#include <iostream>
 #include "network.h"
+#include "constants.h"
 #include "helper_functions.h"
 #include <errno.h>
+#include <iostream>
 
 using namespace std;
 
 // See interface (header file).
 int createSocket() {
   int socket = ::socket(AF_INET, SOCK_STREAM, 0);
+  if (socket < 0) {
+    return ERROR_CODE_SOCKET;
+  }
+
   return socket;
 }
 
@@ -36,27 +41,26 @@ int setUpToListen(int socket) {
   int result = getaddrinfo(0, "0", &hostAddressHints,
     &hostAddressResults);
   if (result != 0) {
-     return result;
-  } // if
+     return ERROR_CODE_GETADDRINFO;
+  }
 
   // Binds the socket to the host's IP address and the next
   // available port
   result = bind(socket, hostAddressResults->ai_addr,
     hostAddressResults->ai_addrlen);
   if (result < 0) {
-    return result;
-  } // if
+    freeaddrinfo(hostAddressResults);
+    return ERROR_CODE_BIND;
+  }
 
   // Frees up memory allocated for the host address results
   freeaddrinfo(hostAddressResults);
 
   // Listens for TCP connection requests from other hosts
   result = listen(socket, SOMAXCONN);
-  cout << "listen results: " << result << endl;
   if (result < 0) {
-    cout << "BAD LISTEN!!!!" << endl;
-    return result;
-  } // if
+    return ERROR_CODE_LISTEN;
+  }
 
   return result;
 }
@@ -69,7 +73,6 @@ int setUpToConnect(int socket, string address, unsigned int port) {
   // Sets up the host address hints and results to perform the DNS
   // lookup on the host's address to obtain the host's IP address
   memset(&hostAddressHints, 0, sizeof(hostAddressHints));
-
   hostAddressHints.ai_family = AF_INET;
   hostAddressHints.ai_socktype = SOCK_STREAM;
 
@@ -78,20 +81,17 @@ int setUpToConnect(int socket, string address, unsigned int port) {
   int result = getaddrinfo(address.c_str(), toString(port).c_str(),
     &hostAddressHints, &hostAddressResults);
   if (result != 0) {
-    cout << "Network error1" << endl;
-    return result;
-  } // if
-  cout << address.c_str() << endl;
-  cout << toString(port).c_str() << endl;
+    return ERROR_CODE_GETADDRINFO;
+  }
 
   // Initiates the TCP connection request to another host
   result = connect(socket, hostAddressResults->ai_addr,
     hostAddressResults->ai_addrlen);
   if (result < 0) {
-    cout << "Network error2" << endl;
-    cout << errno << endl;
-    return result;
-  } // if
+    cout << "Network Error: " << errno << endl;
+    freeaddrinfo(hostAddressResults);
+    return ERROR_CODE_CONNECT;
+  }
 
   // Frees up memory allocated for the host address results
   freeaddrinfo(hostAddressResults);
@@ -99,11 +99,19 @@ int setUpToConnect(int socket, string address, unsigned int port) {
   return result;
 }
 
+<<<<<<< HEAD
+=======
 
+>>>>>>> c94b72823c65d9ebdfca33927210276a4d96fc6c
 // See interface (header file).
 string getHostAddress() {
   char hostname[MAXHOSTNAMELEN + 1] = {'\0'};
-  gethostname(hostname, sizeof(hostname));
+
+  int result = gethostname(hostname, sizeof(hostname));
+  if (result < 0) {
+    return string("");
+  }
+
   return string(hostname);
 }
 
@@ -115,7 +123,7 @@ int getSocketPort(int socket) {
   int result = getsockname(socket, (struct sockaddr*) &hostAddress,
     &hostAddressLength);
   if (result < 0) {
-    return result;
+    return ERROR_CODE_GETSOCKNAME;
   }
 
   return ntohs(hostAddress.sin_port);
@@ -139,12 +147,20 @@ int acceptConnection(int socket) {
   socklen_t hostAddressLength = sizeof(hostAddress);
 
   int newSocket = accept(socket, &hostAddress, &hostAddressLength);
+  if (newSocket < 0) {
+    return ERROR_CODE_ACCEPT;
+  }
+
   return newSocket;
 }
 
 // See interface (header file).
 int destroySocket(int socket) {
   int result = close(socket);
+  if (result < 0) {
+    return ERROR_CODE_CLOSE;
+  }
+
   cout << "Socket destroyed: " << result << endl;
   return result;
 }

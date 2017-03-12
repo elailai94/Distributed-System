@@ -1,23 +1,7 @@
 #ifndef __SEGMENT_H__
 #define __SEGMENT_H__
 
-/* Message types */
-/* Server/binder message types */
-#define MSG_TYPE_REGISTER_REQUEST 1
-#define MSG_TYPE_REGISTER_SUCCESS 2
-#define MSG_TYPE_REGISTER_FAILURE 3
-/* Client/binder message types */
-#define MSG_TYPE_LOC_REQUEST 4
-#define MSG_TYPE_LOC_SUCCESS 5
-#define MSG_TYPE_LOC_FAILURE 6
-/* Client/server message types */
-#define MSG_TYPE_EXECUTE_REQUEST 7
-#define MSG_TYPE_EXECUTE_SUCCESS 8
-#define MSG_TYPE_EXECUTE_FAILURE 9
-/* Terminate message type */
-#define MSG_TYPE_TERMINATE 10
-
-/* Message results */
+/* Message codes */
 //Basic
 #define SUCCESS = 0
 #define FAILURE = -1

@@ -2,6 +2,7 @@
 #include <sys/socket.h>
 
 #include "execute_failure_message.h"
+#include "constants.h"
 #include "helper_functions.h"
 
 // See interface (header file).
