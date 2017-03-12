@@ -34,7 +34,7 @@ using namespace std;
 //ROUND ROBIN
 
 static map<procedure_signature, list<server_info *>, ps_compare> procLocDict;
-static list<server_info *> roundRobinList;
+static list<server_function_info *> roundRobinList;
 static list<server_info *> serverList;
 
 bool onSwitch = true;
@@ -88,11 +88,10 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     //This is bad we shouldn't need a newKey and we should be able to use the key above
     //due to &* reasones I made a variable newKey for the 'info' object
     server_info * entry = new server_info(server_identifier, port, sock);
-
+    server_function_info * info = new server_function_info(entry, newKey);    
+ 
     //Adding to roundRobinList if server is not found
-    if( find(roundRobinList.begin(), roundRobinList.end(), entry) == roundRobinList.end()){
-      roundRobinList.push_back(entry);
-    }
+    roundRobinList.push_back(info);    
 
     //Adding to serverList if server is not found
     if( find(serverList.begin(), serverList.end(), entry) == serverList.end()){
@@ -136,6 +135,9 @@ USE ROUND ROBIN TO ACCESS THE CORRECT SERVER/FUNCTION FOR THE CLIENT
 void location_request_handler(LocRequestMessage * message, int sock){
 
   bool exist = false;
+  string serverIdToPushBack; 
+  int portToPushBack;
+  int socketToPushBack; 
 
   cout << "Hunted name names: " << message->getName() << endl;
 
@@ -151,6 +153,10 @@ void location_request_handler(LocRequestMessage * message, int sock){
       cout << "server_identifier: "<< (*it)->si->server_identifier << endl;
       cout << "port: " << (*it)->si->port<< endl;
 
+      serverIdToPushBack = (*it)->si->server_identifier;
+      portToPushBack = (*it)->si->port;
+      socketToPushBack = (*it)->si->socket;
+
       LocSuccessMessage locSuccessMsg = LocSuccessMessage((*it)->si->server_identifier.c_str(), (*it)->si->port);
       Segment locSuccessSeg = Segment(locSuccessMsg.getLength(), MSG_TYPE_LOC_SUCCESS, &locSuccessMsg);
       locSuccessSeg.send(sock);
@@ -161,7 +167,14 @@ void location_request_handler(LocRequestMessage * message, int sock){
  		}
 	}
 
-  if(!exist){
+  if(exist){
+    for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
+    
+       if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
+          roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
+       }
+    }
+  }else {
     int reasoncode = -5; // Need actual reasoncode
     LocFailureMessage locFailMsg = LocFailureMessage(reasoncode);
     Segment locFailSeg = Segment(locFailMsg.getLength(), MSG_TYPE_LOC_FAILURE, &locFailMsg);
