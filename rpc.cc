@@ -2,7 +2,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
-#include <bitset>
 #include <sstream>
 #include <unistd.h>
 #include <vector>
@@ -32,10 +31,9 @@ using namespace std;
 // Global variables for server
 static map<procedure_signature, skeleton, ps_compare> procSkeleDict;
 static string serverIdentifier;
-static int port = 0;
-
-static int serverBinderSocket = -1;
-static int welcomeSocket = 0;
+static int port = -1;
+static int welcomeSocket = -1;
+static int binderSocket = -1;
 static bool onSwitch = true;
 
 void mapPrint(){
@@ -169,12 +167,10 @@ int rpcInit(){
     return port;
   }
 
-  cout << "This servers welcomeSocket is: " << welcomeSocket << endl;
-
 	// Opens a connection to the binderz
-	serverBinderSocket = createSocket();
-  if (serverBinderSocket < 0) {
-    return serverBinderSocket;
+	binderSocket = createSocket();
+  if (binderSocket < 0) {
+    return binderSocket;
   }
 	string binderAddress = getBinderAddress();
   if (binderAddress == "") {
@@ -184,12 +180,12 @@ int rpcInit(){
   if (binderPort < 0) {
     return binderPort;
   }
-	result = setUpToConnect(serverBinderSocket, binderAddress, binderPort);
+	result = setUpToConnect(binderSocket, binderAddress, binderPort);
   if (result < 0) {
     return result;
   }
 
-  cout << "This servers serverBinderSocket is: " << serverBinderSocket << endl;
+  cout << "This servers binderSocket is: " << binderSocket << endl;
 
   return SUCCESS_CODE;
 }
@@ -322,7 +318,7 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
    * Checks if this server is connected to the binder already
    * (i.e.: rpcInit is called before rpcRegister)
    */
-  if (serverBinderSocket < 0) {
+  if (binderSocket < 0) {
     return ERROR_CODE_NOT_CONNECTED_TO_BINDER;
   }
 
@@ -335,12 +331,10 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
     RegisterRequestMessage(serverIdentifier, port, string(name), argTypes);
   Segment segmentToBinder =
     Segment(messageToBinder.getLength(), MSG_TYPE_REGISTER_REQUEST, &messageToBinder);
-  int result = segmentToBinder.send(serverBinderSocket);
+  int result = segmentToBinder.send(binderSocket);
   if (result < 0) {
     return result;
   }
-
-  cout << "When we register we use this serverBinderSocket: " << serverBinderSocket << endl;
 
   /*
    * Receives a register response message from the binder indicating
@@ -348,7 +342,7 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
    * or not
    */
   Segment *segmentFromBinder = 0;
-  result = Segment::receive(serverBinderSocket, segmentFromBinder);
+  result = Segment::receive(binderSocket, segmentFromBinder);
   if (result < 0) {
     return result;
   }
@@ -356,7 +350,6 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
   result = SUCCESS_CODE;
   switch (segmentFromBinder->getType()) {
     case MSG_TYPE_REGISTER_SUCCESS: {
-      cout << "MSG_TYPE_REGISTER_SUCCESS" << endl;
       RegisterSuccessMessage *messageFromBinder =
         dynamic_cast<RegisterSuccessMessage *>(segmentFromBinder->getMessage());
       result = messageFromBinder->getReasonCode();
@@ -372,7 +365,6 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
     }
 
     case MSG_TYPE_REGISTER_FAILURE: {
-      cout << "MSG_TYPE_REGISTER_FAILURE" << endl;
       RegisterFailureMessage *messageFromBinder =
         dynamic_cast<RegisterFailureMessage *>(segmentFromBinder->getMessage());
       result = messageFromBinder->getReasonCode();
@@ -400,7 +392,7 @@ int rpcExecute(){
    * Adds the welcome socket to the all sockets set and sets
    * it as the maximum socket so far
    */
-  FD_SET(serverBinderSocket, &allSockets);
+  FD_SET(binderSocket, &allSockets);
   FD_SET(welcomeSocket, &allSockets);
   int maxSocket = welcomeSocket;
 
@@ -499,7 +491,7 @@ int rpcExecute(){
 
           case MSG_TYPE_TERMINATE: {
             cout << "Got to terminate!" << endl;
-            if (i != serverBinderSocket) {
+            if (i != binderSocket) {
                return ERROR_CODE_TERMINATE;
             }
             onSwitch = false;
