@@ -30,15 +30,17 @@
 using namespace std;
 
 // Global variables for client
-bool connectedToBinder = false;
-int binderSocket = 0;
+static bool connectedToBinder = false;
+static int clientBinderSocket = -1;
+static int serverBinderSocket = -1;
+
 
 // Global variables for server
 static map<procedure_signature, skeleton, ps_compare> procSkeleDict;
-string serverIdentifier;
-unsigned int port = 0;
-int welcomeSocket = 0;
-bool onSwitch = true;
+static string serverIdentifier;
+static unsigned int port = 0;
+static int welcomeSocket = 0;
+static bool onSwitch = true;
 
 void mapPrint(){
   cout << "procSkeleDict size: "<<procSkeleDict.size() << endl;
@@ -155,6 +157,9 @@ int rpcInit(){
    * Creates a connection socket to be used for accepting connections
 	 * from clients
    */
+  cout << "B4 welcomeSocket is: " << welcomeSocket << endl;
+  cout << "B4 serverBinderSocket is: " << serverBinderSocket << endl;
+
 	welcomeSocket = createSocket();
   if (welcomeSocket < 0) {
     return welcomeSocket;
@@ -172,17 +177,21 @@ int rpcInit(){
     return port;
   }
 
-	// Opens a connection to the binder
-	binderSocket = createSocket();
-  if (binderSocket < 0) {
-    return binderSocket;
+  cout << "This servers welcomeSocket is: " << welcomeSocket << endl;
+
+	// Opens a connection to the binderz
+	serverBinderSocket = createSocket();
+  if (serverBinderSocket < 0) {
+    return serverBinderSocket;
   }
 	string binderAddress = getBinderAddress();
 	unsigned int binderPort = getBinderPort();
-	result = setUpToConnect(binderSocket, binderAddress, binderPort);
+	result = setUpToConnect(serverBinderSocket, binderAddress, binderPort);
   if (result < 0) {
     return result;
   }
+
+  cout << "This servers serverBinderSocket is: " << serverBinderSocket << endl;
 
   return SUCCESS_CODE;
 }
@@ -197,10 +206,10 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
 	if(!connectedToBinder){
     cout << "Connecting to binder..." << endl;
-		binderSocket = createSocket();
+		clientBinderSocket = createSocket();
 		string binderAddress = getBinderAddress();
 		unsigned int binderPort = getBinderPort();
-		status = setUpToConnect(binderSocket, binderAddress, binderPort);
+		status = setUpToConnect(clientBinderSocket, binderAddress, binderPort);
 	  connectedToBinder = true;
     cout << "Connected to binder..." << endl;
 	}
@@ -209,7 +218,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   LocRequestMessage messageToBinder = LocRequestMessage(string(name), argTypes);
   Segment segmentToBinder =
 	  Segment(messageToBinder.getLength(), MSG_TYPE_LOC_REQUEST, &messageToBinder);
-  int binder_status = segmentToBinder.send(binderSocket);
+  int binder_status = segmentToBinder.send(clientBinderSocket);
   cout << "LOC REQUEST message sent..." << endl;
 
 	//maybe error check with binder_status
@@ -219,7 +228,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
     Segment *parsedSegment = 0;
     int tempStatus = 0;
-    tempStatus = Segment::receive(binderSocket, parsedSegment);
+    tempStatus = Segment::receive(clientBinderSocket, parsedSegment);
 
     Message *messageFromBinder = parsedSegment->getMessage();
 		switch (parsedSegment->getType()) {
@@ -299,6 +308,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
     }
   }
 
+  close(serverSocket);
   return returnVal;
 }
 
@@ -320,19 +330,20 @@ int rpcRegister(char * name, int *argTypes, skeleton f){
 
   /*
   We should get seg.send to give us some feed back maybe
-  int status = regReqMsg->send(binderSocket);
+  int status = regReqMsg->send(serverBinderSocket);
   */
 
   Segment regReqSeg = Segment(regReqMsg.getLength(), MSG_TYPE_REGISTER_REQUEST, &regReqMsg);
-  int status = regReqSeg.send(binderSocket);
+  int status = regReqSeg.send(serverBinderSocket);
 
+  cout << "When we register we use this serverBinderSocket: " << serverBinderSocket << endl;
   //cout << "rpcRegister Status: " << status << endl;
 
   if(status >= 0){
     //Success
     Segment *parsedSegment = 0;
     int result = 0;
-    result = Segment::receive(binderSocket, parsedSegment);
+    result = Segment::receive(serverBinderSocket, parsedSegment);
 
     if(parsedSegment->getType() == MSG_TYPE_REGISTER_SUCCESS){
 
@@ -378,7 +389,7 @@ int rpcExecute(){
    * Adds the welcome socket to the all sockets set and sets
    * it as the maximum socket so far
    */
-  FD_SET(binderSocket, &allSockets);
+  FD_SET(serverBinderSocket, &allSockets);
   FD_SET(welcomeSocket, &allSockets);
   int maxSocket = welcomeSocket;
 
@@ -477,7 +488,7 @@ int rpcExecute(){
 
           case MSG_TYPE_TERMINATE: {
             cout << "Got to terminate" << endl;
-            if (i != binderSocket) {
+            if (i != serverBinderSocket) {
                return ERROR_CODE_TERMINATE;
             }
             onSwitch = false;
@@ -490,6 +501,7 @@ int rpcExecute(){
   }
 
   // Destroys the welcome socket
+  cout << "We are destorying the welcomeSocket: " << welcomeSocket << endl;
   destroySocket(welcomeSocket);
 
   return SUCCESS_CODE;
@@ -507,12 +519,12 @@ int rpcTerminate() {
   TerminateMessage messageToBinder = TerminateMessage();
   Segment segmentToBinder =
     Segment(messageToBinder.getLength(), MSG_TYPE_TERMINATE, &messageToBinder);
-  int binder_status = segmentToBinder.send(binderSocket);
+  int binder_status = segmentToBinder.send(clientBinderSocket);
   cout << segmentToBinder.getType() << endl;
 
-  cout << "binderSocket: " << binderSocket << endl;
+  cout << "clientBinderSocket: " << clientBinderSocket << endl;
   // Closes the connection to the binder
-  destroySocket(binderSocket);
+  destroySocket(clientBinderSocket);
 
 	return SUCCESS_CODE;
 }
