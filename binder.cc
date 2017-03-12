@@ -211,9 +211,12 @@ void binder_terminate_handler() {
   for (list<server_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
     cout << "Terminating server: " << (*it)->server_identifier << ", " <<  (*it)->port << ", " <<  (*it)->socket<< endl;
     int sock = (*it)->socket;
+
     TerminateMessage termMsg = TerminateMessage();
     Segment termSeg = Segment(termMsg.getLength(), MSG_TYPE_TERMINATE, &termMsg);
     termSeg.send(sock);
+
+    sleep(1);
   }
 
 
