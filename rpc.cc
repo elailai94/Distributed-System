@@ -454,12 +454,10 @@ int rpcExecute(){
               break;
               //and other clean up
             }
-
-
           }
-
         }
       }
+
 
       for (vector<int>::iterator it = myToRemove.begin(); it != myToRemove.end(); ++it) {
         myConnections.erase(remove(myConnections.begin(), myConnections.end(), *it), myConnections.end());
