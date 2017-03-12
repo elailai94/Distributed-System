@@ -296,6 +296,8 @@ int main() {
           continue;
         }
 
+
+        cout << "WE heard from connectionSocket: " << connectionSocket << endl;
         // Adds the connection socket to the all sockets set
         FD_SET(connectionSocket, &allSockets);
 
