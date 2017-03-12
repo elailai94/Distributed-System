@@ -31,13 +31,13 @@ using namespace std;
 
 // Global variables for client
 bool connectedToBinder = false;
-int binderSocket = 0;
+static int binderSocket = 0;
 
 // Global variables for server
 static map<procedure_signature, skeleton, ps_compare> procSkeleDict;
 string serverIdentifier;
 unsigned int port = 0;
-int welcomeSocket = 0;
+static int welcomeSocket = 0;
 bool onSwitch = true;
 
 void mapPrint(){
