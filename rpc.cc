@@ -139,7 +139,7 @@ void printArgs(int * argTypes, void  ** args){
         float *argFloatArray = (float *) arg;
         for (int j = 0; j < argTypeArrayLength; j++) {
           cout << argFloatArray[j] << ", ";
-        }
+        } 
         cout << endl;
         break;
       }
@@ -501,12 +501,12 @@ int rpcTerminate() {
   TerminateMessage messageToBinder = TerminateMessage();
   Segment segmentToBinder =
     Segment(messageToBinder.getLength(), MSG_TYPE_TERMINATE, &messageToBinder);
-  int binder_status = segmentToBinder.send(serverBinderSocket);
+  int binder_status = segmentToBinder.send(clientBinderSocket);
   cout << segmentToBinder.getType() << endl;
 
-  cout << "serverBinderSocket: " << serverBinderSocket << endl;
+  cout << "clientBinderSocket: " << clientBinderSocket << endl;
   // Closes the connection to the binder
-  destroySocket(serverBinderSocket);
+  destroySocket(clientBinderSocket);
 
 	return SUCCESS_CODE;
 }
