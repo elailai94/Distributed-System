@@ -100,20 +100,20 @@ int main() {
   args4[0] = (void *)a4;
 
   /* rpcCalls */
-  int s0 = rpcCall("f0", argTypes0, args0);
+  //int s0 = rpcCall("f0", argTypes0, args0);
   /* test the return f0 */
-  printf("\nEXPECTED return of f0 is: %d\n", a0 + b0);
+/*  printf("\nEXPECTED return of f0 is: %d\n", a0 + b0);
   if (s0 >= 0) {
     printf("ACTUAL return of f0 is: %d\n", *((int *)(args0[0])));
   }
   else {
     printf("Error: %d\n", s0);
   }
+*/
 
-
-  int s1 = rpcCall("f1", argTypes1, args1);
+//  int s1 = rpcCall("f1", argTypes1, args1);
   /* test the return of f1 */
-  printf("\nEXPECTED return of f1 is: %ld\n", a1 + b1 * c1 - d1);
+/*  printf("\nEXPECTED return of f1 is: %ld\n", a1 + b1 * c1 - d1);
   if (s1 >= 0) {
     printf("ACTUAL return of f1 is: %ld\n", *((long *)(args1[0])));
   }
@@ -121,6 +121,7 @@ int main() {
     printf("Error: %d\n", s1);
   }
 
+*/
 
   //int s2 = rpcCall("f2", argTypes2, args2);
   /* test the return of f2 */
