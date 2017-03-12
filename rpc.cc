@@ -336,28 +336,38 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
 
   cout << "When we register we use this serverBinderSocket: " << serverBinderSocket << endl;
 
-  //Success
-  Segment *parsedSegment = 0;
-  int result = 0;
-  result = Segment::receive(serverBinderSocket, parsedSegment);
+  /*
+   * Receives a register response message from the binder indicating
+   * whether the registration of a server procedure is successful
+   * or not
+   */
+  Segment *segmentFromBinder = 0;
+  result = Segment::receive(serverBinderSocket, segmentFromBinder);
+  if (result < 0) {
+    return result;
+  }
 
-  if(parsedSegment->getType() == MSG_TYPE_REGISTER_SUCCESS) {
+  switch (segmentFromBinder->getType()) {
+    case MSG_TYPE_REGISTER_SUCCESS: {
+      cout << "MSG_TYPE_REGISTER_SUCCESS" << endl;
+      RegisterSuccessMessage *messageFromBinder =
+        dynamic_cast<RegisterSuccessMessage *>(segmentFromBinder->getMessage());
 
-    cout << "MSG_TYPE_REGISTER_SUCCESS" << endl;
+      /*
+       * Makes an entry in a local database, associating the server skeleton
+       * with the name and list of argument types
+       */
+      struct procedure_signature k = procedure_signature(string(name), argTypes);
+      procSkeleDict[k] = f;
+      cout << "k: " << k.name << ", "<< f << endl;
+      break;
+    }
 
-    Message * cast = parsedSegment->getMessage();
-    //Error Checking maybe
-    RegisterSuccessMessage * rsm = dynamic_cast<RegisterSuccessMessage*>(cast);
-
-    //struct procedure_signature k(string(name), argTypes);
-    struct procedure_signature k = procedure_signature(string(name), argTypes);
-
-    procSkeleDict[k] = f;
-
-    cout << "k: " << k.name << ", "<< f << endl;
-
-  } else if (parsedSegment->getType() == MSG_TYPE_REGISTER_FAILURE) {
-    return 0;
+    case MSG_TYPE_REGISTER_FAILURE: {
+      // TODO: Handle the reason code
+      return 0;
+      break;
+    }
   }
 
   return SUCCESS_CODE;
