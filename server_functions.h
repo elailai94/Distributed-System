@@ -20,3 +20,5 @@ char* f2(float a, double b);             /* return: OUT string; a, b: IN */
 void f3(long a[]);                       /* a: INOUT array */
 
 void f4(char a[]);                       /* a: IN array */
+
+int g5(int a, int b);                    /* return: OUT; a, b: IN */
