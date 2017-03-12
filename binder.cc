@@ -252,7 +252,7 @@ int request_handler(Segment * segment, int sock){
 //Create helper functions that can be used for rpcServer.cc
 int main() {
 // Code refactoring
-/*
+
   fd_set allSockets;
   fd_set readSockets;
 
@@ -322,86 +322,6 @@ int main() {
 
         request_handler(segment, i);
       }
-    }
-  }
-
-  // Destroys the welcome socket
-  destroySocket(welcomeSocket);
-*/
-  vector<int> myConnections;
-  vector<int> myToRemove;
-
-  // Creates the welcome socket
-  int welcomeSocket = createSocket();
-  int status = setUpToListen(welcomeSocket);
-
-  cout << "BINDER_ADDRESS " << getHostAddress() << endl;
-  cout << "BINDER_PORT " << getSocketPort(welcomeSocket) << endl;
-
-  fd_set readfds;
-  int n;
-
-  while(onSwitch){
-    //CONNECTIONS VECTOR
-    FD_ZERO(&readfds);
-    FD_SET(welcomeSocket, &readfds);
-
-    n = welcomeSocket;
-
-    for (vector<int>::iterator it = myConnections.begin();it != myConnections.end(); ++it) {
-      int connection = *it;
-      FD_SET(connection, &readfds);
-       if (connection > n){
-        n = connection;
-      }
-    }
-
-    n = n+1;
-
-    status = select(n, &readfds, NULL, NULL, NULL);
-
-    if (status == -1) {
-      cerr << "ERROR: select failed." << endl;
-    } else {
-
-      if (FD_ISSET(welcomeSocket, &readfds)) {
-        int connectionSocket = acceptConnection(welcomeSocket);
-
-        if (connectionSocket < 0) {
-          cerr << "ERROR: while accepting connection" << endl;
-          continue;
-        }
-
-        myConnections.push_back(connectionSocket);
-
-      } else {
-
-        for (vector<int>::iterator it = myConnections.begin(); it != myConnections.end(); ++it) {
-          int tempConnection = *it;
-          if (FD_ISSET(tempConnection, &readfds)) {
-            Segment * segment = 0;
-            status = Segment::receive(tempConnection, segment);
-
-            if (segment != 0){
-              cout << "To be handled: "<< tempConnection << endl;
-              if (segment->getType() == 0){
-                cout << "getType() is null" << endl;
-              }else{
-                cout << segment->getType() << endl;
-              }
-            }
-
-            request_handler(segment, tempConnection);
-
-          }
-        }
-      }
-
-      for (vector<int>::iterator it = myToRemove.begin(); it != myToRemove.end(); ++it) {
-        myConnections.erase(remove(myConnections.begin(), myConnections.end(), *it), myConnections.end());
-        destroySocket(*it);
-      }
-      myToRemove.clear();
     }
   }
 
