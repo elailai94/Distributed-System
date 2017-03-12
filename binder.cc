@@ -68,7 +68,7 @@ void roundRobinPrint(){
 
 void serverListPrint(){
   cout << "serverList Print: ";
-  for(list<server_function_info *> ::const_iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
+  for(list<server_info *> ::const_iterator it = serverList.begin(); it != serverList.end(); it++){
     cout << (*it)->server_identifier << ", " <<  (*it)->port << ", " <<  (*it)->socket<< endl;
   }
 }
