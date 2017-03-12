@@ -112,11 +112,11 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
         }
     }
 
-    cout << "entry->server_identifier: " <<entry->server_identifier << endl;
-    cout << "entry->port: " <<entry->port << endl;
-    cout << "entry->socket: " << entry->socket << endl;
+    //cout << "entry->server_identifier: " <<entry->server_identifier << endl;
+    //cout << "entry->port: " <<entry->port << endl;
+    //cout << "entry->socket: " << entry->socket << endl;
 
-    cout << "sock: " << sock << endl;
+    //cout << "sock: " << sock << endl;
 
 
     if(!serverExist){
@@ -198,6 +198,7 @@ void location_request_handler(LocRequestMessage * message, int sock){
           roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
        }
     }
+    roundRobinPrint();
   }else {
     int reasoncode = -5; // Need actual reasoncode
     LocFailureMessage locFailMsg = LocFailureMessage(reasoncode);
@@ -232,7 +233,7 @@ int request_handler(Segment * segment, int sock){
 
   }else if (segment->getType() == MSG_TYPE_LOC_REQUEST){
 
-    cout << "Loc Request" << endl;
+    //cout << "Loc Request" << endl;
 
     Message * cast2 = segment->getMessage();
     LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(cast2);
@@ -304,7 +305,7 @@ int main() {
           continue;
         }
 
-        cout << "WE heard from connectionSocket: " << connectionSocket << endl;
+        //cout << "WE heard from connectionSocket: " << connectionSocket << endl;
         // Adds the connection socket to the all sockets set
         FD_SET(connectionSocket, &allSockets);
 
