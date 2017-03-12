@@ -212,7 +212,7 @@ void binder_terminate_handler() {
     cout << "Terminating server: " << (*it)->server_identifier << ", " <<  (*it)->port << ", " <<  (*it)->socket<< endl;
     TerminateMessage termMsg = TerminateMessage();
     Segment termSeg = Segment(termMsg.getLength(), MSG_TYPE_TERMINATE, &termMsg);
-    termSeg.send((*it)->socket);
+    //termSeg.send((*it)->socket);
 
     sleep(1);
   }
