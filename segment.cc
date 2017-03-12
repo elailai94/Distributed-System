@@ -59,7 +59,7 @@ int Segment::send(int dataTransferSocket) {
     return ERROR_CODE_SEND;
   }
 
-  return result;
+  return SUCCESS_CODE;
 }
 
 // See interface (header file).
@@ -171,5 +171,5 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
   }
 
   parsedSegment = new Segment(length, type, parsedMessage);
-  return result;
+  return SUCCESS_CODE;
 }
