@@ -369,11 +369,6 @@ int rpcExecute(){
   FD_SET(welcomeSocket, &allSockets);
   int maxSocket = welcomeSocket;
 
-  // Prints the binder address and the binder port on the binder's
-  // standard output
-  cout << "BINDER_ADDRESS " << getHostAddress() << endl;
-  cout << "BINDER_PORT " << getSocketPort(welcomeSocket) << endl;
-
   while (onSwitch) {
     readSockets = allSockets;
 
@@ -406,7 +401,7 @@ int rpcExecute(){
           maxSocket = connectionSocket;
         }
 
-      } else {
+      }
 
         // Creates a segment to receive data from the client/server and
         // reads into it from the connection socket
@@ -461,7 +456,7 @@ int rpcExecute(){
         }   
       }
     }
-  }
+  
 
   // Destroys the welcome socket
   destroySocket(welcomeSocket);
