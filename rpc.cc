@@ -454,6 +454,7 @@ int rpcExecute(){
               }
 
             }else if(segment->getType() == MSG_TYPE_TERMINATE){
+              cout << "Got to terminate" << endl;
               break;
               //and other clean up
             }
