@@ -67,7 +67,7 @@ void roundRobinPrint(){
 
 
 void serverListPrint(){
-  cout << "serverList Print: ";
+  cout << "serverList Print: " << endl;
   for(list<server_info *> ::const_iterator it = serverList.begin(); it != serverList.end(); it++){
     cout << (*it)->server_identifier << ", " <<  (*it)->port << ", " <<  (*it)->socket<< endl;
   }
@@ -161,19 +161,19 @@ void location_request_handler(LocRequestMessage * message, int sock){
   int portToPushBack;
   int socketToPushBack;
 
-  cout << "Hunted name names: " << message->getName() << endl;
+  //cout << "Hunted name names: " << message->getName() << endl;
 
 
 	for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
     //If the name are the same and argTypes
-    cout << "Iterator names: " << (*it)->ps->name << endl;
+    //cout << "Iterator names: " << (*it)->ps->name << endl;
 
     if((*it)->ps->name == message->getName() && compareArr((*it)->ps->argTypes, message->getArgTypes() )){
       exist = true;
 
-      cout << "Attempt to send locSuccessMsg" << endl;
-      cout << "server_identifier: "<< (*it)->si->server_identifier << endl;
-      cout << "port: " << (*it)->si->port<< endl;
+      //cout << "Attempt to send locSuccessMsg" << endl;
+      //cout << "server_identifier: "<< (*it)->si->server_identifier << endl;
+      //cout << "port: " << (*it)->si->port<< endl;
 
       serverIdToPushBack = (*it)->si->server_identifier;
       portToPushBack = (*it)->si->port;
@@ -209,8 +209,7 @@ void binder_terminate_handler() {
   cout << "Binder set to execute" << endl;
 
   for (list<server_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
-
-    cout << "Terminating server: " <<  (*it)->server_identifier << endl;
+    cout << "Terminating server: " << (*it)->server_identifier << ", " <<  (*it)->port << ", " <<  (*it)->socket<< endl;
     int sock = (*it)->socket;
     TerminateMessage termMsg = TerminateMessage();
     Segment termSeg = Segment(termMsg.getLength(), MSG_TYPE_TERMINATE, &termMsg);
