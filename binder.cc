@@ -98,7 +98,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     bool serverExist = false;
     for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
     
-      if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port ){
+      if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
           serverExist = true;
           break;      
         }
