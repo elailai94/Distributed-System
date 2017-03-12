@@ -95,21 +95,16 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     roundRobinList.push_back(info);
 
     //Adding to serverList if server is not found
-    if( find(serverList.begin(), serverList.end(), entry) == serverList.end()){
-      serverList.push_back(entry);
-    }
-
-
-    bool exists = false;
+    bool serverExist = false;
     for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
     
       if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port ){
-          exists = true;
+          serverExist = true;
           break;      
         }
     }
 
-    if(!exists){
+    if(!serverExist){
       serverList.push_back(entry);
     }
 
@@ -200,9 +195,9 @@ void location_request_handler(LocRequestMessage * message, int sock){
 void binder_terminate_handler() {
   cout << "Binder set to execute" << endl;
 
-  for (list<server_function_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
+  for (list<server_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
 
-    int sock = (*it)->si->socket;
+    int sock = (*it)->socket;
     TerminateMessage termMsg = TerminateMessage();
     Segment termSeg = Segment(termMsg.getLength(), MSG_TYPE_TERMINATE, &termMsg);
     termSeg.send(sock);
