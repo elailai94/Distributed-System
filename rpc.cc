@@ -282,6 +282,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
     }
   }
 
+  close(serverSocket);
   return returnVal;
 }
 
