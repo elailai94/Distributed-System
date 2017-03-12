@@ -113,7 +113,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     }
 
     cout << "entry->server_identifier: " <<entry->server_identifier << endl;
-    cout << "entry->port: " <<entry->server_identifier << endl;
+    cout << "entry->port: " <<entry->port << endl;
     cout << " entry->socket: " << entry->socket << endl;
 
     if(!serverExist){
@@ -210,11 +210,9 @@ void binder_terminate_handler() {
 
   for (list<server_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
     cout << "Terminating server: " << (*it)->server_identifier << ", " <<  (*it)->port << ", " <<  (*it)->socket<< endl;
-    int sock = (*it)->socket;
-
     TerminateMessage termMsg = TerminateMessage();
     Segment termSeg = Segment(termMsg.getLength(), MSG_TYPE_TERMINATE, &termMsg);
-    termSeg.send(sock);
+    termSeg.send((*it)->socket);
 
     sleep(1);
   }
@@ -387,7 +385,7 @@ int main() {
             status = Segment::receive(tempConnection, segment);
 
             if (segment != 0){
-              cout << "TO be handled: " << endl;
+              cout << "To be handled: "<< tempConnection << endl;
               if (segment->getType() == 0){
                 cout << "getType() is null" << endl;
               }else{
