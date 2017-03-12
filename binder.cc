@@ -65,6 +65,14 @@ void roundRobinPrint(){
   }
 }
 
+
+void serverListPrint(){
+  cout << "serverList Print: ";
+  for(list<server_function_info *> ::const_iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
+    cout << (*it)->server_identifier << ", " <<  (*it)->port << ", " <<  (*it)->socket<< endl;
+  }
+}
+
 void registration_request_handler(RegisterRequestMessage * message, int sock){
   const char * name = message->getName().c_str();
   int * argTypes = message->getArgTypes();
@@ -104,6 +112,10 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
         }
     }
 
+    cout << "entry->server_identifier: " <<entry->server_identifier << endl;
+    cout << "entry->port: " <<entry->server_identifier << endl;
+    cout << " entry->socket: " << entry->socket << endl;
+
     if(!serverExist){
       serverList.push_back(entry);
     }
@@ -128,9 +140,10 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     }
   }
 
-  mapPrint();
-  roundRobinPrint();
-
+  //mapPrint();
+  //roundRobinPrint();
+  serverListPrint();
+  
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
   regSuccessSeg.send(sock);
