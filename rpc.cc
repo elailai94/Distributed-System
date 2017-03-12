@@ -46,6 +46,7 @@ static map<procedure_signature, skeleton, ps_compare> procSkeleDict;
 string serverIdentifier;
 unsigned int port = 0;
 int welcomeSocket = 0;
+bool onSwitch = true;
 
 void mapPrint(){
   cout << "procSkeleDict size: "<<procSkeleDict.size() << endl;
@@ -366,8 +367,6 @@ int rpcExecute(){
 
   // Creates the welcome socket, adds it to the all sockets set and
   // sets it as the maximum socket so far
-  int welcomeSocket = createSocket();
-  int status = setUpToListen(welcomeSocket);
   FD_SET(welcomeSocket, &allSockets);
   int maxSocket = welcomeSocket;
 
@@ -447,18 +446,18 @@ int rpcExecute(){
           if(result == 0 ){
             ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(erm->getName(), erm->getArgTypes(), erm->getArgs());
             Segment exeSuccessSeg = Segment(exeSuccessMsg.getLength(), MSG_TYPE_EXECUTE_SUCCESS, &exeSuccessMsg);
-            int tstatus = exeSuccessSeg.send(tempConnection);
+            int tstatus = exeSuccessSeg.send(i);
             cout << "ExecuteSuccessMessage status: " << tstatus << endl;
 
           }else{
-            ExecuteFailureMessage exeFailMsg = ExecuteFailureMessage(reasonCode);
+            ExecuteFailureMessage exeFailMsg = ExecuteFailureMessage(result);
             Segment exeFailSeg = Segment(exeFailMsg.getLength(), MSG_TYPE_EXECUTE_FAILURE, &exeFailMsg);
-            int tstatus = exeFailSeg.send(tempConnection);
+            int tstatus = exeFailSeg.send(i);
           }
 
         }else if(segment->getType() == MSG_TYPE_TERMINATE){
           cout << "Got to terminate" << endl;
-          break;
+          onSwitch = false;
           //and other clean up
         }   
       }
