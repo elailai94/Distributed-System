@@ -43,6 +43,7 @@
 #define SUCCESS_CODE                      0
 
 /************************ Warning codes ************************/
+/* Server warning codes */
 #define WARNING_CODE_DUPLICATED_PROCEDURE 1
 
 /************************* Error codes *************************/
@@ -58,6 +59,8 @@
 #define ERROR_CODE_CLOSE                  -10
 #define ERROR_CODE_GETHOSTNAME            -11
 #define ERROR_CODE_GETSOCKNAME            -12
+/* Server error codes */
+#define ERROR_CODE_TERMINATE              -13
 
 /* Message codes */
 /*
