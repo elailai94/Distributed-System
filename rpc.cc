@@ -338,7 +338,7 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
 
   //Success
   Segment *parsedSegment = 0;
-  int result = 0;
+  result = 0;
   result = Segment::receive(serverBinderSocket, parsedSegment);
 
   if(parsedSegment->getType() == MSG_TYPE_REGISTER_SUCCESS) {
