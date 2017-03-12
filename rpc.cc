@@ -157,6 +157,9 @@ int rpcInit(){
    * Creates a connection socket to be used for accepting connections
 	 * from clients
    */
+  cout << "B4 welcomeSocket is: " << welcomeSocket << endl;
+  cout << "B4 serverBinderSocket is: " << serverBinderSocket << endl;
+
 	welcomeSocket = createSocket();
 	setUpToListen(welcomeSocket);
 	serverIdentifier = getHostAddress();
