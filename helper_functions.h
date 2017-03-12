@@ -10,7 +10,7 @@ unsigned int countNumOfArgTypes(int* argTypes);
 
 int *copyArgTypes(int argTypes[]);
 
-/* Type conversion functions */
+/****************** Type conversion functions ******************/
 // Converts an unsigned integer to a string
 std::string toString(unsigned int number);
 
