@@ -347,11 +347,13 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
     return result;
   }
 
+  result = SUCCESS_CODE;
   switch (segmentFromBinder->getType()) {
     case MSG_TYPE_REGISTER_SUCCESS: {
       cout << "MSG_TYPE_REGISTER_SUCCESS" << endl;
       RegisterSuccessMessage *messageFromBinder =
         dynamic_cast<RegisterSuccessMessage *>(segmentFromBinder->getMessage());
+      result = messageFromBinder->getReasonCode();
 
       /*
        * Makes an entry in a local database, associating the server skeleton
@@ -364,13 +366,15 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
     }
 
     case MSG_TYPE_REGISTER_FAILURE: {
-      // TODO: Handle the reason code
-      return 0;
+      cout << "MSG_TYPE_REGISTER_FAILURE" << endl;
+      RegisterFailureMessage *messageFromBinder =
+        dynamic_cast<RegisterFailureMessage *>(segmentFromBinder->getMessage());
+      result = messageFromBinder->getReasonCode();
       break;
     }
   }
 
-  return SUCCESS_CODE;
+  return result;
 }
 
 // See interface (header file).
