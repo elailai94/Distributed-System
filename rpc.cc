@@ -160,7 +160,10 @@ int rpcInit(){
 	serverIdentifier = getHostAddress();
 	port = getSocketPort(welcomeSocket);
 
-	// Opens a connection to the binder
+
+  cout << "This servers welcomeSocket is: " << welcomeSocket << endl;
+
+	// Opens a connection to the binderz 
 	binderSocket = createSocket();
 	string binderAddress = getBinderAddress();
 	unsigned int binderPort = getBinderPort();
