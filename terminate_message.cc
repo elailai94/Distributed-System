@@ -1,4 +1,5 @@
 #include "terminate_message.h"
+#include "constants.h"
 
 // See interface (header file).
 TerminateMessage::TerminateMessage()
