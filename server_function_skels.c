@@ -46,9 +46,9 @@ int f4_Skel(int *argTypes, void **args) {
   return -1; /* can not print the file */
 }
 
-int f5_Skel(int *argTypes, void **args) {
-  printf("f5_skel");
+int g5_Skel(int *argTypes, void **args) {
+  printf("g5_skel");
   
-  *(int *)args[0] = f5(*(int *)args[1], *(int *)args[2]);
+  *(int *)args[0] = g5(*(int *)args[1], *(int *)args[2]);
   return 0;
 }
