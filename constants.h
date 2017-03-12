@@ -48,21 +48,21 @@
 
 /************************* Error codes *************************/
 /* Network error codes */
-#define ERROR_CODE_SOCKET                 -2
-#define ERROR_CODE_GETADDRINFO            -3
-#define ERROR_CODE_BIND                   -4
-#define ERROR_CODE_LISTEN                 -5
-#define ERROR_CODE_ACCEPT                 -6
-#define ERROR_CODE_CONNECT                -7
-#define ERROR_CODE_SEND                   -8
-#define ERROR_CODE_RECV                   -9
-#define ERROR_CODE_CLOSE                  -10
-#define ERROR_CODE_GETHOSTNAME            -11
-#define ERROR_CODE_GETSOCKNAME            -12
-#define ERROR_CODE_GETBINDERADDRESS       -13
-#define ERROR_CODE_GETBINDERPORT          -14
+#define ERROR_CODE_SOCKET_CREATION_FAILED    -2
+#define ERROR_CODE_ADDR_INFO_NOT_FOUND       -3
+#define ERROR_CODE_SOCKET_BINDING_FAILED     -4
+#define ERROR_CODE_SOCKET_LISTENING_FAILED   -5
+#define ERROR_CODE_SOCKET_ACCEPTING_FAILED   -6
+#define ERROR_CODE_SOCKET_CONNECTING_FAILED  -7
+#define ERROR_CODE_SOCKET_SENDING_FAILED     -8
+#define ERROR_CODE_SOCKET_RECEIVING_FAILED   -9
+#define ERROR_CODE_SOCKET_DESTRUCTION_FAILED -10
+#define ERROR_CODE_HOST_ADDRESS_NOT_FOUND    -11
+#define ERROR_CODE_SOCKET_PORT_NOT_FOUND     -12
+#define ERROR_CODE_BINDER_ADDRESS_NOT_FOUND  -13
+#define ERROR_CODE_BINDER_PORT_NOT_FOUND     -14
 /* Server error codes */
-#define ERROR_CODE_NOT_CONNECTED_TO_BINDER -15
+#define ERROR_CODE_NOT_CONNECTED_TO_BINDER  -15
 #define ERROR_CODE_TERMINATE               -16
 
 /* Message codes */

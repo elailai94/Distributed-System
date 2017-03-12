@@ -10,7 +10,6 @@
 #include "network.h"
 #include "constants.h"
 #include "helper_functions.h"
-#include <iostream>
 
 using namespace std;
 
@@ -18,7 +17,7 @@ using namespace std;
 int createSocket() {
   int socket = ::socket(AF_INET, SOCK_STREAM, 0);
   if (socket < 0) {
-    return ERROR_CODE_SOCKET;
+    return ERROR_CODE_SOCKET_CREATION_FAILED;
   }
 
   return socket;
@@ -40,7 +39,7 @@ int setUpToListen(int socket) {
   int result = getaddrinfo(0, "0", &hostAddressHints,
     &hostAddressResults);
   if (result != 0) {
-     return ERROR_CODE_GETADDRINFO;
+     return ERROR_CODE_ADDR_INFO_NOT_FOUND;
   }
 
   // Binds the socket to the host's IP address and the next
@@ -49,7 +48,7 @@ int setUpToListen(int socket) {
     hostAddressResults->ai_addrlen);
   if (result < 0) {
     freeaddrinfo(hostAddressResults);
-    return ERROR_CODE_BIND;
+    return ERROR_CODE_SOCKET_BINDING_FAILED;
   }
 
   // Frees up memory allocated for the host address results
@@ -58,7 +57,7 @@ int setUpToListen(int socket) {
   // Listens for TCP connection requests from other hosts
   result = listen(socket, SOMAXCONN);
   if (result < 0) {
-    return ERROR_CODE_LISTEN;
+    return ERROR_CODE_SOCKET_LISTENING_FAILED;
   }
 
   return SUCCESS_CODE;
@@ -80,7 +79,7 @@ int setUpToConnect(int socket, string address, unsigned int port) {
   int result = getaddrinfo(address.c_str(), toString(port).c_str(),
     &hostAddressHints, &hostAddressResults);
   if (result != 0) {
-    return ERROR_CODE_GETADDRINFO;
+    return ERROR_CODE_ADDR_INFO_NOT_FOUND;
   }
 
   // Initiates the TCP connection request to another host
@@ -88,7 +87,7 @@ int setUpToConnect(int socket, string address, unsigned int port) {
     hostAddressResults->ai_addrlen);
   if (result < 0) {
     freeaddrinfo(hostAddressResults);
-    return ERROR_CODE_CONNECT;
+    return ERROR_CODE_SOCKET_CONNECTING_FAILED;
   }
 
   // Frees up memory allocated for the host address results
@@ -117,7 +116,7 @@ int getSocketPort(int socket) {
   int result = getsockname(socket, (struct sockaddr*) &hostAddress,
     &hostAddressLength);
   if (result < 0) {
-    return ERROR_CODE_GETSOCKNAME;
+    return ERROR_CODE_SOCKET_PORT_NOT_FOUND;
   }
 
   return ntohs(hostAddress.sin_port);
@@ -137,7 +136,7 @@ string getBinderAddress() {
 int getBinderPort() {
   char *binderPort = getenv("BINDER_PORT");
   if (binderPort == 0) {
-    return ERROR_CODE_GETBINDERPORT;
+    return ERROR_CODE_BINDER_PORT_NOT_FOUND;
   }
 
   return toInt(string(binderPort));
@@ -150,7 +149,7 @@ int acceptConnection(int socket) {
 
   int newSocket = accept(socket, &hostAddress, &hostAddressLength);
   if (newSocket < 0) {
-    return ERROR_CODE_ACCEPT;
+    return ERROR_CODE_SOCKET_ACCEPTING_FAILED;
   }
 
   return newSocket;
@@ -160,9 +159,8 @@ int acceptConnection(int socket) {
 int destroySocket(int socket) {
   int result = close(socket);
   if (result < 0) {
-    return ERROR_CODE_CLOSE;
+    return ERROR_CODE_SOCKET_DESTRUCTION_FAILED;
   }
 
-  cout << "Socket destroyed: " << result << endl;
   return SUCCESS_CODE;
 }

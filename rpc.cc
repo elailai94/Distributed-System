@@ -160,7 +160,7 @@ int rpcInit(){
   }
 	serverIdentifier = getHostAddress();
   if (serverIdentifier == "") {
-    return ERROR_CODE_GETHOSTNAME;
+    return ERROR_CODE_HOST_ADDRESS_NOT_FOUND;
   }
 	port = getSocketPort(welcomeSocket);
   if (port < 0) {
@@ -174,7 +174,7 @@ int rpcInit(){
   }
 	string binderAddress = getBinderAddress();
   if (binderAddress == "") {
-    return ERROR_CODE_GETBINDERADDRESS;
+    return ERROR_CODE_BINDER_ADDRESS_NOT_FOUND;
   }
 	int binderPort = getBinderPort();
   if (binderPort < 0) {
