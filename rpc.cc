@@ -297,7 +297,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   // CONNECT TO BINDER
 
 int rpcRegister(char * name, int *argTypes, skeleton f){
-  cout << "Running rpcExecute..." << endl;
+  cout << "Running rpcRegister..." << endl;
   RegisterRequestMessage regReqMsg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
 
   /*
@@ -414,12 +414,7 @@ int rpcExecute(){
               return -169;
             }
 
-            if (status == 0) {
-              // client has closed the connection
-              myToRemove.push_back(tempConnection);
-              return status;
-            }
-
+            cout <<"hey" << endl;
             if(segment->getType() == MSG_TYPE_EXECUTE_REQUEST){
               Message * cast = segment->getMessage();
               ExecuteRequestMessage * erm = dynamic_cast<ExecuteRequestMessage*>(cast);
@@ -454,6 +449,7 @@ int rpcExecute(){
               }
 
             }else if(segment->getType() == MSG_TYPE_TERMINATE){
+              cout << "Got to terminate" << endl;
               break;
               //and other clean up
             }

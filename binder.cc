@@ -65,6 +65,14 @@ void roundRobinPrint(){
   }
 }
 
+
+void serverListPrint(){
+  cout << "serverList Print: " << endl;
+  for(list<server_info *> ::const_iterator it = serverList.begin(); it != serverList.end(); it++){
+    cout << (*it)->server_identifier << ", " <<  (*it)->port << ", " <<  (*it)->socket<< endl;
+  }
+}
+
 void registration_request_handler(RegisterRequestMessage * message, int sock){
   const char * name = message->getName().c_str();
   int * argTypes = message->getArgTypes();
@@ -95,9 +103,24 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     roundRobinList.push_back(info);
 
     //Adding to serverList if server is not found
-    if( find(serverList.begin(), serverList.end(), entry) == serverList.end()){
+    bool serverExist = false;
+    for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
+    
+      if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
+          serverExist = true;
+          break;      
+        }
+    }
+
+    cout << "entry->server_identifier: " <<entry->server_identifier << endl;
+    cout << "entry->port: " <<entry->server_identifier << endl;
+    cout << " entry->socket: " << entry->socket << endl;
+
+    if(!serverExist){
       serverList.push_back(entry);
     }
+
+
   } else {
     bool sameLoc = false;
     list<server_info *> hostList = procLocDict[key];
@@ -117,9 +140,10 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     }
   }
 
-  mapPrint();
-  roundRobinPrint();
-
+  //mapPrint();
+  //roundRobinPrint();
+  serverListPrint();
+  
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
   regSuccessSeg.send(sock);
@@ -137,19 +161,19 @@ void location_request_handler(LocRequestMessage * message, int sock){
   int portToPushBack;
   int socketToPushBack;
 
-  cout << "Hunted name names: " << message->getName() << endl;
+  //cout << "Hunted name names: " << message->getName() << endl;
 
 
 	for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
     //If the name are the same and argTypes
-    cout << "Iterator names: " << (*it)->ps->name << endl;
+    //cout << "Iterator names: " << (*it)->ps->name << endl;
 
     if((*it)->ps->name == message->getName() && compareArr((*it)->ps->argTypes, message->getArgTypes() )){
       exist = true;
 
-      cout << "Attempt to send locSuccessMsg" << endl;
-      cout << "server_identifier: "<< (*it)->si->server_identifier << endl;
-      cout << "port: " << (*it)->si->port<< endl;
+      //cout << "Attempt to send locSuccessMsg" << endl;
+      //cout << "server_identifier: "<< (*it)->si->server_identifier << endl;
+      //cout << "port: " << (*it)->si->port<< endl;
 
       serverIdToPushBack = (*it)->si->server_identifier;
       portToPushBack = (*it)->si->port;
@@ -184,9 +208,9 @@ void location_request_handler(LocRequestMessage * message, int sock){
 void binder_terminate_handler() {
   cout << "Binder set to execute" << endl;
 
-  for (list<server_function_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
-
-    int sock = (*it)->si->socket;
+  for (list<server_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
+    cout << "Terminating server: " << (*it)->server_identifier << ", " <<  (*it)->port << ", " <<  (*it)->socket<< endl;
+    int sock = (*it)->socket;
     TerminateMessage termMsg = TerminateMessage();
     Segment termSeg = Segment(termMsg.getLength(), MSG_TYPE_TERMINATE, &termMsg);
     termSeg.send(sock);
