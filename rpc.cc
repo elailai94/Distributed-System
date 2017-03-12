@@ -144,7 +144,6 @@ void printArgs(int * argTypes, void  ** args){
   cout << endl;
 }
 
-
 // See interface (header file).
 int rpcInit(){
 	cout << "Running rpcInit..." << endl;
@@ -312,64 +311,56 @@ int rpcCall(char *name, int *argTypes, void **args) {
   return returnVal;
 }
 
-
-  //TODO:
-  // CREATE SERVER
-  // CONNECT TO BINDER
-
-int rpcRegister(char * name, int *argTypes, skeleton f){
+// TODO:
+// CREATE SERVER
+// CONNECT TO BINDER
+// See interface (header file).
+int rpcRegister(char *name, int *argTypes, skeleton f){
   cout << "Running rpcRegister..." << endl;
-  RegisterRequestMessage regReqMsg = RegisterRequestMessage(serverIdentifier, port, name, argTypes);
+
+  // TODO: Need to a check here to make sure serverBinderSocket is created beforehand
 
   /*
-  cout << "rpcRegister name: " << name << endl;
-  cout << "rpcRegister serverIdentifier: " << serverIdentifier << endl;
-  cout << "rpcRegister port: " << port << endl;
-  */
-
-
-  /*
-  We should get seg.send to give us some feed back maybe
-  int status = regReqMsg->send(serverBinderSocket);
-  */
-
-  Segment regReqSeg = Segment(regReqMsg.getLength(), MSG_TYPE_REGISTER_REQUEST, &regReqMsg);
-  int status = regReqSeg.send(serverBinderSocket);
-
-  cout << "When we register we use this serverBinderSocket: " << serverBinderSocket << endl;
-  //cout << "rpcRegister Status: " << status << endl;
-
-  if(status >= 0){
-    //Success
-    Segment *parsedSegment = 0;
-    int result = 0;
-    result = Segment::receive(serverBinderSocket, parsedSegment);
-
-    if(parsedSegment->getType() == MSG_TYPE_REGISTER_SUCCESS){
-
-      cout << "MSG_TYPE_REGISTER_SUCCESS" << endl;
-
-      Message * cast = parsedSegment->getMessage();
-      //Error Checking maybe
-      RegisterSuccessMessage * rsm = dynamic_cast<RegisterSuccessMessage*>(cast);
-
-      //struct procedure_signature k(string(name), argTypes);
-      struct procedure_signature k = procedure_signature(string(name), argTypes);
-
-      procSkeleDict[k] = f;
-
-      cout << "k: " << k.name << ", "<< f << endl;
-
-    }else if(parsedSegment->getType() == MSG_TYPE_REGISTER_FAILURE){
-      return 0;
-    }
-
-  }else if( status < 0){
-    //Error
-    return -99;
+   * Sends a register request message to the binder informing it
+   * that a server procedure with the indicated name and list of
+   * argument types is available at this server
+   */
+  RegisterRequestMessage messageToBinder =
+    RegisterRequestMessage(serverIdentifier, port, string(name), argTypes);
+  Segment segmentToBinder =
+    Segment(messageToBinder.getLength(), MSG_TYPE_REGISTER_REQUEST, &messageToBinder);
+  int result = segmentToBinder.send(serverBinderSocket);
+  if (result < 0) {
+    return result;
   }
 
-  return 1;
+  cout << "When we register we use this serverBinderSocket: " << serverBinderSocket << endl;
+
+  //Success
+  Segment *parsedSegment = 0;
+  int result = 0;
+  result = Segment::receive(serverBinderSocket, parsedSegment);
+
+  if(parsedSegment->getType() == MSG_TYPE_REGISTER_SUCCESS) {
+
+    cout << "MSG_TYPE_REGISTER_SUCCESS" << endl;
+
+    Message * cast = parsedSegment->getMessage();
+    //Error Checking maybe
+    RegisterSuccessMessage * rsm = dynamic_cast<RegisterSuccessMessage*>(cast);
+
+    //struct procedure_signature k(string(name), argTypes);
+    struct procedure_signature k = procedure_signature(string(name), argTypes);
+
+    procSkeleDict[k] = f;
+
+    cout << "k: " << k.name << ", "<< f << endl;
+
+  } else if (parsedSegment->getType() == MSG_TYPE_REGISTER_FAILURE) {
+    return 0;
+  }
+
+  return SUCCESS_CODE;
 }
 
 // See interface (header file).
