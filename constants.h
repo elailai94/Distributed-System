@@ -59,8 +59,10 @@
 #define ERROR_CODE_CLOSE                  -10
 #define ERROR_CODE_GETHOSTNAME            -11
 #define ERROR_CODE_GETSOCKNAME            -12
+#define ERROR_CODE_GETBINDERADDRESS       -13
+#define ERROR_CODE_GETBINDERPORT          -14
 /* Server error codes */
-#define ERROR_CODE_TERMINATE              -13
+#define ERROR_CODE_TERMINATE              -15
 
 /* Message codes */
 /*

@@ -37,7 +37,7 @@ static int clientBinderSocket = -1;
 // Global variables for server
 static map<procedure_signature, skeleton, ps_compare> procSkeleDict;
 static string serverIdentifier;
-static unsigned int port = 0;
+static int port = 0;
 
 static int serverBinderSocket = -1;
 static int welcomeSocket = 0;
@@ -158,9 +158,6 @@ int rpcInit(){
    * Creates a connection socket to be used for accepting connections
 	 * from clients
    */
-  cout << "B4 welcomeSocket is: " << welcomeSocket << endl;
-  cout << "B4 serverBinderSocket is: " << serverBinderSocket << endl;
-
 	welcomeSocket = createSocket();
   if (welcomeSocket < 0) {
     return welcomeSocket;
@@ -186,7 +183,13 @@ int rpcInit(){
     return serverBinderSocket;
   }
 	string binderAddress = getBinderAddress();
-	unsigned int binderPort = getBinderPort();
+  if (binderAddress == "") {
+    return ERROR_CODE_GETBINDERADDRESS;
+  }
+	int binderPort = getBinderPort();
+  if (binderPort < 0) {
+    return binderPort;
+  }
 	result = setUpToConnect(serverBinderSocket, binderAddress, binderPort);
   if (result < 0) {
     return result;

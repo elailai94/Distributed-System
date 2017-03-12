@@ -53,7 +53,7 @@ int Segment::send(int dataTransferSocket) {
   // Writes the message out to the data transfer socket
   result = message->send(dataTransferSocket);
   if (result < 0) {
-    return ERROR_CODE_SEND;
+    return result;
   }
 
   return SUCCESS_CODE;
@@ -83,7 +83,7 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
         RegisterRequestMessage::receive(dataTransferSocket, parsedMessage,
           length);
       if (result < 0) {
-        return ERROR_CODE_RECV;
+        return result;
       }
       break;
 
@@ -92,7 +92,7 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
         RegisterSuccessMessage::receive(dataTransferSocket, parsedMessage,
           length);
       if (result < 0) {
-        return ERROR_CODE_RECV;
+        return result;
       }
       break;
 
@@ -101,7 +101,7 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
         RegisterFailureMessage::receive(dataTransferSocket, parsedMessage,
           length);
       if (result < 0) {
-        return ERROR_CODE_RECV;
+        return result;
       }
       break;
 
@@ -109,7 +109,7 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
       result = LocRequestMessage::receive(dataTransferSocket, parsedMessage,
         length);
       if (result < 0) {
-        return ERROR_CODE_RECV;
+        return result;
       }
       break;
 
@@ -117,7 +117,7 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
       result = LocSuccessMessage::receive(dataTransferSocket, parsedMessage,
         length);
       if (result < 0) {
-        return ERROR_CODE_RECV;
+        return result;
       }
       break;
 
@@ -125,7 +125,7 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
       result = LocFailureMessage::receive(dataTransferSocket, parsedMessage,
         length);
       if (result < 0) {
-        return ERROR_CODE_RECV;
+        return result;
       }
       break;
 
@@ -134,7 +134,7 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
         ExecuteRequestMessage::receive(dataTransferSocket, parsedMessage,
           length);
       if (result < 0) {
-        return ERROR_CODE_RECV;
+        return result;
       }
       break;
 
@@ -143,7 +143,7 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
         ExecuteSuccessMessage::receive(dataTransferSocket, parsedMessage,
           length);
       if (result < 0) {
-        return ERROR_CODE_RECV;
+        return result;
       }
       break;
 
@@ -152,7 +152,7 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
         ExecuteFailureMessage::receive(dataTransferSocket, parsedMessage,
           length);
       if (result < 0) {
-        return ERROR_CODE_RECV;
+        return result;
       }
       break;
 
@@ -160,7 +160,7 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
       result = TerminateMessage::receive(dataTransferSocket, parsedMessage,
         length);
       if (result < 0) {
-        return ERROR_CODE_RECV;
+        return result;
       }
       break;
   }

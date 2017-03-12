@@ -22,7 +22,7 @@ int getSocketPort(int socket);
 std::string getBinderAddress();
 
 // Returns the port number of the binder
-unsigned int getBinderPort();
+int getBinderPort();
 
 // Creates a new socket when a connection is made to the socket
 int acceptConnection(int socket);

@@ -126,13 +126,21 @@ int getSocketPort(int socket) {
 // See interface (header file).
 string getBinderAddress() {
   char *binderAddress = getenv("BINDER_ADDRESS");
+  if (binderAddress == 0) {
+    return string("");
+  }
+
   return string(binderAddress);
 }
 
 // See interface (header file).
-unsigned int getBinderPort() {
+int getBinderPort() {
   char *binderPort = getenv("BINDER_PORT");
-  return toUnsignedInt(string(binderPort));
+  if (binderPort == 0) {
+    return ERROR_CODE_GETBINDERPORT;
+  }
+
+  return toInt(string(binderPort));
 }
 
 // See interface (header file).
@@ -156,5 +164,5 @@ int destroySocket(int socket) {
   }
 
   cout << "Socket destroyed: " << result << endl;
-  return result;
+  return SUCCESS_CODE;
 }

@@ -53,11 +53,11 @@ string toString(unsigned int number) {
 }
 
 // See interface (header file).
-unsigned int toUnsignedInt(string text) {
+int toInt(string text) {
   stringstream ss;
   ss << text;
 
-  unsigned int number = 0;
+  int number = 0;
   ss >> number;
 
   return number;
