@@ -136,7 +136,7 @@ int main() {
   int s3 = rpcCall("g3", argTypes3, args3);
   /* test the return of f3 */
   printf(
-    "\nEXPECTED return of f3 is: 110 109 108 107 106 105 104 103 102 101 11\n"
+    "\nEXPECTED return of g3 is: 110 109 108 107 106 105 104 103 102 101 11\n"
   );
 
   if (s3 >= 0) {
