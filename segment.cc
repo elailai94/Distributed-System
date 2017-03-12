@@ -1,5 +1,4 @@
 #include <sys/socket.h>
-#include <iostream>
 
 #include "segment.h"
 #include "message.h"
@@ -14,8 +13,6 @@
 #include "execute_failure_message.h"
 #include "terminate_message.h"
 #include "constants.h"
-
-using namespace std;
 
 // See interface (header file).
 Segment::Segment(unsigned int length, unsigned int type, Message *message)
@@ -163,10 +160,8 @@ int Segment::receive(int dataTransferSocket, Segment *&parsedSegment) {
       result = TerminateMessage::receive(dataTransferSocket, parsedMessage,
         length);
       if (result < 0) {
-        cout << "Not receiving terminate message..." << endl;
         return ERROR_CODE_RECV;
       }
-      cout << "Received terminate message..." << endl;
       break;
   }
 
