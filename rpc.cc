@@ -408,12 +408,12 @@ int rpcExecute(){
             Segment * segment = 0;
             status = Segment::receive(tempConnection, segment);
 
-            
+           /* 
             if (status < 0) {
               myToRemove.push_back(tempConnection);
               continue;              
             }
-
+            */
 
             if(segment->getType() == MSG_TYPE_EXECUTE_REQUEST){
               Message * cast = segment->getMessage();
