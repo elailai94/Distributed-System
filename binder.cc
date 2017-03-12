@@ -214,7 +214,7 @@ void binder_terminate_handler() {
     Segment termSeg = Segment(termMsg.getLength(), MSG_TYPE_TERMINATE, &termMsg);
     termSeg.send((*it)->socket);
 
-    sleep(1);
+
   }
 
 

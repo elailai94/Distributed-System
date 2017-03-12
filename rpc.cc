@@ -411,6 +411,7 @@ int rpcExecute(){
         if (result < 0) {
           // Closes the connection socket and removes it from the
           // all sockets set
+          cout << "Bad result, im closing" << endl;
           destroySocket(i);
           FD_CLR(i, &allSockets);
           continue;
