@@ -157,6 +157,36 @@ int main() {
   printf("\nEXPECTED return of f4: some integer other than 0");
   printf("\nACTUAL return of f4: %d\n", s4);
 
+
+  /* prepare the arguments for f0 */
+  int a5 = 5;
+  int b5 = 10;
+  int count5 = 3;
+  int return5;
+  int argTypes5[count5 + 1];
+  void **args5;
+
+  argTypes5[0] = (1 << ARG_OUTPUT) | (ARG_INT << 16);
+  argTypes5[1] = (1 << ARG_INPUT) | (ARG_INT << 16);
+  argTypes5[2] = (1 << ARG_INPUT) | (ARG_INT << 16);
+  argTypes5[3] = 0;
+
+  args5 = (void **)malloc(count5 * sizeof(void *));
+  args5[0] = (void *)&return5;
+  args5[1] = (void *)&a5;
+  args5[2] = (void *)&b5;
+
+  /* rpcCalls */
+  int s5 = rpcCall("g0", argTypes5, args5);
+  /* test the return f0 */
+  printf("\nEXPECTED return of g5 is: %d\n", a5 * b5);
+  if (s5 >= 0) {
+    printf("ACTUAL return of g5 is: %d\n", *((int *)(args5[0])));
+  }
+  else {
+    printf("Error: %d\n", s5);
+  }
+
   /* rpcTerminate */
   printf("\ndo you want to terminate? y/n: ");
   if (getchar() == 'y')
