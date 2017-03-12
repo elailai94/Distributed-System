@@ -140,7 +140,7 @@ void printArgs(int * argTypes, void  ** args){
         float *argFloatArray = (float *) arg;
         for (int j = 0; j < argTypeArrayLength; j++) {
           cout << argFloatArray[j] << ", ";
-        } 
+        }
         cout << endl;
         break;
       }
@@ -162,24 +162,39 @@ int rpcInit(){
   cout << "B4 serverBinderSocket is: " << serverBinderSocket << endl;
 
 	welcomeSocket = createSocket();
-	setUpToListen(welcomeSocket);
+  if (welcomeSocket < 0) {
+    return welcomeSocket;
+  }
+	int result = setUpToListen(welcomeSocket);
+  if (result < 0) {
+    return result;
+  }
 	serverIdentifier = getHostAddress();
+  if (serverIdentifier == "") {
+    return ERROR_CODE_GETHOSTNAME;
+  }
 	port = getSocketPort(welcomeSocket);
-
+  if (port < 0) {
+    return port;
+  }
 
   cout << "This servers welcomeSocket is: " << welcomeSocket << endl;
 
-	// Opens a connection to the binderz 
+	// Opens a connection to the binderz
 	serverBinderSocket = createSocket();
+  if (serverBinderSocket < 0) {
+    return serverBinderSocket;
+  }
 	string binderAddress = getBinderAddress();
 	unsigned int binderPort = getBinderPort();
-	setUpToConnect(serverBinderSocket, binderAddress, binderPort);
-  connectedToBinder = true;
+	result = setUpToConnect(serverBinderSocket, binderAddress, binderPort);
+  if (result < 0) {
+    return result;
+  }
 
   cout << "This servers serverBinderSocket is: " << serverBinderSocket << endl;
 
-
-  return 0;
+  return SUCCESS_CODE;
 }
 
 // See interface (header file).
