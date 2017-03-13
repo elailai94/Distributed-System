@@ -211,14 +211,14 @@ void location_request_handler(LocRequestMessage * message, int sock){
        }
       */
 
-      cout << "What the heck: "<< (*it)->si->port << ", " << portToPushBack << ", " <<(*it)->si->socket << ", " << socketToPushBack<< endl;
+      //cout << "What the heck: "<< (*it)->si->port << ", " << portToPushBack << ", " <<(*it)->si->socket << ", " << socketToPushBack<< endl;
        if((*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
           cout <<"WTF WHILLIS" << endl;
           roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
        }
       
     }
-    //roundRobinPrint();
+    roundRobinPrint();
   }else {
     int reasoncode = -5; // Need actual reasoncode
     LocFailureMessage locFailMsg = LocFailureMessage(reasoncode);
