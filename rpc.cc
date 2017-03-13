@@ -215,7 +215,6 @@ int rpcCall(char *name, int *argTypes, void **args) {
     return result;
   }
 
-  //cout << "Error was handled" << endl;
   /*
    * Sends a location request message to the binder to locate the server for
    * the procedure
@@ -228,8 +227,6 @@ int rpcCall(char *name, int *argTypes, void **args) {
     return result;
   }
 
-  //cout << "Loc was sent" << endl;
-
   /*
    * Receives a location response message from the binder indicating whether
    * the retrieval of the server location is successful or not
@@ -239,8 +236,6 @@ int rpcCall(char *name, int *argTypes, void **args) {
   if (result < 0) {
     return result;
   }
-
- //cout << "result was recieved: " << result << endl;
 
   result = SUCCESS_CODE;
 	switch (segmentFromBinder->getType()) {
@@ -327,10 +322,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
     }
   }
 
-  cout << "ohman3" << endl;
-
   destroySocket(serverSocket); // Closes the connection to the server
-  cout << "Got here..." << endl;
   return result;
 }
 
@@ -462,7 +454,6 @@ int rpcExecute(){
       }
 
       if (i == welcomeSocket) {
-
         /*
          * Creates the connection socket when a connection is made
          * to the welcome socket
