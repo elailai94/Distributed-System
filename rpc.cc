@@ -457,10 +457,14 @@ int rpcExecute(){
       continue;
     }
 
+    cout << "While" << endl;
+
     for (int i = 0; i <= maxSocket; i++) {
       if (!FD_ISSET(i, &readSockets)) {
         continue;
       }
+
+      cout << "For" << endl;
 
       if (i == welcomeSocket) {
         cout << "New" << endl;
