@@ -215,20 +215,20 @@ void location_request_handler(LocRequestMessage * message, int sock){
  		}
 	}
 
-  if(exist){
+  if (exist) {
 
 
     list<server_function_info *>::iterator i = roundRobinList.begin();
     list<server_function_info *> tempList;
-    
+
     while (i != roundRobinList.end()){
         //bool isActive = (*i)->update();
         //if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
-       
-        if ((*i)->si->port == portToPushBack && (*i)->si->socket == socketToPushBack){   
+
+        if ((*i)->si->port == portToPushBack && (*i)->si->socket == socketToPushBack){
             tempList.push_back(*i);
-            roundRobinList.erase(i++);  // alternatively, i = items.erase(i);    
-        }else{
+            roundRobinList.erase(i++);  // alternatively, i = items.erase(i);
+        } else {
             ++i;
         }
     }
@@ -236,9 +236,9 @@ void location_request_handler(LocRequestMessage * message, int sock){
     roundRobinList.splice(roundRobinList.end(), tempList);
 
     roundRobinPrint();
-  }else {
-    int reasoncode = -5; // Need actual reasoncode
-    LocFailureMessage locFailMsg = LocFailureMessage(reasoncode);
+  } else {
+    LocFailureMessage locFailMsg =
+      LocFailureMessage(ERROR_CODE_PROCEDURE_NOT_FOUND);
     Segment locFailSeg = Segment(locFailMsg.getLength(), MSG_TYPE_LOC_FAILURE, &locFailMsg);
     locFailSeg.send(sock);
   }
