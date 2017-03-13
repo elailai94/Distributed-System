@@ -144,10 +144,10 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
        server_info * new_msg_loc = new server_info(server_identifier, port, sock);
        hostList.push_back(new_msg_loc);
     
-       int *memArgTypes = copyArgTypes(argTypes);
+       int *newArgTypes = copyArgTypes(argTypes);
   
-       procedure_signature * newKey = new procedure_signature(name, memArgTypes);
-       server_function_info * info = new server_function_info(new_msg_loc, newKey);
+       procedure_signature * useFulKey = new procedure_signature(name, newArgTypes);
+       server_function_info * info = new server_function_info(new_msg_loc, useFulKey);
 
        //Adding to roundRobinList if server is not found
        roundRobinList.push_back(info);
@@ -155,8 +155,8 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   }
 
   //mapPrint();
-  //roundRobinPrint();
-  serverListPrint();
+  roundRobinPrint();
+  //serverListPrint();
 
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
