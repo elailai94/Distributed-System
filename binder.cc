@@ -205,10 +205,15 @@ void location_request_handler(LocRequestMessage * message, int sock){
   if(exist){
     for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
 
+      /*
        if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
           roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
-          
        }
+      */
+       if((*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
+          roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
+       }
+      
     }
     //roundRobinPrint();
   }else {
