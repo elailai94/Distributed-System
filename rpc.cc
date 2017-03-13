@@ -245,6 +245,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   result = SUCCESS_CODE;
 	switch (segmentFromBinder->getType()) {
 		case MSG_TYPE_LOC_SUCCESS: {
+      cout << "WHY GOD WHY" << endl;
       LocSuccessMessage *messageFromBinder =
 				dynamic_cast<LocSuccessMessage *>(segmentFromBinder->getMessage());
 		  serverAddress = messageFromBinder->getServerIdentifier();
@@ -508,7 +509,9 @@ int rpcExecute(){
           continue;
         }
 
-        cout << "flag1" << endl;
+        cout << "flag1, print segment->getType(): " << endl;
+        cout << segment->getType() << endl;
+
         switch (segment->getType()) {
           case MSG_TYPE_EXECUTE_REQUEST: {
             cout << "flag2" << endl;
