@@ -223,13 +223,12 @@ void location_request_handler(LocRequestMessage * message, int sock){
     
     while (i != roundRobinList.end()){
         //bool isActive = (*i)->update();
-        //if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
-       
+        //if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){       
         if ((*i)->si->port == portToPushBack && (*i)->si->socket == socketToPushBack){   
-            tempList.push_back(*i);
-            roundRobinList.erase(i++);  // alternatively, i = items.erase(i);    
+          tempList.push_back(*i);
+          roundRobinList.erase(i++);  // alternatively, i = items.erase(i);    
         }else{
-            ++i;
+          ++i;
         }
     }
 
