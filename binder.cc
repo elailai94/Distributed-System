@@ -210,6 +210,8 @@ void location_request_handler(LocRequestMessage * message, int sock){
     
     while (i != roundRobinList.end()){
         //bool isActive = (*i)->update();
+        //if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
+       
         if ((*i)->si->port == portToPushBack && (*i)->si->socket == socketToPushBack){   
             tempList.push_back(*i);
             roundRobinList.erase(i++);  // alternatively, i = items.erase(i);    
@@ -220,21 +222,6 @@ void location_request_handler(LocRequestMessage * message, int sock){
 
     roundRobinList.splice(roundRobinList.end(), tempList);
 
-    //for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
-
-      /*
-       if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
-          roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
-       }
-      */
-
-      //cout << "What the heck: "<< (*it)->si->port << ", " << portToPushBack << ", " <<(*it)->si->socket << ", " << socketToPushBack<< endl;
-    /*   if((*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
-          cout <<"WTF WHILLIS" << endl;
-          roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
-       }
-      
-    }*/
     roundRobinPrint();
   }else {
     int reasoncode = -5; // Need actual reasoncode
@@ -253,6 +240,7 @@ void binder_terminate_handler() {
     TerminateMessage termMsg = TerminateMessage();
     Segment termSeg = Segment(termMsg.getLength(), MSG_TYPE_TERMINATE, &termMsg);
     termSeg.send((*it)->socket);
+    sleep(1);
   }
 
 
