@@ -233,7 +233,6 @@ int rpcCall(char *name, int *argTypes, void **args) {
    */
   Segment *segmentFromBinder = 0;
   result = Segment::receive(clientBinderSocket, segmentFromBinder);
-  destroySocket(clientBinderSocket); // Closes the connection to the binder
   if (result < 0) {
     return result;
   }
@@ -258,6 +257,8 @@ int rpcCall(char *name, int *argTypes, void **args) {
   if (result < 0) {
     return result;
   }
+
+  destroySocket(clientBinderSocket); // Closes the connection to the binder
 
   // Opens a connection to the server
   int serverSocket = createSocket();
@@ -294,7 +295,6 @@ int rpcCall(char *name, int *argTypes, void **args) {
    */
   Segment *segmentFromServer = 0;
   result = Segment::receive(serverSocket, segmentFromServer);
-  destroySocket(serverSocket); // Closes the connection to the server
   if (result < 0) {
     return result;
   }
@@ -323,6 +323,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
     }
   }
 
+  destroySocket(serverSocket); // Closes the connection to the server
   cout << "Got here..." << endl;
   return result;
 }
