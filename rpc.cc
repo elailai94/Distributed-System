@@ -542,7 +542,7 @@ int rpcExecute(){
 
           case MSG_TYPE_TERMINATE: {
             cout << "Got to terminate!" << endl;
-            // Checks if the termination request comes from the binder (?)
+            // Checks if the termination request comes from the binder
             if (i != serverBinderSocket) {
                continue;
             }
