@@ -106,20 +106,16 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     bool serverExist = false;
     for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
 
-      if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
+      //if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
+        if( (*it)->port == entry->port &&  (*it)->socket == entry->socket){
+          cout << "entry->port" << entry->port  << ", " << (*it)->port  << endl;
           serverExist = true;
           break;
         }
     }
 
-    //cout << "entry->server_identifier: " <<entry->server_identifier << endl;
-    //cout << "entry->port: " <<entry->port << endl;
-    //cout << "entry->socket: " << entry->socket << endl;
-
-    //cout << "sock: " << sock << endl;
-
-
     if(!serverExist){
+      cout << "why doesnt this work" << endl;
       serverList.push_back(entry);
     }
 
@@ -139,24 +135,41 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     }
 
   	if(!sameLoc){ //same procedure different socket
-       cout << "same proc different loc" << endl;
-        
-       server_info * new_msg_loc = new server_info(server_identifier, port, sock);
-       hostList.push_back(new_msg_loc);
-    
-       int *newArgTypes = copyArgTypes(argTypes);
-  
-       procedure_signature * useFulKey = new procedure_signature(name, newArgTypes);
-       server_function_info * info = new server_function_info(new_msg_loc, useFulKey);
+      cout << "same proc different loc" << endl;
 
-       //Adding to roundRobinList if server is not found
-       roundRobinList.push_back(info);
+      server_info * new_msg_loc = new server_info(server_identifier, port, sock);
+      hostList.push_back(new_msg_loc);
+
+      int *newArgTypes = copyArgTypes(argTypes);
+
+      procedure_signature * useFulKey = new procedure_signature(name, newArgTypes);
+      server_function_info * info = new server_function_info(new_msg_loc, useFulKey);
+
+      //Adding to roundRobinList if server is not found
+      roundRobinList.push_back(info);
+
+      //Adding to serverList if server is not found
+      bool serverExist = false;
+      for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
+
+        //if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
+          if( (*it)->port == new_msg_loc->port &&  (*it)->socket == new_msg_loc->socket){
+            cout << "new_msg_loc->port" << new_msg_loc->port  << ", " << (*it)->port  << endl;
+            serverExist = true;
+            break;
+          }
+      }
+
+      if(!serverExist){
+        cout << "why doesnt this work" << endl;
+        serverList.push_back(new_msg_loc);
+      }
     }
   }
 
   //mapPrint();
-  roundRobinPrint();
-  //serverListPrint();
+  //roundRobinPrint();
+  serverListPrint();
 
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
@@ -203,21 +216,25 @@ void location_request_handler(LocRequestMessage * message, int sock){
 	}
 
   if(exist){
-    for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
 
-      /*
-       if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
-          roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
-       }
-      */
 
-      //cout << "What the heck: "<< (*it)->si->port << ", " << portToPushBack << ", " <<(*it)->si->socket << ", " << socketToPushBack<< endl;
-       if((*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
-          cout <<"WTF WHILLIS" << endl;
-          roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
-       }
-      
+    list<server_function_info *>::iterator i = roundRobinList.begin();
+    list<server_function_info *> tempList;
+    
+    while (i != roundRobinList.end()){
+        //bool isActive = (*i)->update();
+        //if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
+       
+        if ((*i)->si->port == portToPushBack && (*i)->si->socket == socketToPushBack){   
+            tempList.push_back(*i);
+            roundRobinList.erase(i++);  // alternatively, i = items.erase(i);    
+        }else{
+            ++i;
+        }
     }
+
+    roundRobinList.splice(roundRobinList.end(), tempList);
+
     roundRobinPrint();
   }else {
     int reasoncode = -5; // Need actual reasoncode
@@ -236,6 +253,7 @@ void binder_terminate_handler() {
     TerminateMessage termMsg = TerminateMessage();
     Segment termSeg = Segment(termMsg.getLength(), MSG_TYPE_TERMINATE, &termMsg);
     termSeg.send((*it)->socket);
+    sleep(1);
   }
 
 
