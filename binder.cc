@@ -140,7 +140,9 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   	if(!sameLoc){ //same procedure different socket
        server_info * new_msg_loc = new server_info(server_identifier, port, sock);
        hostList.push_back(new_msg_loc);
-      
+    
+       int *memArgTypes = copyArgTypes(argTypes);
+  
        procedure_signature * newKey = new procedure_signature(name, memArgTypes);
        server_function_info * info = new server_function_info(new_msg_loc, newKey);
 
