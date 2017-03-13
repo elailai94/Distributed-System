@@ -239,7 +239,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   }
 
   result = SUCCESS_CODE;
-	switch (parsedSegment->getType()) {
+	switch (segmentFromBinder->getType()) {
 		case MSG_TYPE_LOC_SUCCESS: {
       LocSuccessMessage *messageFromBinder =
 				dynamic_cast<LocSuccessMessage *>(segmentFromBinder->getMessage());
@@ -300,7 +300,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   }
 
   result = SUCCESS_CODE;
-  switch (parsedSegmentEsm->getType()) {
+  switch (segmentFromServer->getType()) {
     case MSG_TYPE_EXECUTE_SUCCESS: {
       ExecuteSuccessMessage *messageFromServer =
         dynamic_cast<ExecuteSuccessMessage *>(segmentFromServer->getMessage());
