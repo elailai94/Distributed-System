@@ -122,6 +122,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
 
 
     if(!serverExist){
+      cout << "why doesnt this work" << endl;
       serverList.push_back(entry);
     }
 
