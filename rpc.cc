@@ -410,6 +410,9 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
 }
 
 void *executeSkeleton(void *args) {
+
+  cout << "In the Pthread" << endl;
+
   void **argsArray = (void **) args;
   string skelName = *((string *) argsArray[0]);
   int *skelArgTypes = (int *) argsArray[1];
@@ -446,6 +449,9 @@ void *executeSkeleton(void *args) {
 
   // Terminates the current thread
   //pthread_exit(0);
+
+  removeThreadFromList(pthread_self());
+
 }
 
 // See interface (header file).
@@ -577,9 +583,6 @@ int rpcExecute(){
             pthread_t sendingThread ;
             pthread_create(&sendingThread, NULL, &executeSkeleton, (void *)executeSkeletonArgs);
             _runningThreads[sendingThread] = true;
-
-
-            removeThreadFromList(pthread_self());
 
             break;
           }
