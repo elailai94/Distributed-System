@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <unistd.h>
+#include <pthread.h>
 #include <vector>
 #include <algorithm>
 #include <list>
@@ -393,6 +394,48 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
   return result;
 }
 
+void *executeSkeleton(void *args) {
+  void **argsArray = (void **) args;
+  string skelName = *((string *) argsArray[0]);
+  int *skelArgTypes = (int *) argsArray[1];
+  void **skelArgs = (void **) argsArray[2];
+  int skelSocket = *((int *) argsArray[3]);
+
+  cout << "Skel Name: " << skelName << endl;
+  printArgTypes(skelArgTypes);
+  printArgs(skelArgTypes, skelArgs);
+  cout << "Skel Socket: " << skelSocket << endl;
+/*
+  result = skel(messageFromClient->getArgTypes(), messageFromClient->getArgs());
+
+  printArgs(messageFromClient->getArgTypes(), messageFromClient->getArgs());
+
+  if (result == 0) {
+
+    ExecuteSuccessMessage messageToClient =
+      ExecuteSuccessMessage(messageFromClient->getName(),
+        messageFromClient->getArgTypes(), messageFromClient->getArgs());
+    Segment segmentToClient =
+      Segment(messageToClient.getLength(), MSG_TYPE_EXECUTE_SUCCESS,
+        &messageToClient);
+    int tstatus = segmentToClient.send(i);
+    cout << "ExecuteSuccessMessage status: " << tstatus << endl;
+
+  } else {
+
+    ExecuteFailureMessage messageToClient = ExecuteFailureMessage(result);
+    Segment segmentToClient =
+      Segment(messageToClient.getLength(), MSG_TYPE_EXECUTE_FAILURE,
+        &messageToClient);
+    segmentToClient.send(i);
+
+  }
+
+  // Terminates the current thread
+  pthread_exit(0);
+*/
+}
+
 // See interface (header file).
 int rpcExecute(){
   cout << "Running rpcExecute..." << endl;
@@ -510,31 +553,13 @@ int rpcExecute(){
               cout << "Skel is null" << endl;
             }
 
-            result = skel(messageFromClient->getArgTypes(), messageFromClient->getArgs());
-
-            cout << "Result: " << result << endl;
-            printArgs(messageFromClient->getArgTypes(), messageFromClient->getArgs());
-
-            if (result == 0) {
-
-              ExecuteSuccessMessage messageToClient =
-                ExecuteSuccessMessage(messageFromClient->getName(),
-                  messageFromClient->getArgTypes(), messageFromClient->getArgs());
-              Segment segmentToClient =
-                Segment(messageToClient.getLength(), MSG_TYPE_EXECUTE_SUCCESS,
-                  &messageToClient);
-              int tstatus = segmentToClient.send(i);
-              cout << "ExecuteSuccessMessage status: " << tstatus << endl;
-
-            } else {
-
-              ExecuteFailureMessage messageToClient = ExecuteFailureMessage(result);
-              Segment segmentToClient =
-                Segment(messageToClient.getLength(), MSG_TYPE_EXECUTE_FAILURE,
-                  &messageToClient);
-              segmentToClient.send(i);
-
-            }
+            // Prepares executeSkeletonArgs
+            void **executeSkeletonArgs = new void*[4]();
+            executeSkeletonArgs[0] = (void *) &messageFromClient->getName();
+            executeSkeletonArgs[1] = (void *) messageFromClient->getArgTypes();
+            executeSkeletonArgs[2] = (void *) messageFromClient->getArgs();
+            executeSkeletonArgs[3] = (void *) &i;
+            executeSkeleton(executeSkeletonArgs);
 
             break;
           }
