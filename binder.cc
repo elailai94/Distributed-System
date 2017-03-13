@@ -153,8 +153,8 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
       for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
 
         //if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
-          if( (*it)->port == entry->port &&  (*it)->socket == entry->socket){
-            cout << "entry->port" << entry->port  << ", " << (*it)->port  << endl;
+          if( (*it)->port == new_msg_loc->port &&  (*it)->socket == new_msg_loc->socket){
+            cout << "new_msg_loc->port" << new_msg_loc->port  << ", " << (*it)->port  << endl;
             serverExist = true;
             break;
           }
@@ -162,7 +162,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
 
       if(!serverExist){
         cout << "why doesnt this work" << endl;
-        serverList.push_back(entry);
+        serverList.push_back(new_msg_loc);
       }
     }
   }
