@@ -405,20 +405,17 @@ void *executeSkeleton(void *args) {
   printArgTypes(skelArgTypes);
   printArgs(skelArgTypes, skelArgs);
   cout << "Skel Socket: " << skelSocket << endl;
-/*
-  result = skel(messageFromClient->getArgTypes(), messageFromClient->getArgs());
 
-  printArgs(messageFromClient->getArgTypes(), messageFromClient->getArgs());
+  int result = skel(skelArgTypes, skelArgs);
 
   if (result == 0) {
 
     ExecuteSuccessMessage messageToClient =
-      ExecuteSuccessMessage(messageFromClient->getName(),
-        messageFromClient->getArgTypes(), messageFromClient->getArgs());
+      ExecuteSuccessMessage(skelName, skelArgTypes, skelArgs);
     Segment segmentToClient =
       Segment(messageToClient.getLength(), MSG_TYPE_EXECUTE_SUCCESS,
         &messageToClient);
-    int tstatus = segmentToClient.send(i);
+    int tstatus = segmentToClient.send(skelSocket);
     cout << "ExecuteSuccessMessage status: " << tstatus << endl;
 
   } else {
@@ -427,13 +424,12 @@ void *executeSkeleton(void *args) {
     Segment segmentToClient =
       Segment(messageToClient.getLength(), MSG_TYPE_EXECUTE_FAILURE,
         &messageToClient);
-    segmentToClient.send(i);
+    segmentToClient.send(skelSocket);
 
   }
 
   // Terminates the current thread
-  pthread_exit(0);
-*/
+  //pthread_exit(0);
 }
 
 // See interface (header file).
