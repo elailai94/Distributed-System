@@ -194,7 +194,7 @@ void location_request_handler(LocRequestMessage * message, int sock){
       locSuccessSeg.send(sock);
 
       //When we have identified the correct procedure_signature use splice and move that service to the end
-      roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
+      //roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
       break;
  		}
 	}
@@ -204,9 +204,10 @@ void location_request_handler(LocRequestMessage * message, int sock){
 
        if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
           roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
+          
        }
     }
-    roundRobinPrint();
+    //roundRobinPrint();
   }else {
     int reasoncode = -5; // Need actual reasoncode
     LocFailureMessage locFailMsg = LocFailureMessage(reasoncode);
