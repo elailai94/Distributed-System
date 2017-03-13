@@ -33,7 +33,7 @@ static map<procedure_signature, skeleton, ps_compare> procSkeleDict;
 static string serverIdentifier;
 static int port = -1;
 static int welcomeSocket = -1;
-static int binderSocket = -1;
+static int serverBinderSocket = -1;
 static bool onSwitch = true;
 
 void mapPrint(){
@@ -168,9 +168,9 @@ int rpcInit(){
   }
 
 	// Opens a connection to the binder
-	binderSocket = createSocket();
-  if (binderSocket < 0) {
-    return binderSocket;
+	serverBinderSocket = createSocket();
+  if (serverBinderSocket < 0) {
+    return serverBinderSocket;
   }
 	string binderAddress = getBinderAddress();
   if (binderAddress == "") {
@@ -180,12 +180,12 @@ int rpcInit(){
   if (binderPort < 0) {
     return binderPort;
   }
-	result = setUpToConnect(binderSocket, binderAddress, binderPort);
+	result = setUpToConnect(serverBinderSocket, binderAddress, binderPort);
   if (result < 0) {
     return result;
   }
 
-  cout << "This servers binderSocket is: " << binderSocket << endl;
+  cout << "This servers serverBinderSocket is: " << serverBinderSocket << endl;
 
   return SUCCESS_CODE;
 }
@@ -196,96 +196,118 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
 	string serverAddress;
 	unsigned int serverPort = 0;
-	int status;
 
-  cout << "Connecting to binder..." << endl;
+  // Opens a connection to the binder
 	int clientBinderSocket = createSocket();
-
+  if (clientBinderSocket < 0) {
+    return clientBinderSocket;
+  }
 	string binderAddress = getBinderAddress();
-	unsigned int binderPort = getBinderPort();
-	status = setUpToConnect(clientBinderSocket, binderAddress, binderPort);
+  if (binderAddress == "") {
+    return ERROR_CODE_BINDER_ADDRESS_NOT_FOUND;
+  }
+	int binderPort = getBinderPort();
+  if (binderPort < 0) {
+    return binderPort;
+  }
+	int result = setUpToConnect(clientBinderSocket, binderAddress, binderPort);
+  if (result < 0) {
+    return result;
+  }
 
-  cout << "Connected to binder..." << endl;
-	//do something with returnVal
-
+  /*
+   * Sends a location request message to the binder to locate the server for
+   * the procedure
+   */
   LocRequestMessage messageToBinder = LocRequestMessage(string(name), argTypes);
   Segment segmentToBinder =
 	  Segment(messageToBinder.getLength(), MSG_TYPE_LOC_REQUEST, &messageToBinder);
-  int binder_status = segmentToBinder.send(clientBinderSocket);
-  cout << "LOC REQUEST message sent..." << endl;
+  result = segmentToBinder.send(clientBinderSocket);
+  if (result < 0) {
+    return result;
+  }
 
-	//maybe error check with binder_status
-  //TODO: SEGMENT FAULT IF NOT IN THIS FOR LOOP
-	/**Server stuff **/
-	if(binder_status >= 0){
+  /*
+   * Receives a location response message from the binder indicating whether
+   * the retrieval of the server location is successful or not
+   */
+  Segment *segmentFromBinder = 0;
+  result = Segment::receive(clientBinderSocket, segmentFromBinder);
+  if (result < 0) {
+    return result;
+  }
 
-    Segment *parsedSegment = 0;
-    int tempStatus = 0;
-    tempStatus = Segment::receive(clientBinderSocket, parsedSegment);
+  result = SUCCESS_CODE;
+	switch (segmentFromBinder->getType()) {
+		case MSG_TYPE_LOC_SUCCESS: {
+      LocSuccessMessage *messageFromBinder =
+				dynamic_cast<LocSuccessMessage *>(segmentFromBinder->getMessage());
+		  serverAddress = messageFromBinder->getServerIdentifier();
+			serverPort = messageFromBinder->getPort();
+      break;
+		}
 
-    Message *messageFromBinder = parsedSegment->getMessage();
-		switch (parsedSegment->getType()) {
-			case MSG_TYPE_LOC_SUCCESS: {
-				cout << "LOC SUCCESS message received..." << endl;
-        LocSuccessMessage *lsm =
-				  dynamic_cast<LocSuccessMessage *>(messageFromBinder);
-				serverAddress = lsm->getServerIdentifier();
-				serverPort = lsm->getPort();
-				cout << "serverAddress: " << serverAddress << endl;
-        cout << "serverPort: " << serverPort << endl;
-        break;
-			}
-
-			case MSG_TYPE_LOC_FAILURE: {
-        cout << "LOC FAILURE message received..." << endl;
-				return -1;
-				break;
-			}
+		case MSG_TYPE_LOC_FAILURE: {
+      LocFailureMessage *messageFromBinder =
+        dynamic_cast<LocFailureMessage *>(segmentFromBinder->getMessage());
+			result = messageFromBinder->getReasonCode();
+			break;
 		}
 	}
+  if (result < 0) {
+    return result;
+  }
 
-  destroySocket(clientBinderSocket);
+  destroySocket(clientBinderSocket); // Closes the connection to the binder
 
-  cout << "Connecting to server..." << endl;
+  // Opens a connection to the server
   int serverSocket = createSocket();
-	int status1 = setUpToConnect(serverSocket, serverAddress, serverPort);
+  if (serverSocket < 0) {
+    return serverSocket;
+  }
+	result = setUpToConnect(serverSocket, serverAddress, serverPort);
+  if (result < 0) {
+    return result;
+  }
 
-  cout << "status1: " << status1 << endl;
   cout << "Server Socket: " << serverSocket << endl;
   cout << "Server Address: " << serverAddress << endl;
   cout << "Server Port: " << serverPort << endl;
   cout << "Connected to server..." << endl;
 
-  ExecuteRequestMessage exeReqMsg = ExecuteRequestMessage(name, argTypes, args);
-  Segment exeReqSeg = Segment(exeReqMsg.getLength(), MSG_TYPE_EXECUTE_REQUEST, &exeReqMsg);
-  int status2 =  exeReqSeg.send(serverSocket);
+  /*
+   * Sends an execute request message to the server to execute the
+   * procedure
+   */
+  ExecuteRequestMessage messageToServer =
+    ExecuteRequestMessage(string(name), argTypes, args);
+  Segment segmentToServer =
+    Segment(messageToServer.getLength(), MSG_TYPE_EXECUTE_REQUEST,
+      &messageToServer);
+  result = messageToServer.send(serverSocket);
+  if (result < 0) {
+    return result;
+  }
 
-  cout << "Status of exeRegMsg send: " << status2 << endl;
+  /*
+   * Receives a execution response message from the binder indicating
+   * whether the execution of the procedure is successful or not
+   */
+  Segment *segmentFromServer = 0;
+  result = Segment::receive(serverSocket, segmentFromServer);
+  if (result < 0) {
+    return result;
+  }
 
-  int returnVal = 0;
-
-
-  Segment * parsedSegmentEsm = 0;
-  int status3 = 0;
-  status3 = Segment::receive(serverSocket, parsedSegmentEsm);
-  cout << "Flag 1" << endl;
-
-  //instead we have
-
-  cout << "Flag 2" << endl;
-
-  switch (parsedSegmentEsm->getType()) {
+  result = SUCCESS_CODE;
+  switch (segmentFromServer->getType()) {
     case MSG_TYPE_EXECUTE_SUCCESS: {
-      cout << "EXECUTE SUCCESS message received..." << endl;
+      ExecuteSuccessMessage *messageFromServer =
+        dynamic_cast<ExecuteSuccessMessage *>(segmentFromServer->getMessage());
+      void** newArgs = messageFromServer->getArgs();
 
-      Message * msg = parsedSegmentEsm->getMessage();
-      ExecuteSuccessMessage * esm = dynamic_cast<ExecuteSuccessMessage*>(msg);
-
-      // TODO FIX: name = esm->getName();
-      //argTypes = esm->getArgTypes();
-      void** newArgs = esm->getArgs();
-      unsigned numOfArgs = countNumOfArgTypes(esm->getArgTypes()) - 1;
-
+      unsigned int numOfArgs =
+        countNumOfArgTypes(messageFromServer->getArgTypes()) - 1;
       for (unsigned int i = 0; i < numOfArgs; i++) {
         args[i] = newArgs[i];
       }
@@ -294,17 +316,16 @@ int rpcCall(char *name, int *argTypes, void **args) {
     }
 
     case MSG_TYPE_EXECUTE_FAILURE: {
-      cout << "EXECUTE FAILURE message received..." << endl;
-
-      Message * cast = parsedSegmentEsm->getMessage();
-      ExecuteFailureMessage * efm = dynamic_cast<ExecuteFailureMessage*>(cast);
-      returnVal = efm->getReasonCode();
+      ExecuteFailureMessage *messageFromServer =
+        dynamic_cast<ExecuteFailureMessage*>(segmentFromServer->getMessage());
+      result = messageFromServer->getReasonCode();
       break;
     }
   }
 
-  destroySocket(serverSocket);
-  return returnVal;
+  destroySocket(serverSocket); // Closes the connection to the server
+  cout << "Got here..." << endl;
+  return result;
 }
 
 // TODO:
@@ -318,7 +339,7 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
    * Checks if this server is connected to the binder already
    * (i.e.: rpcInit is called before rpcRegister)
    */
-  if (binderSocket < 0) {
+  if (serverBinderSocket < 0) {
     return ERROR_CODE_NOT_CONNECTED_TO_BINDER;
   }
 
@@ -331,7 +352,7 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
     RegisterRequestMessage(serverIdentifier, port, string(name), argTypes);
   Segment segmentToBinder =
     Segment(messageToBinder.getLength(), MSG_TYPE_REGISTER_REQUEST, &messageToBinder);
-  int result = segmentToBinder.send(binderSocket);
+  int result = segmentToBinder.send(serverBinderSocket);
   if (result < 0) {
     return result;
   }
@@ -342,7 +363,7 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
    * or not
    */
   Segment *segmentFromBinder = 0;
-  result = Segment::receive(binderSocket, segmentFromBinder);
+  result = Segment::receive(serverBinderSocket, segmentFromBinder);
   if (result < 0) {
     return result;
   }
@@ -390,7 +411,7 @@ int rpcExecute(){
    * Checks if this server is connected to the binder already
    * (i.e.: rpcInit is called before rpcExecute)
    */
-  if (binderSocket < 0) {
+  if (serverBinderSocket < 0) {
     return ERROR_CODE_NOT_CONNECTED_TO_BINDER;
   }
 
@@ -416,7 +437,7 @@ int rpcExecute(){
    * Adds the welcome socket to the all sockets set and sets
    * it as the maximum socket so far
    */
-  FD_SET(binderSocket, &allSockets);
+  FD_SET(serverBinderSocket, &allSockets);
   FD_SET(welcomeSocket, &allSockets);
   int maxSocket = welcomeSocket;
 
@@ -463,7 +484,6 @@ int rpcExecute(){
          * reads into it from the connection socket
          */
         Segment *segment = 0;
-        result = 0;
         result = Segment::receive(i, segment);
         if (result < 0) {
           /*
@@ -478,36 +498,46 @@ int rpcExecute(){
 
         switch (segment->getType()) {
           case MSG_TYPE_EXECUTE_REQUEST: {
-            Message * cast = segment->getMessage();
-            ExecuteRequestMessage * erm = dynamic_cast<ExecuteRequestMessage*>(cast);
+            ExecuteRequestMessage *messageFromClient =
+              dynamic_cast<ExecuteRequestMessage *>(segment->getMessage());
+            procedure_signature *ps =
+              new procedure_signature(messageFromClient->getName(),
+                messageFromClient->getArgTypes());
 
-            procedure_signature * ps = new procedure_signature(erm->getName(), erm->getArgTypes());
-
-            cout << "erm->getName(): " << erm->getName() << endl;
-            printArgTypes(erm->getArgTypes());
-            printArgs(erm->getArgTypes(), erm->getArgs());
+            cout << "messageFromClient->getName(): " << messageFromClient->getName() << endl;
+            printArgTypes(messageFromClient->getArgTypes());
+            printArgs(messageFromClient->getArgTypes(), messageFromClient->getArgs());
 
             skeleton skel = procSkeleDict[*ps];
 
-            if(skel == 0){
+            if (skel == 0) {
               cout << "Skel is null" << endl;
             }
 
-            int result = skel(erm->getArgTypes(), erm->getArgs());
+            result = skel(messageFromClient->getArgTypes(), messageFromClient->getArgs());
 
             cout << "Result: " << result << endl;
-            printArgs(erm->getArgTypes(), erm->getArgs());
+            printArgs(messageFromClient->getArgTypes(), messageFromClient->getArgs());
 
-            if(result == 0 ){
-              ExecuteSuccessMessage exeSuccessMsg = ExecuteSuccessMessage(erm->getName(), erm->getArgTypes(), erm->getArgs());
-              Segment exeSuccessSeg = Segment(exeSuccessMsg.getLength(), MSG_TYPE_EXECUTE_SUCCESS, &exeSuccessMsg);
-              int tstatus = exeSuccessSeg.send(i);
+            if (result == 0) {
+
+              ExecuteSuccessMessage messageToClient =
+                ExecuteSuccessMessage(messageFromClient->getName(),
+                  messageFromClient->getArgTypes(), messageFromClient->getArgs());
+              Segment segmentToClient =
+                Segment(messageToClient.getLength(), MSG_TYPE_EXECUTE_SUCCESS,
+                  &messageToClient);
+              int tstatus = segmentToClient.send(i);
               cout << "ExecuteSuccessMessage status: " << tstatus << endl;
 
-            }else{
-              ExecuteFailureMessage exeFailMsg = ExecuteFailureMessage(result);
-              Segment exeFailSeg = Segment(exeFailMsg.getLength(), MSG_TYPE_EXECUTE_FAILURE, &exeFailMsg);
-              int tstatus = exeFailSeg.send(i);
+            } else {
+
+              ExecuteFailureMessage messageToClient = ExecuteFailureMessage(result);
+              Segment segmentToClient =
+                Segment(messageToClient.getLength(), MSG_TYPE_EXECUTE_FAILURE,
+                  &messageToClient);
+              segmentToClient.send(i);
+
             }
 
             break;
@@ -515,8 +545,9 @@ int rpcExecute(){
 
           case MSG_TYPE_TERMINATE: {
             cout << "Got to terminate!" << endl;
-            if (i != binderSocket) {
-               return ERROR_CODE_TERMINATE;
+            // Checks if the termination request comes from the binder (?)
+            if (i != serverBinderSocket) {
+               continue;
             }
             onSwitch = false;
             break;
@@ -528,38 +559,45 @@ int rpcExecute(){
   }
 
   // Destroys the welcome socket
-  cout << "We are destorying the welcomeSocket: " << welcomeSocket << endl;
   destroySocket(welcomeSocket);
+  cout << "We are destroying the welcomeSocket: " << welcomeSocket << endl;
 
   return SUCCESS_CODE;
 }
 
+// See interface (header file).
 int rpcCacheCall() {
-  cout << "Running rpcCacheCall..." << endl;
 	return SUCCESS_CODE;
 }
 
+// See interface (header file).
 int rpcTerminate() {
 	cout << "Running rpcTerminate..." << endl;
 
-  cout << "Connecting to binder..." << endl;
+  // Opens a connection to the binder
   int clientBinderSocket = createSocket();
-
+  if (clientBinderSocket < 0) {
+    return clientBinderSocket;
+  }
   string binderAddress = getBinderAddress();
-  unsigned int binderPort = getBinderPort();
-  int status = setUpToConnect(clientBinderSocket, binderAddress, binderPort);
-
-  cout << "Connected to binder..." << endl;
-
+  if (binderAddress == "") {
+    return ERROR_CODE_BINDER_ADDRESS_NOT_FOUND;
+  }
+  int binderPort = getBinderPort();
+  if (binderPort < 0) {
+    return binderPort;
+  }
+  int result = setUpToConnect(clientBinderSocket, binderAddress, binderPort);
+  if (result < 0) {
+    return result;
+  }
 
   // Sends a terminate message to the binder
   TerminateMessage messageToBinder = TerminateMessage();
   Segment segmentToBinder =
     Segment(messageToBinder.getLength(), MSG_TYPE_TERMINATE, &messageToBinder);
-  int binder_status = segmentToBinder.send(clientBinderSocket);
-  cout << segmentToBinder.getType() << endl;
+  result = segmentToBinder.send(clientBinderSocket);
 
-  cout << "clientBinderSocket: " << clientBinderSocket << endl;
   // Closes the connection to the binder
   destroySocket(clientBinderSocket);
 
