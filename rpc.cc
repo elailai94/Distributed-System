@@ -267,7 +267,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   destroySocket(clientBinderSocket); // Closes the connection to the binder
 
   // Opens a connection to the server
-  int serverSocket = createSocket();
+  int serversocket = createSocket();
   if (serverSocket < 0) {
     return serverSocket;
   }
@@ -295,6 +295,8 @@ int rpcCall(char *name, int *argTypes, void **args) {
     return result;
   }
 
+  cout << "ohman1" << endl;
+
   /*
    * Receives a execution response message from the binder indicating
    * whether the execution of the procedure is successful or not
@@ -304,6 +306,8 @@ int rpcCall(char *name, int *argTypes, void **args) {
   if (result < 0) {
     return result;
   }
+
+  cout << "ohman2" << endl;
 
   result = SUCCESS_CODE;
   switch (segmentFromServer->getType()) {
@@ -328,6 +332,8 @@ int rpcCall(char *name, int *argTypes, void **args) {
       break;
     }
   }
+
+  cout << "ohman3" << endl;
 
   destroySocket(serverSocket); // Closes the connection to the server
   cout << "Got here..." << endl;
