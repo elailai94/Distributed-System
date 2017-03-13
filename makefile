@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -g -Wall -pthread
+CXXFLAGS = -g -Wall -lpthread
 MAKEFILE_NAME = ${firstword ${MAKEFILE_LIST}}
 SOURCES = $(wildcard *.cc)
 
