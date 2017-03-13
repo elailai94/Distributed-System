@@ -210,6 +210,8 @@ void location_request_handler(LocRequestMessage * message, int sock){
           roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
        }
       */
+
+        cout << "What the heck: "<< (*it)->si->port << ", " << portToPushBack << endl;
        if((*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
           roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
        }
