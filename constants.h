@@ -66,6 +66,8 @@
 #define ERROR_CODE_NOT_CONNECTED_TO_BINDER     -16
 #define ERROR_CODE_NO_REGISTERED_PROCEDURES    -17
 #define ERROR_CODE_INVALID_TERMINATION_REQUEST -18
+/* Binder error codes */
+#define ERROR_CODE_PROCEDURE_NOT_FOUND         -19
 
 /* Message codes */
 /*
