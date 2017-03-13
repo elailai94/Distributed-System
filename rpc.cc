@@ -457,14 +457,14 @@ int rpcExecute(){
       continue;
     }
 
-    cout << "While" << endl;
+    //cout << "While" << endl;
 
     for (int i = 0; i <= maxSocket; i++) {
       if (!FD_ISSET(i, &readSockets)) {
         continue;
       }
 
-      cout << "For" << endl;
+      //cout << "For" << endl;
 
       if (i == welcomeSocket) {
         cout << "New" << endl;
@@ -508,10 +508,14 @@ int rpcExecute(){
           continue;
         }
 
+        cout << "flag1" << endl;
         switch (segment->getType()) {
           case MSG_TYPE_EXECUTE_REQUEST: {
+            cout << "flag2" << endl;
+            
             ExecuteRequestMessage *messageFromClient =
               dynamic_cast<ExecuteRequestMessage *>(segment->getMessage());
+            cout << "flag3" << endl;
             procedure_signature *ps =
               new procedure_signature(messageFromClient->getName(),
                 messageFromClient->getArgTypes());
