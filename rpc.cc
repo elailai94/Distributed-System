@@ -215,7 +215,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
     return result;
   }
 
-  cout << "Error was handled" << endl;
+  //cout << "Error was handled" << endl;
   /*
    * Sends a location request message to the binder to locate the server for
    * the procedure
@@ -228,7 +228,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
     return result;
   }
 
-  cout << "Loc was sent" << endl;
+  //cout << "Loc was sent" << endl;
 
   /*
    * Receives a location response message from the binder indicating whether
@@ -240,7 +240,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
     return result;
   }
 
- cout << "result was recieved: " << result << endl;
+ //cout << "result was recieved: " << result << endl;
 
   result = SUCCESS_CODE;
 	switch (segmentFromBinder->getType()) {
@@ -446,6 +446,8 @@ int rpcExecute(){
   FD_SET(welcomeSocket, &allSockets);
   int maxSocket = welcomeSocket;
 
+  cout << "Execute init was fine" << endl;
+
   while (onSwitch) {
     readSockets = allSockets;
 
@@ -461,7 +463,7 @@ int rpcExecute(){
       }
 
       if (i == welcomeSocket) {
-
+        cout << "New" << endl;
         /*
          * Creates the connection socket when a connection is made
          * to the welcome socket
@@ -484,6 +486,7 @@ int rpcExecute(){
 
       } else {
 
+        cout << "Old" << endl;
         /*
          * Creates a segment to receive data from the client/binder and
          * reads into it from the connection socket
