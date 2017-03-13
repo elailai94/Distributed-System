@@ -555,7 +555,7 @@ int rpcExecute(){
 
             // Prepares executeSkeletonArgs
             void **executeSkeletonArgs = new void*[4]();
-            executeSkeletonArgs[0] = (void *) &(messageFromClient->getName());
+            executeSkeletonArgs[0] = (void *) new string(messageFromClient->getName()));
             executeSkeletonArgs[1] = (void *) messageFromClient->getArgTypes();
             executeSkeletonArgs[2] = (void *) messageFromClient->getArgs();
             executeSkeletonArgs[3] = (void *) &i;
