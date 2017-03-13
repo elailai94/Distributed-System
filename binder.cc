@@ -211,8 +211,9 @@ void location_request_handler(LocRequestMessage * message, int sock){
        }
       */
 
-        cout << "What the heck: "<< (*it)->si->port << ", " << portToPushBack << endl;
+      cout << "What the heck: "<< (*it)->si->port << ", " << portToPushBack << ", " <<(*it)->si->socket << ", " << socketToPushBack<< endl;
        if((*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
+          cout <<"WTF WHILLIS" << end;
           roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
        }
       
