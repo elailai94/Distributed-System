@@ -302,7 +302,6 @@ int rpcCall(char *name, int *argTypes, void **args) {
   result = SUCCESS_CODE;
   switch (segmentFromServer->getType()) {
     case MSG_TYPE_EXECUTE_SUCCESS: {
-      cout << "Got here..." << endl;
       ExecuteSuccessMessage *messageFromServer =
         dynamic_cast<ExecuteSuccessMessage *>(segmentFromServer->getMessage());
       void** newArgs = messageFromServer->getArgs();
@@ -324,6 +323,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
     }
   }
 
+  cout << "Got here..." << endl;
   return result;
 }
 
