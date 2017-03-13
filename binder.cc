@@ -108,7 +108,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
 
       //if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
         if( (*it)->port == entry->port &&  (*it)->socket == entry->socket){
-        
+          cout << "entry->port" << entry->port  << ", " << (*it)->port  << endl;
           serverExist = true;
           break;
         }
