@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <list>
 #include <map>
+#include <pthread.h>
 
 #include "segment.h"
 #include "message.h"
@@ -36,6 +37,9 @@ static int port = -1;
 static int welcomeSocket = -1;
 static int serverBinderSocket = -1;
 static bool onSwitch = true;
+
+static pthread_mutex_t * _threadLock;
+static map<pthread_t, bool> _runningThreads;
 
 void mapPrint(){
   cout << "procSkeleDict size: "<<procSkeleDict.size() << endl;
@@ -141,6 +145,17 @@ void printArgs(int * argTypes, void  ** args){
     }
   }
   cout << endl;
+}
+
+void removeThreadFromList(pthread_t key)
+{
+
+  if(_threadLock)
+  {
+    pthread_mutex_lock(_threadLock);
+    _runningThreads.erase(key);
+    pthread_mutex_unlock(_threadLock);
+  }
 }
 
 // See interface (header file).
@@ -557,7 +572,14 @@ int rpcExecute(){
             executeSkeletonArgs[2] = (void *) messageFromClient->getArgs();
             executeSkeletonArgs[3] = (void *) &i;
             executeSkeletonArgs[4] = (void *) &skel;
-            executeSkeleton(executeSkeletonArgs);
+            
+            //executeSkeleton(executeSkeletonArgs);
+            pthread_t sendingThread ;
+            pthread_create(&sendingThread, NULL, &executeSkeleton, (void *)executeSkeletonArgs);
+            _runningThreads[sendingThread] = true;
+
+
+            removeThreadFromList(pthread_self());
 
             break;
           }
