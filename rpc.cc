@@ -245,7 +245,6 @@ int rpcCall(char *name, int *argTypes, void **args) {
   result = SUCCESS_CODE;
 	switch (segmentFromBinder->getType()) {
 		case MSG_TYPE_LOC_SUCCESS: {
-      cout << "WHY GOD WHY" << endl;
       LocSuccessMessage *messageFromBinder =
 				dynamic_cast<LocSuccessMessage *>(segmentFromBinder->getMessage());
 		  serverAddress = messageFromBinder->getServerIdentifier();
@@ -295,8 +294,6 @@ int rpcCall(char *name, int *argTypes, void **args) {
     return result;
   }
 
-  cout << "ohman1" << endl;
-
   /*
    * Receives a execution response message from the binder indicating
    * whether the execution of the procedure is successful or not
@@ -305,11 +302,9 @@ int rpcCall(char *name, int *argTypes, void **args) {
   result = Segment::receive(serverSocket, segmentFromServer);
   
   if (result < 0) {
-    cout << "result: " << result << endl;
     return result;
   }
 
-  cout << "ohman2" << endl;
 
   result = SUCCESS_CODE;
   switch (segmentFromServer->getType()) {
@@ -335,10 +330,8 @@ int rpcCall(char *name, int *argTypes, void **args) {
     }
   }
 
-  cout << "ohman3" << endl;
 
   destroySocket(serverSocket); // Closes the connection to the server
-  cout << "Got here..." << endl;
   return result;
 }
 
@@ -455,8 +448,6 @@ int rpcExecute(){
   FD_SET(welcomeSocket, &allSockets);
   int maxSocket = welcomeSocket;
 
-  cout << "Execute init was fine" << endl;
-
   while (onSwitch) {
     readSockets = allSockets;
 
@@ -476,7 +467,6 @@ int rpcExecute(){
       //cout << "For" << endl;
 
       if (i == welcomeSocket) {
-        cout << "New" << endl;
         /*
          * Creates the connection socket when a connection is made
          * to the welcome socket
@@ -499,7 +489,6 @@ int rpcExecute(){
 
       } else {
 
-        cout << "Old" << endl;
         /*
          * Creates a segment to receive data from the client/binder and
          * reads into it from the connection socket
@@ -517,16 +506,11 @@ int rpcExecute(){
           continue;
         }
 
-        cout << "flag1, print segment->getType(): " << endl;
-        cout << segment->getType() << endl;
-
         switch (segment->getType()) {
           case MSG_TYPE_EXECUTE_REQUEST: {
-            cout << "flag2" << endl;
             
             ExecuteRequestMessage *messageFromClient =
               dynamic_cast<ExecuteRequestMessage *>(segment->getMessage());
-            cout << "flag3" << endl;
             procedure_signature *ps =
               new procedure_signature(messageFromClient->getName(),
                 messageFromClient->getArgTypes());
