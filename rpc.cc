@@ -147,7 +147,7 @@ int rpcInit(){
 	cout << "Running rpcInit..." << endl;
 
 	/*
-   * Creates a connection socket to be used for accepting connections
+   * Creates a welcome socket to be used for accepting connections
 	 * from clients
    */
 	welcomeSocket = createSocket();
@@ -167,7 +167,7 @@ int rpcInit(){
     return port;
   }
 
-	// Opens a connection to the binderz
+	// Opens a connection to the binder
 	binderSocket = createSocket();
   if (binderSocket < 0) {
     return binderSocket;
@@ -378,6 +378,30 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
 // See interface (header file).
 int rpcExecute(){
   cout << "Running rpcExecute..." << endl;
+  /*
+   * Checks if this server has created a welcome socket already
+   * (i.e.: rpcInit is called before rpcExecute)
+   */
+  if (welcomeSocket < 0) {
+    return ERROR_CODE_WELCOME_SOCKET_NOT_CREATED;
+  }
+
+  /*
+   * Checks if this server is connected to the binder already
+   * (i.e.: rpcInit is called before rpcExecute)
+   */
+  if (binderSocket < 0) {
+    return ERROR_CODE_NOT_CONNECTED_TO_BINDER;
+  }
+
+  /*
+   * Checks if there are any registered procedures to serve
+   * (i.e.: rpcRegister is called before rpcExecute)
+   */
+  if (procSkeleDict.size() == 0) {
+    return ERROR_CODE_NO_REGISTERED_PROCEDURES;
+  }
+
   fd_set allSockets;
   fd_set readSockets;
 
