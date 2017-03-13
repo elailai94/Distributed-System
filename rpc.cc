@@ -147,11 +147,11 @@ void printArgs(int * argTypes, void  ** args){
   cout << endl;
 }
 
-void removeThreadFromList(pthread_t key)
-{
+void removeThreadFromList(pthread_t key){
 
-  if(_threadLock)
-  {
+  cout << "removeThreadFromList" << endl;
+  if(_threadLock){
+    cout << "If threa_lock" << endl;
     pthread_mutex_lock(_threadLock);
     _runningThreads.erase(key);
     pthread_mutex_unlock(_threadLock);
