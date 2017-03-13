@@ -141,6 +141,9 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
        server_info * new_msg_loc = new server_info(server_identifier, port, sock);
        hostList.push_back(new_msg_loc);
       
+       procedure_signature * newKey = new procedure_signature(name, memArgTypes);
+       server_function_info * info = new server_function_info(new_msg_loc, newKey);
+
        //Adding to roundRobinList if server is not found
        roundRobinList.push_back(info);
     }
