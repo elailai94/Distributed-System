@@ -267,7 +267,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   destroySocket(clientBinderSocket); // Closes the connection to the binder
 
   // Opens a connection to the server
-  int serversocket = createSocket();
+  int serverSocket = createSocket();
   if (serverSocket < 0) {
     return serverSocket;
   }
