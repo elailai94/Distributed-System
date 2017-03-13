@@ -456,6 +456,7 @@ void *executeSkeleton(void *args) {
 
   removeThreadFromList(pthread_self());
 
+  return 0; //Return Null
 }
 
 // See interface (header file).
