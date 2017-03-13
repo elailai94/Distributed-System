@@ -400,13 +400,14 @@ void *executeSkeleton(void *args) {
   int *skelArgTypes = (int *) argsArray[1];
   void **skelArgs = (void **) argsArray[2];
   int skelSocket = *((int *) argsArray[3]);
+  skeleton skelSkeleton = *((skeleton *) argsArray[4]);
 
   cout << "Skel Name: " << skelName << endl;
   printArgTypes(skelArgTypes);
   printArgs(skelArgTypes, skelArgs);
   cout << "Skel Socket: " << skelSocket << endl;
 
-  int result = skel(skelArgTypes, skelArgs);
+  int result = skelSkeleton(skelArgTypes, skelArgs);
 
   if (result == 0) {
 
@@ -550,11 +551,12 @@ int rpcExecute(){
             }
 
             // Prepares executeSkeletonArgs
-            void **executeSkeletonArgs = new void*[4]();
+            void **executeSkeletonArgs = new void*[5]();
             executeSkeletonArgs[0] = (void *) new string(messageFromClient->getName());
             executeSkeletonArgs[1] = (void *) messageFromClient->getArgTypes();
             executeSkeletonArgs[2] = (void *) messageFromClient->getArgs();
             executeSkeletonArgs[3] = (void *) &i;
+            executeSkeletonArgs[4] = (void *) &skel;
             executeSkeleton(executeSkeletonArgs);
 
             break;
