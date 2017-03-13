@@ -303,7 +303,9 @@ int rpcCall(char *name, int *argTypes, void **args) {
    */
   Segment *segmentFromServer = 0;
   result = Segment::receive(serverSocket, segmentFromServer);
+  
   if (result < 0) {
+    cout << "result: " << result << endl;
     return result;
   }
 
