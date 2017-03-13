@@ -203,6 +203,10 @@ int rpcInit(){
 
   cout << "This servers serverBinderSocket is: " << serverBinderSocket << endl;
 
+  //Thread Stuff
+  _threadLock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
+  pthread_mutex_init(_threadLock, NULL);
+
   return SUCCESS_CODE;
 }
 
@@ -601,6 +605,32 @@ int rpcExecute(){
       }
     }
   }
+
+  //Thread handling
+  vector<pthread_t> livingThreads;
+
+  // make a copy of all living threads while within the lock
+  pthread_mutex_lock(_threadLock);
+  map<pthread_t, bool>::iterator existingThreadsBegin = _runningThreads.begin();
+
+  while(existingThreadsBegin != _runningThreads.end()){
+    livingThreads.push_back(existingThreadsBegin->first);
+    existingThreadsBegin++;
+  }
+  
+  pthread_mutex_unlock(_threadLock);
+
+  // wait until the list of living threads are all done
+  for(int i = 0; i < livingThreads.size(); i++){
+    pthread_join(livingThreads[i], NULL);
+  }
+
+
+  pthread_mutex_destroy(_threadLock);
+  free(_threadLock);
+
+  //End of thread handling 
+
 
   // Destroys the welcome socket
   destroySocket(welcomeSocket);
