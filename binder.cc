@@ -129,15 +129,18 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     list<server_info *> hostList = procLocDict[key];
 
     for (list<server_info *>::iterator it = hostList.begin(); it != hostList.end(); it++) {
-      if((*it)->socket == sock){
+      if((*it)->server_identifier == server_identifier && (*it)->port == port  && (*it)->socket == sock){
         //If they have the same socket, then must be same server_address/port
         //The same procedure signature already exists on the same location
         //TODO: Move to end of round robin or something, maybe we should keep
+        cout << "Exact same proc and loc" << endl;
         sameLoc = true;
       }
     }
 
   	if(!sameLoc){ //same procedure different socket
+       cout << "same proc different loc" << endl;
+        
        server_info * new_msg_loc = new server_info(server_identifier, port, sock);
        hostList.push_back(new_msg_loc);
     
