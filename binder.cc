@@ -140,6 +140,9 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   	if(!sameLoc){ //same procedure different socket
        server_info * new_msg_loc = new server_info(server_identifier, port, sock);
        hostList.push_back(new_msg_loc);
+      
+       //Adding to roundRobinList if server is not found
+       roundRobinList.push_back(info);
     }
   }
 
