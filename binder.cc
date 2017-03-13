@@ -61,7 +61,7 @@ void mapPrint(){
 void roundRobinPrint(){
   cout << "roundRobin Print: ";
   for(list<server_function_info *> ::const_iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
-    cout << (*it)->ps->name << endl;
+    cout <<(*it)->si->server_identifier << ", "<<(*it)->si->port << ", "<<(*it)->ps->name << endl;
   }
 }
 
@@ -112,11 +112,11 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
         }
     }
 
-    cout << "entry->server_identifier: " <<entry->server_identifier << endl;
-    cout << "entry->port: " <<entry->port << endl;
-    cout << "entry->socket: " << entry->socket << endl;
+    //cout << "entry->server_identifier: " <<entry->server_identifier << endl;
+    //cout << "entry->port: " <<entry->port << endl;
+    //cout << "entry->socket: " << entry->socket << endl;
 
-    cout << "sock: " << sock << endl;
+    //cout << "sock: " << sock << endl;
 
 
     if(!serverExist){
@@ -129,23 +129,34 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     list<server_info *> hostList = procLocDict[key];
 
     for (list<server_info *>::iterator it = hostList.begin(); it != hostList.end(); it++) {
-      if((*it)->socket == sock){
+      if((*it)->server_identifier == server_identifier && (*it)->port == port  && (*it)->socket == sock){
         //If they have the same socket, then must be same server_address/port
         //The same procedure signature already exists on the same location
         //TODO: Move to end of round robin or something, maybe we should keep
+        cout << "Exact same proc and loc" << endl;
         sameLoc = true;
       }
     }
 
   	if(!sameLoc){ //same procedure different socket
+       cout << "same proc different loc" << endl;
+        
        server_info * new_msg_loc = new server_info(server_identifier, port, sock);
        hostList.push_back(new_msg_loc);
+    
+       int *newArgTypes = copyArgTypes(argTypes);
+  
+       procedure_signature * useFulKey = new procedure_signature(name, newArgTypes);
+       server_function_info * info = new server_function_info(new_msg_loc, useFulKey);
+
+       //Adding to roundRobinList if server is not found
+       roundRobinList.push_back(info);
     }
   }
 
   //mapPrint();
-  //roundRobinPrint();
-  serverListPrint();
+  roundRobinPrint();
+  //serverListPrint();
 
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
@@ -186,7 +197,7 @@ void location_request_handler(LocRequestMessage * message, int sock){
       locSuccessSeg.send(sock);
 
       //When we have identified the correct procedure_signature use splice and move that service to the end
-      roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
+      //roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
       break;
  		}
 	}
@@ -194,10 +205,20 @@ void location_request_handler(LocRequestMessage * message, int sock){
   if(exist){
     for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
 
+      /*
        if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
           roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
        }
+      */
+
+      //cout << "What the heck: "<< (*it)->si->port << ", " << portToPushBack << ", " <<(*it)->si->socket << ", " << socketToPushBack<< endl;
+       if((*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
+          cout <<"WTF WHILLIS" << endl;
+          roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
+       }
+      
     }
+    roundRobinPrint();
   }else {
     int reasoncode = -5; // Need actual reasoncode
     LocFailureMessage locFailMsg = LocFailureMessage(reasoncode);
@@ -232,7 +253,7 @@ int request_handler(Segment * segment, int sock){
 
   }else if (segment->getType() == MSG_TYPE_LOC_REQUEST){
 
-    cout << "Loc Request" << endl;
+    //cout << "Loc Request" << endl;
 
     Message * cast2 = segment->getMessage();
     LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(cast2);
@@ -304,7 +325,7 @@ int main() {
           continue;
         }
 
-        cout << "WE heard from connectionSocket: " << connectionSocket << endl;
+        //cout << "WE heard from connectionSocket: " << connectionSocket << endl;
         // Adds the connection socket to the all sockets set
         FD_SET(connectionSocket, &allSockets);
 
