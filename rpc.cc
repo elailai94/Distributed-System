@@ -290,7 +290,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   Segment segmentToServer =
     Segment(messageToServer.getLength(), MSG_TYPE_EXECUTE_REQUEST,
       &messageToServer);
-  result = messageToServer.send(serverSocket);
+  result = segmentToServer.send(serverSocket);
   if (result < 0) {
     return result;
   }
