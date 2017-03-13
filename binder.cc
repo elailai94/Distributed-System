@@ -114,13 +114,6 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
         }
     }
 
-    //cout << "entry->server_identifier: " <<entry->server_identifier << endl;
-    //cout << "entry->port: " <<entry->port << endl;
-    //cout << "entry->socket: " << entry->socket << endl;
-
-    //cout << "sock: " << sock << endl;
-
-
     if(!serverExist){
       cout << "why doesnt this work" << endl;
       serverList.push_back(entry);
@@ -142,18 +135,35 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     }
 
   	if(!sameLoc){ //same procedure different socket
-       cout << "same proc different loc" << endl;
-        
-       server_info * new_msg_loc = new server_info(server_identifier, port, sock);
-       hostList.push_back(new_msg_loc);
-    
-       int *newArgTypes = copyArgTypes(argTypes);
-  
-       procedure_signature * useFulKey = new procedure_signature(name, newArgTypes);
-       server_function_info * info = new server_function_info(new_msg_loc, useFulKey);
+      cout << "same proc different loc" << endl;
 
-       //Adding to roundRobinList if server is not found
-       roundRobinList.push_back(info);
+      server_info * new_msg_loc = new server_info(server_identifier, port, sock);
+      hostList.push_back(new_msg_loc);
+
+      int *newArgTypes = copyArgTypes(argTypes);
+
+      procedure_signature * useFulKey = new procedure_signature(name, newArgTypes);
+      server_function_info * info = new server_function_info(new_msg_loc, useFulKey);
+
+      //Adding to roundRobinList if server is not found
+      roundRobinList.push_back(info);
+
+      //Adding to serverList if server is not found
+      bool serverExist = false;
+      for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
+
+        //if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
+          if( (*it)->port == entry->port &&  (*it)->socket == entry->socket){
+            cout << "entry->port" << entry->port  << ", " << (*it)->port  << endl;
+            serverExist = true;
+            break;
+          }
+      }
+
+      if(!serverExist){
+        cout << "why doesnt this work" << endl;
+        serverList.push_back(entry);
+      }
     }
   }
 
