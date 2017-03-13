@@ -287,7 +287,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   if (result < 0) {
     return result;
   }
-  cout << "Got here..." << endl;
+
   /*
    * Receives a execution response message from the binder indicating
    * whether the execution of the procedure is successful or not
@@ -298,7 +298,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
   if (result < 0) {
     return result;
   }
-
+  cout << "Got here..." << endl;
   result = SUCCESS_CODE;
   switch (segmentFromServer->getType()) {
     case MSG_TYPE_EXECUTE_SUCCESS: {
