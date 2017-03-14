@@ -12,7 +12,7 @@ DEPENDS = ${OBJECTS:.o=.d}
 EXECS = ${EXEC1}
 
 
-.PHONY : all clean
+.PHONY : all clean zip
 
 all : ${EXECS}
 	${CXX} -c -lpthread rpc.cc server.c serverA.c serverB.c client.c clientA.c server_functions.c server_function_skels.c
