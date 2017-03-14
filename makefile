@@ -61,6 +61,8 @@ tar:
 clean:
 	find . -name "*.o" -delete
 	find . -name "*.d" -delete
+	find . -name ${CLIENTEXEC} -delete
+	find . -name ${SERVEREXEC} -delete
 	find . -name ${BINDEREXEC} -delete
 	find . -name ${RPCLIB} -delete
 	find . -name ${TARNAME} -delete
