@@ -39,7 +39,7 @@ ${BINDEREXEC}: ${BINDEROBJECTS}
 	${CXX} ${CXXFLAGS} $^ -o $@
 
 ${SERVEREXEC}: ${SERVEROBJECTS}
-	${CXX} ${CXXFLAGS} -L. $^ -lrpc -o $@
+	${CXX} ${CXXFLAGS} -L. $^ -lrpc -lpthread -o $@
 
 ${RPCLIB}: ${RPCOBJECTS}
 	${AR} ${ARFLAGS} $@ $^
