@@ -543,10 +543,6 @@ int rpcExecute(){
               new procedure_signature(messageFromClient->getName(),
                 messageFromClient->getArgTypes());
 
-            cout << "messageFromClient->getName(): " << messageFromClient->getName() << endl;
-            printArgTypes(messageFromClient->getArgTypes());
-            printArgs(messageFromClient->getArgTypes(), messageFromClient->getArgs());
-
             skeleton skel = procSkeleDict[*ps];
 
             if (skel == 0) {
@@ -576,6 +572,11 @@ int rpcExecute(){
             if (i != serverBinderSocket) {
                continue;
             }
+
+            for (int i = 0; i < allThreads.size(); i++) {
+              pthread_join(allThreads[i], 0);
+            }
+            
             onSwitch = false;
             break;
           }
@@ -585,9 +586,7 @@ int rpcExecute(){
     }
   }
 
-  for (int i = 0; i < allThreads.size(); i++) {
-    pthread_join(allThreads[i], 0);
-  }
+
 
   // Destroys the welcome socket
   destroySocket(welcomeSocket);
