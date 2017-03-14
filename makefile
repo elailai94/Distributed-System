@@ -11,6 +11,8 @@ execute_failure_message.o register_request_message.o register_success_message.o 
 register_failure_message.o terminate_message.o constants.o helper_functions.o \
 network.o
 BINDEREXEC = binder
+SERVEROBJECTS = server.o server_functions.o server_function_skels.o
+SERVEREXEC = server
 RPCOBJECTS = \
 rpc.o segment.o message.o loc_request_message.o loc_success_message.o \
 loc_failure_message.o execute_request_message.o execute_success_message.o \
@@ -18,9 +20,9 @@ execute_failure_message.o register_request_message.o register_success_message.o 
 register_failure_message.o terminate_message.o constants.o helper_functions.o \
 network.o
 RPCLIB = librpc.a
-OBJECTS = ${BINDEROBJECTS}
+OBJECTS = ${BINDEROBJECTS} ${SERVEROBJECTS}
 DEPENDS = ${OBJECTS:.o=.d}
-EXECS = ${BINDEREXEC} ${RPCLIB}
+EXECS = ${BINDEREXEC} ${SERVEREXEC}
 TAR = tar
 TARFLAGS = cvzpf
 TARNAME = a3.tar.gz
@@ -30,11 +32,14 @@ TARINCLUDEDSOURCES = $(filter-out $(TAREXCLUDEDSOURCES), $(wildcard *.h)) \
 
 .PHONY: all clean tar
 
-all: ${EXECS}
-	${CXX} -c -lpthread rpc.cc server.c serverA.c serverB.c client.c clientA.c server_functions.c server_function_skels.c
+all: ${EXECS} ${RPCLIB}
+	${CXX} -c -lpthread rpc.cc serverA.c serverB.c client.c clientA.c server_functions.c server_function_skels.c
 
 ${BINDEREXEC}: ${BINDEROBJECTS}
 	${CXX} ${CXXFLAGS} $^ -o $@
+
+${SERVEREXEC}: ${SERVEROBJECTS}
+	${CXX} ${CXXFLAGS} -L. $^ -lrpc -o $@
 
 ${RPCLIB}: ${RPCOBJECTS}
 	${AR} ${ARFLAGS} $@ $^
