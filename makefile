@@ -34,6 +34,6 @@ tar:
 	${TAR} ${TARFLAGS} ${TARNAME} ${TARSOURCES}
 
 clean:
-	find . -name ${OBJECTS} -delete
-	find . -name ${DEPENDS} -delete
-	find . -name ${EXECS} -delete
+	find . -name "*.o" -delete
+	find . -name "*.d" -delete
+	find . -name ${BINDEREXEC} -delete
