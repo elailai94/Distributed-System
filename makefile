@@ -34,8 +34,10 @@ TARINCLUDEDSOURCES = $(filter-out $(TAREXCLUDEDSOURCES), $(wildcard *.h)) \
 
 .PHONY: all clean tar
 
-all: ${RPCLIB} ${EXECS}
-	${CXX} -c -lpthread rpc.cc serverA.c serverB.c clientA.c server_functions.c server_function_skels.c
+all: ${RPCLIB} ${BINDEREXEC}
+
+test: ${RPCLIB} ${EXECS}
+	${CXX} -c -lrpc -lpthread serverA.c serverB.c clientA.c server_functions.c server_function_skels.c
 
 ${BINDEREXEC}: ${BINDEROBJECTS}
 	${CXX} ${CXXFLAGS} $^ -o $@
