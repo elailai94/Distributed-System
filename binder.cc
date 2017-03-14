@@ -34,18 +34,6 @@ ADD FUNCTION TO ROUND ROBIN
 IF FUNCTION EXISTS IN ROUND ROBIN DELETE OLD REPLACE WITH NEW (where)
 */
 
-void mapPrint(){
-  cout << "procLocDict size: "<<procLocDict.size() << endl;
-  cout << "Map Print: ";
-  for(map<procedure_signature, list<server_info *>, ps_compare> ::const_iterator it = procLocDict.begin();
-   it != procLocDict.end(); it++){
-
-    cout << it->first.name << ", " ;
-  }
-
-  cout << endl;
-}
-
 void roundRobinPrint(){
   cout << "roundRobin Print: ";
   for(list<server_function_info *> ::const_iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
