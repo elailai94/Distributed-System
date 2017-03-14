@@ -409,15 +409,14 @@ void *executeSkeleton(void *args) {
 
   int result = skelSkeleton(skelArgTypes, skelArgs);
 
-  if (result == 0) {
+  if (result == SUCCESS_CODE) {
 
     ExecuteSuccessMessage messageToClient =
       ExecuteSuccessMessage(skelName, skelArgTypes, skelArgs);
     Segment segmentToClient =
       Segment(messageToClient.getLength(), MSG_TYPE_EXECUTE_SUCCESS,
         &messageToClient);
-    int tstatus = segmentToClient.send(skelSocket);
-    cout << "ExecuteSuccessMessage status: " << tstatus << endl;
+    segmentToClient.send(skelSocket);
 
   } else {
 
@@ -428,8 +427,6 @@ void *executeSkeleton(void *args) {
     segmentToClient.send(skelSocket);
 
   }
-
-  cout << "executeSkeleton done executing..." << endl;
 
   // Terminates the current thread
   pthread_exit(0);
@@ -529,7 +526,6 @@ int rpcExecute(){
            * Closes the connection socket and removes it from the
            * all sockets set
            */
-          cout << "Bad result, I'm closing, i is: "<< i << endl;
           destroySocket(i);
           FD_CLR(i, &allSockets);
           continue;
@@ -563,18 +559,16 @@ int rpcExecute(){
             pthread_create(&newThread, 0, executeSkeleton, (void *) executeSkeletonArgs);
             allThreads.push_back(newThread);
 
-            cout << "allThreads size: " << allThreads.size() << endl;
-
             break;
           }
 
           case MSG_TYPE_TERMINATE: {
-            cout << "Got to terminate!" << endl;
             // Checks if the termination request comes from the binder
             if (i != serverBinderSocket) {
                continue;
             }
 
+            // Waits for all threads to terminate
             for (int i = 0; i < allThreads.size(); i++) {
               pthread_join(allThreads[i], 0);
             }
@@ -588,13 +582,11 @@ int rpcExecute(){
     }
   }
 
-
-
   // Destroys the welcome socket
   destroySocket(welcomeSocket);
   cout << "We are destroying the welcomeSocket: " << welcomeSocket << endl;
 
-  pthread_exit(SUCCESS_CODE);
+  return SUCCESS_CODE;
 }
 
 // See interface (header file).
@@ -629,6 +621,9 @@ int rpcTerminate() {
   Segment segmentToBinder =
     Segment(messageToBinder.getLength(), MSG_TYPE_TERMINATE, &messageToBinder);
   result = segmentToBinder.send(clientBinderSocket);
+  if (result < 0) {
+    return result;
+  }
 
   // Closes the connection to the binder
   destroySocket(clientBinderSocket);
