@@ -7,12 +7,14 @@ user IDs of the group members are ahlai and y25dai.
 - Are There Any Other Dependencies For Our Library?
 Yes, our library requires the POSIX thread (i.e.: <pthread.h>) library.
 
-So when compiling the client and Server please use something like the following:
+NOTE: Therefore, when compiling the client and server programs, please run
+the following commands:
 g++ -L. client.o -lrpc -lpthread -o client
 g++ -L. server_functions.o server_function_skels.o server.o -lrpc -lpthread -o server
 
-- How To Compile The Programs?
-You can compile the source code for the programs by running: make
+- How To Compile The Library And Binder Executable?
+You can compile the source code for the library and binder executable
+by running: make
 
 - How To Clean Build?
 You can clean build by running: make clean
