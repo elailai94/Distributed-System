@@ -452,7 +452,7 @@ int rpcExecute() {
             }
 
             // Waits for all threads to terminate
-            for (int i = 0; i < allThreads.size(); i++) {
+            for (unsigned int i = 0; i < allThreads.size(); i++) {
               pthread_join(allThreads[i], 0);
             }
 
