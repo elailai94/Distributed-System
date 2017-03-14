@@ -34,7 +34,7 @@ static int welcomeSocket = -1;
 static int serverBinderSocket = -1;
 static bool isTerminated = false;
 
-void mapPrint(){
+void mapPrint() {
   cout << "procSkeleDict size: "<<procSkeleDict.size() << endl;
 
   cout << "Map Print: ";
@@ -49,7 +49,7 @@ void mapPrint(){
 }
 
 
-void printArgTypes(int * argTypes){
+void printArgTypes(int * argTypes) {
   cout << " Printing argTypes: " ;
 
   unsigned num = countNumOfArgTypes(argTypes);
@@ -61,7 +61,7 @@ void printArgTypes(int * argTypes){
 }
 
 
-void printArgs(int * argTypes, void  ** args){
+void printArgs(int * argTypes, void  ** args) {
   cout << "Printing args: " << endl;
 
   // Parses the argument from the buffer
@@ -140,7 +140,7 @@ void printArgs(int * argTypes, void  ** args){
 }
 
 // See interface (header file).
-int rpcInit(){
+int rpcInit() {
 	/*
    * Creates a welcome socket to be used for accepting connections
 	 * from clients
@@ -313,7 +313,7 @@ int rpcCall(char *name, int *argTypes, void **args) {
 }
 
 // See interface (header file).
-int rpcRegister(char *name, int *argTypes, skeleton f){
+int rpcRegister(char *name, int *argTypes, skeleton f) {
   /*
    * Checks if this server is connected to the binder already
    * (i.e.: rpcInit is called before rpcRegister)
@@ -360,6 +360,7 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
        */
       struct procedure_signature k = procedure_signature(string(name), argTypes);
       procSkeleDict[k] = f;
+
       break;
     }
 
@@ -386,7 +387,7 @@ void *handleExecutionRequest(void *args) {
   void **skelArgs = (void **) argsArray[2];
   long skelSocket = (long) argsArray[3];
   skeleton skelSkeleton = *((skeleton *) argsArray[4]);
-  
+
   /*
    * Hands over control to the skeleton, which is expected to unmarshall
    * the message, call the appropriate procedures as requested by the
@@ -418,7 +419,7 @@ void *handleExecutionRequest(void *args) {
 }
 
 // See interface (header file).
-int rpcExecute(){
+int rpcExecute() {
   /*
    * Checks if this server has created a welcome socket already
    * (i.e.: rpcInit is called before rpcExecute)
