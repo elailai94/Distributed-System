@@ -187,14 +187,11 @@ void handleLocationRequest(LocRequestMessage *message, int sock) {
       Segment locSuccessSeg = Segment(locSuccessMsg.getLength(), MSG_TYPE_LOC_SUCCESS, &locSuccessMsg);
       locSuccessSeg.send(sock);
 
-      //When we have identified the correct procedure_signature use splice and move that service to the end
-      //roundRobinList.splice(roundRobinList.end(), roundRobinList, it);
       break;
  		}
 	}
 
   if (exist) {
-
 
     list<server_function_info *>::iterator i = roundRobinList.begin();
     list<server_function_info *> tempList;
