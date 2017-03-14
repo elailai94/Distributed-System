@@ -1,3 +1,0 @@
-g++ -Wall -MMD -o binder binder.cc segment.cc message.cc loc_request_message.cc loc_success_message.cc loc_failure_message.cc execute_request_message.cc execute_success_message.cc execute_failure_message.cc register_request_message.cc register_success_message.cc register_failure_message.cc terminate_message.cc constants.cc helper_function.cc
-g++ -Wall -MMD -o server server.cc server_functions.cc server_function_skels.cc
-rpc.cc segment.cc message.cc loc_request_message.cc loc_success_message.cc loc_failure_message.cc execute_request_message.cc execute_success_message.cc execute_failure_message.cc register_request_message.cc register_success_message.cc register_failure_message.cc terminate_message.cc constants.cc helper_function.cc
