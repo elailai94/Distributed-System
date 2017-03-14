@@ -34,6 +34,6 @@ tar:
 	${TAR} ${TARFLAGS} ${TARNAME} ${TARSOURCES}
 
 clean:
-	find . -name ${OBJECTS}
-	find . -name ${DEPENDS}
+	find . -name *.o
+	find . -name *.d
 	find . -name ${EXECS}
