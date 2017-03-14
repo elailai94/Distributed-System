@@ -26,7 +26,7 @@ ${OBJECTS} : ${MAKEFILE_NAME}
 -include ${DEPENDS}
 
 zip:
-	tar cvzpf a3.tar.gz .
+	tar cvzpf a3.tar.gz *.cc
 
 clean:
 	rm -f *.d *.o ${EXECS}
