@@ -563,6 +563,8 @@ int rpcExecute(){
             pthread_create(&newThread, 0, executeSkeleton, (void *) executeSkeletonArgs);
             allThreads.push_back(newThread);
 
+            cout << "allThreads size: " << allThreads.size() << endl;
+
             break;
           }
 
@@ -576,7 +578,7 @@ int rpcExecute(){
             for (int i = 0; i < allThreads.size(); i++) {
               pthread_join(allThreads[i], 0);
             }
-            
+
             onSwitch = false;
             break;
           }
