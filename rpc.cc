@@ -2,10 +2,10 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
-#include <unistd.h>
 #include <pthread.h>
-#include <vector>
+#include <unistd.h>
 #include <map>
+#include <vector>
 
 #include "segment.h"
 #include "message.h"
@@ -382,7 +382,7 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
 }
 
 // Handles the execution request from the client
-void *executeSkeleton(void *args) {
+void *handleExecutionRequest(void *args) {
   /*
    * Unpacks the single parameter passed to this function into multiple
    * arguments
@@ -541,19 +541,23 @@ int rpcExecute(){
              * Packs the arguments into a single parameter to be passed
              * to the new thread
              */
-            void **executeSkeletonArgs = new void*[5]();
-            executeSkeletonArgs[0] = (void *) new string(messageFromClient->getName());
-            executeSkeletonArgs[1] = (void *) messageFromClient->getArgTypes();
-            executeSkeletonArgs[2] = (void *) messageFromClient->getArgs();
-            executeSkeletonArgs[3] = (void *) i;
-            executeSkeletonArgs[4] = (void *) &skel;
+            void **handleExecutionRequestArgs = new void*[5]();
+            handleExecutionRequestArgs[0] =
+              (void *) new string(messageFromClient->getName());
+            handleExecutionRequestArgs[1] =
+              (void *) messageFromClient->getArgTypes();
+            handleExecutionRequestArgs[2] =
+              (void *) messageFromClient->getArgs();
+            handleExecutionRequestArgs[3] = (void *) i;
+            handleExecutionRequestArgs[4] = (void *) &skel;
 
             /*
              * Creates a new thread to handle the execution request
              * from the client
              */
             pthread_t newThread;
-            pthread_create(&newThread, 0, executeSkeleton, (void *) executeSkeletonArgs);
+            pthread_create(&newThread, 0, handleExecutionRequest,
+              (void *) handleExecutionRequestArgs);
             allThreads.push_back(newThread);
 
             break;
@@ -583,7 +587,6 @@ int rpcExecute(){
 
   // Destroys the welcome socket
   destroySocket(welcomeSocket);
-  cout << "We are destroying the welcomeSocket: " << welcomeSocket << endl;
 
   return SUCCESS_CODE;
 }
