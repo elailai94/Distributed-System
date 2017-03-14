@@ -399,7 +399,7 @@ void *executeSkeleton(void *args) {
   string skelName = *((string *) argsArray[0]);
   int *skelArgTypes = (int *) argsArray[1];
   void **skelArgs = (void **) argsArray[2];
-  int skelSocket = (int) argsArray[3];
+  long skelSocket = (long) argsArray[3];
   skeleton skelSkeleton = *((skeleton *) argsArray[4]);
 
   cout << "Skel Name: " << skelName << endl;
