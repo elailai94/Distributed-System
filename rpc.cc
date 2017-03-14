@@ -11,6 +11,7 @@
 #include <map>
 #include <pthread.h>
 
+
 #include "segment.h"
 #include "message.h"
 #include "loc_success_message.h"
@@ -37,9 +38,6 @@ static int port = -1;
 static int welcomeSocket = -1;
 static int serverBinderSocket = -1;
 static bool onSwitch = true;
-
-static pthread_mutex_t * _threadLock;
-static map<pthread_t, bool> _runningThreads;
 
 void mapPrint(){
   cout << "procSkeleDict size: "<<procSkeleDict.size() << endl;
@@ -147,17 +145,6 @@ void printArgs(int * argTypes, void  ** args){
   cout << endl;
 }
 
-void removeThreadFromList(pthread_t key){
-
-  cout << "removeThreadFromList" << endl;
-  if(_threadLock){
-    cout << "If threa_lock" << endl;
-    pthread_mutex_lock(_threadLock);
-    _runningThreads.erase(key);
-    pthread_mutex_unlock(_threadLock);
-  }
-}
-
 // See interface (header file).
 int rpcInit(){
 	cout << "Running rpcInit..." << endl;
@@ -202,10 +189,6 @@ int rpcInit(){
   }
 
   cout << "This servers serverBinderSocket is: " << serverBinderSocket << endl;
-
-  //Thread Stuff
-  _threadLock = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
-  pthread_mutex_init(_threadLock, NULL);
 
   return SUCCESS_CODE;
 }
@@ -414,9 +397,6 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
 }
 
 void *executeSkeleton(void *args) {
-
-  cout << "In the Pthread" << endl;
-
   void **argsArray = (void **) args;
   string skelName = *((string *) argsArray[0]);
   int *skelArgTypes = (int *) argsArray[1];
@@ -453,10 +433,6 @@ void *executeSkeleton(void *args) {
 
   // Terminates the current thread
   //pthread_exit(0);
-
-  removeThreadFromList(pthread_self());
-
-  return 0; //Return Null
 }
 
 // See interface (header file).
@@ -606,32 +582,6 @@ int rpcExecute(){
       }
     }
   }
-
-  //Thread handling
-  vector<pthread_t> livingThreads;
-
-  // make a copy of all living threads while within the lock
-  pthread_mutex_lock(_threadLock);
-  map<pthread_t, bool>::iterator existingThreadsBegin = _runningThreads.begin();
-
-  while(existingThreadsBegin != _runningThreads.end()){
-    livingThreads.push_back(existingThreadsBegin->first);
-    existingThreadsBegin++;
-  }
-  
-  pthread_mutex_unlock(_threadLock);
-
-  // wait until the list of living threads are all done
-  for(int i = 0; i < livingThreads.size(); i++){
-    pthread_join(livingThreads[i], NULL);
-  }
-
-
-  pthread_mutex_destroy(_threadLock);
-  free(_threadLock);
-
-  //End of thread handling 
-
 
   // Destroys the welcome socket
   destroySocket(welcomeSocket);
