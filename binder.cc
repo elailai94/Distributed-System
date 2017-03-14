@@ -1,15 +1,11 @@
+#include <cstdlib>
+#include <cstring>
 #include <iostream>
 #include <sstream>
 #include <string>
-
 #include <unistd.h>
-#include <vector>
-#include <algorithm>
 #include <list>
 #include <map>
-
-#include <cstdlib>
-#include <cstring>
 
 #include "segment.h"
 #include "message.h"
@@ -20,24 +16,17 @@
 #include "loc_failure_message.h"
 #include "loc_request_message.h"
 #include "terminate_message.h"
-
 #include "constants.h"
 #include "network.h"
 #include "helper_functions.h"
 
 using namespace std;
 
-//TODO:
-//MANAGE CLIENT CONNECTION
-//MANAGE SERVER CONNECTION
-//DATABASE
-//ROUND ROBIN
-
+// Global variables for binder
 static map<procedure_signature, list<server_info *>, ps_compare> procLocDict;
 static list<server_function_info *> roundRobinList;
 static list<server_info *> serverList;
-
-static bool onSwitch = true;
+static bool isTerminated = false;
 
 /*
 TODO:
@@ -64,7 +53,6 @@ void roundRobinPrint(){
     cout <<(*it)->si->server_identifier << ", "<<(*it)->si->port << ", "<<(*it)->ps->name << endl;
   }
 }
-
 
 void serverListPrint(){
   cout << "serverList Print: " << endl;
@@ -169,8 +157,6 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     }
   }
 
-  //mapPrint();
-  //roundRobinPrint();
   serverListPrint();
 
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
@@ -257,11 +243,10 @@ void binder_terminate_handler() {
     sleep(1);
   }
 
-
-  onSwitch = false;
-
+  isTerminated = true;
 }
 
+// Handles a request from the client/server
 int handleRequest(Segment * segment, int sock){
   int retval = 0;
   if(segment->getType() == MSG_TYPE_REGISTER_REQUEST){
@@ -272,8 +257,6 @@ int handleRequest(Segment * segment, int sock){
 
   }else if (segment->getType() == MSG_TYPE_LOC_REQUEST){
 
-    //cout << "Loc Request" << endl;
-
     Message * cast2 = segment->getMessage();
     LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(cast2);
 
@@ -281,17 +264,12 @@ int handleRequest(Segment * segment, int sock){
 
   }else if (segment->getType() == MSG_TYPE_TERMINATE){
 
-    cout << "Terminate Request" <<endl;
-
     binder_terminate_handler();
   }
 
 	return retval;
 }
 
-
-//TODO:
-//Create helper functions that can be used for rpcServer.cc
 int main() {
   fd_set allSockets;
   fd_set readSockets;
@@ -308,7 +286,13 @@ int main() {
    * sets it as the maximum socket so far
    */
   int welcomeSocket = createSocket();
-  int status = setUpToListen(welcomeSocket);
+  if (welcomeSocket < 0) {
+    return welcomeSocket;
+  }
+  int result = setUpToListen(welcomeSocket);
+  if (result < 0) {
+    return result;
+  }
   FD_SET(welcomeSocket, &allSockets);
   int maxSocket = welcomeSocket;
 
@@ -319,7 +303,7 @@ int main() {
   cout << "BINDER_ADDRESS " << getHostAddress() << endl;
   cout << "BINDER_PORT " << getSocketPort(welcomeSocket) << endl;
 
-  while (onSwitch) {
+  while (!isTerminated) {
     readSockets = allSockets;
 
     // Checks if some of the sockets are ready to be read from
@@ -344,7 +328,6 @@ int main() {
           continue;
         }
 
-        //cout << "WE heard from connectionSocket: " << connectionSocket << endl;
         // Adds the connection socket to the all sockets set
         FD_SET(connectionSocket, &allSockets);
 
