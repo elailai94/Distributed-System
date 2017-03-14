@@ -165,7 +165,7 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
     }
   }
 
-  serverListPrint();
+  //serverListPrint();
 
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
@@ -219,7 +219,8 @@ void handleLocationRequest(LocRequestMessage *message, int sock) {
 
     roundRobinList.splice(roundRobinList.end(), tempList);
 
-    roundRobinPrint();
+    //roundRobinPrint();
+
   } else {
     LocFailureMessage locFailMsg =
       LocFailureMessage(ERROR_CODE_PROCEDURE_NOT_FOUND);
