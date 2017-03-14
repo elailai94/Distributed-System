@@ -86,10 +86,10 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
     server_info * entry = new server_info(server_identifier, port, sock);
     server_function_info * info = new server_function_info(entry, newKey);
 
-    //Adding to roundRobinList if server is not found
+    // Adding to roundRobinList if server is not found
     roundRobinList.push_back(info);
 
-    //Adding to serverList if server is not found
+    // Adding to serverList if server is not found
     bool serverExist = false;
     for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
 
@@ -148,8 +148,6 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
     }
   }
 
-  //serverListPrint();
-
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
   regSuccessSeg.send(sock);
@@ -196,8 +194,6 @@ void handleLocationRequest(LocRequestMessage *message, int sock) {
     }
 
     roundRobinList.splice(roundRobinList.end(), tempList);
-
-    //roundRobinPrint();
 
   } else {
     LocFailureMessage locFailMsg =
