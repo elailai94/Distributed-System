@@ -231,14 +231,14 @@ void location_request_handler(LocRequestMessage * message, int sock){
 
 // Handles a termination request from the client
 void handleTerminationRequest() {
-  cout << "Binder set to execute" << endl;
-
+  // Informs all the servers to terminate
   for (list<server_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
     cout << "Terminating server: " << (*it)->server_identifier << ", " <<  (*it)->port << ", " <<  (*it)->socket<< endl;
-    TerminateMessage termMsg = TerminateMessage();
-    Segment termSeg = Segment(termMsg.getLength(), MSG_TYPE_TERMINATE, &termMsg);
-    termSeg.send((*it)->socket);
-    sleep(1);
+    TerminateMessage messageToServer = TerminateMessage();
+    Segment segmentToServer =
+      Segment(messageToServer.getLength(), MSG_TYPE_TERMINATE,
+        &messageToServer);
+    segmentToServer.send((*it)->socket);
   }
 
   // Signals the binder to terminate
@@ -246,7 +246,7 @@ void handleTerminationRequest() {
 }
 
 // Handles a request from the client/server
-int handleRequest(Segment *segment, int socket) {
+void handleRequest(Segment *segment, int socket) {
   switch (segment->getType()) {
     case MSG_TYPE_REGISTER_REQUEST: {
       RegisterRequestMessage *messageFromServer =
@@ -267,8 +267,6 @@ int handleRequest(Segment *segment, int socket) {
       break;
     }
   }
-
-	return SUCCESS_CODE;
 }
 
 int main() {
