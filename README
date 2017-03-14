@@ -3,23 +3,15 @@ General Information
 The names of the group members are Ah Hoe Lai and Yifan Dai. The
 user IDs of the group members are ahlai and y25dai.
 
--Are There Any Other Dependencies For Our Library?
-Yes our library requries the pthread library.
+- Are There Any Other Dependencies For Our Library?
+Yes, our library requires the POSIX thread (i.e.: <pthread.h>) library.
 
 So when compiling the client and Server please use something like the following:
-g++ -L. client.o -lrpc -lpthread -o client  
+g++ -L. client.o -lrpc -lpthread -o client
 g++ -L. server_functions.o server_function_skels.o server.o -lrpc -lpthread -o server
-
 
 - How To Compile The Programs?
 You can compile the source code for the programs by running: make
-
-- How To Execute The Programs?
-1. You can execute the server program by running: ./stringServer
-2. You can manually set the SERVER_ADDRESS and SERVER_PORT environment
-   variables on the client machine.
-3. You can execute the client program by running: ./stringClient
-4. You can enter string(s) on the client machine.
 
 - How To Clean Build?
 You can clean build by running: make clean
@@ -27,11 +19,13 @@ You can clean build by running: make clean
 Technical Information
 
 - Which Undergrad Machines Were Used To Built And Test The Programs?
-   ubuntu1404-012.student.cs.uwaterloo.ca (ran the client program)
-   ubuntu1404-012.student.cs.uwaterloo.ca (ran the server program)
-
+   ubuntu1404-002.student.cs.uwaterloo.ca (ran the binder program)
    ubuntu1404-002.student.cs.uwaterloo.ca (ran the client program)
-   ubuntu1404-012.student.cs.uwaterloo.ca (ran the server program)
+   ubuntu1404-002.student.cs.uwaterloo.ca (ran the server program)
+
+   ubuntu1404-002.student.cs.uwaterloo.ca (ran the binder program)
+   ubuntu1404-004.student.cs.uwaterloo.ca (ran the client program)
+   ubuntu1404-006.student.cs.uwaterloo.ca (ran the server program)
 
 - What Is The Version Of make Used For The Makefile?
 The version of make that used for the Makefile is 3.81.
