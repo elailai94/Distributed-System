@@ -122,6 +122,17 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
     list<server_info *> hostList = procLocDict[key];
 
     for (list<server_info *>::iterator it = hostList.begin(); it != hostList.end(); it++) {
+
+      cout << "(*it)->server_identifier" << (*it)->server_identifier << endl;
+      cout << "server_identifier" << server_identifier << endl;
+
+      if ((*it)->server_identifier == server_identifier){
+        cout << "The same " << endl;
+      } else {
+        cout << "is different" << endl;
+      }
+
+
       if((*it)->server_identifier == server_identifier && (*it)->port == port  && (*it)->socket == sock){
       //if((*it)->port == port  && (*it)->socket == sock){
 
@@ -150,6 +161,16 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
       //Adding to serverList if server is not found
       bool serverExist = false;
       for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
+
+      cout << "(*it)->server_identifier" << (*it)->server_identifier << endl;
+      cout << "new_msg_loc->server_identifier" << new_msg_loc->server_identifier << endl;
+
+      if ((*it)->server_identifier == new_msg_loc->server_identifier){
+        cout << "The same " << endl;
+      } else {
+        cout << "is different" << endl;
+      }
+
 
         if( (*it)->server_identifier == new_msg_loc->server_identifier && (*it)->port == new_msg_loc->port &&  (*it)->socket == new_msg_loc->socket){
         //if( (*it)->port == new_msg_loc->port &&  (*it)->socket == new_msg_loc->socket){
@@ -208,6 +229,17 @@ void handleLocationRequest(LocRequestMessage *message, int sock) {
 
     while (i != roundRobinList.end()){
         //bool isActive = (*i)->update();
+
+      cout << "(*it)->server_identifier" << (*it)->server_identifier << endl;
+      cout << "serverIdToPushBack" << serverIdToPushBack << endl;
+
+      if ((*it)->server_identifier == serverIdToPushBack){
+        cout << "The same " << endl;
+      } else {
+        cout << "is different" << endl;
+      }
+
+
         if((*i)->si->server_identifier == serverIdToPushBack && (*i)->si->port == portToPushBack && (*i)->si->socket == socketToPushBack){
         //if ((*i)->si->port == portToPushBack && (*i)->si->socket == socketToPushBack){
           tempList.push_back(*i);
