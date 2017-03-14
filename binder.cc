@@ -1,10 +1,10 @@
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
-#include <string>
 #include <unistd.h>
+#include <string>
 #include <list>
 #include <map>
+#include <iostream>
 
 #include "segment.h"
 #include "message.h"
@@ -101,8 +101,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
         }
     }
 
-    if(!serverExist){
-      cout << "why doesnt this work" << endl;
+    if (!serverExist) {
       serverList.push_back(entry);
     }
 
@@ -299,8 +298,16 @@ int main() {
    * Prints the binder address and the binder port on the binder's
    * standard output
    */
-  cout << "BINDER_ADDRESS " << getHostAddress() << endl;
-  cout << "BINDER_PORT " << getSocketPort(welcomeSocket) << endl;
+  string binderIdentifier = getHostAddress();
+  if (binderIdentifier == "") {
+    return ERROR_CODE_HOST_ADDRESS_NOT_FOUND;
+  }
+  int port = getSocketPort(welcomeSocket);
+  if (port < 0) {
+    return port;
+  }
+  cout << "BINDER_ADDRESS " << binderIdentifier << endl;
+  cout << "BINDER_PORT " << port << endl;
 
   while (!isTerminated) {
     readSockets = allSockets;

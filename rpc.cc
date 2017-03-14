@@ -1,11 +1,11 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
 #include <pthread.h>
 #include <unistd.h>
 #include <map>
 #include <vector>
+#include <iostream>
 
 #include "segment.h"
 #include "message.h"
