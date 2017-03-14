@@ -127,7 +127,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
     for (list<server_info *>::iterator it = hostList.begin(); it != hostList.end(); it++) {
       //if((*it)->server_identifier == server_identifier && (*it)->port == port  && (*it)->socket == sock){
       if((*it)->port == port  && (*it)->socket == sock){
-        
+
         //If they have the same socket, then must be same server_address/port
         //The same procedure signature already exists on the same location
         //TODO: Move to end of round robin or something, maybe we should keep
@@ -225,10 +225,10 @@ void location_request_handler(LocRequestMessage * message, int sock){
 
     while (i != roundRobinList.end()){
         //bool isActive = (*i)->update();
-        //if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){       
-        if ((*i)->si->port == portToPushBack && (*i)->si->socket == socketToPushBack){   
+        //if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
+        if ((*i)->si->port == portToPushBack && (*i)->si->socket == socketToPushBack){
           tempList.push_back(*i);
-          roundRobinList.erase(i++);  // alternatively, i = items.erase(i);    
+          roundRobinList.erase(i++);  // alternatively, i = items.erase(i);
         }else{
           ++i;
         }
@@ -262,7 +262,7 @@ void binder_terminate_handler() {
 
 }
 
-int request_handler(Segment * segment, int sock){
+int handleRequest(Segment * segment, int sock){
   int retval = 0;
   if(segment->getType() == MSG_TYPE_REGISTER_REQUEST){
     Message * cast1 = segment->getMessage();
@@ -375,7 +375,8 @@ int main() {
           continue;
         }
 
-        request_handler(segment, i);
+        // Handles a request from the client/server
+        handleRequest(segment, i);
       }
     }
   }

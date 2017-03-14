@@ -6,10 +6,9 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <vector>
-#include <algorithm>
 #include <list>
 #include <map>
-#include <pthread.h>
+#include <algorithm>
 
 #include "segment.h"
 #include "message.h"
@@ -431,7 +430,7 @@ void *executeSkeleton(void *args) {
   }
 
   // Terminates the current thread
-  //pthread_exit(0);
+  pthread_exit(0);
 }
 
 // See interface (header file).
@@ -463,6 +462,7 @@ int rpcExecute(){
 
   fd_set allSockets;
   fd_set readSockets;
+  vector<pthread_t> allThreads;
 
   /*
    * Clears all entries from the all sockets set and the read
@@ -558,7 +558,10 @@ int rpcExecute(){
             executeSkeletonArgs[2] = (void *) messageFromClient->getArgs();
             executeSkeletonArgs[3] = (void *) &i;
             executeSkeletonArgs[4] = (void *) &skel;
-            executeSkeleton(executeSkeletonArgs);
+
+            pthread_t newThread;
+            pthread_create(&newThread, 0, executeSkeleton, (void *) executeSkeletonArgs);
+            allThreads.push_back(newThread);
 
             break;
           }
@@ -576,6 +579,10 @@ int rpcExecute(){
 
       }
     }
+  }
+
+  for (int i = 0; i < allThreads.size(); i++) {
+    pthread_join(allThreads[i], 0);
   }
 
   // Destroys the welcome socket
