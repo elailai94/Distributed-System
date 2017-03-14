@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include <map>
 #include <vector>
-#include <iostream>
 
 #include "segment.h"
 #include "message.h"
@@ -33,111 +32,6 @@ static int port = -1;
 static int welcomeSocket = -1;
 static int serverBinderSocket = -1;
 static bool isTerminated = false;
-
-void mapPrint() {
-  cout << "procSkeleDict size: "<<procSkeleDict.size() << endl;
-
-  cout << "Map Print: ";
-
-  for(map<procedure_signature, skeleton>::iterator it = procSkeleDict.begin();
-   it != procSkeleDict.end(); ++it){
-
-    cout << it->first.name << ", ";
-  }
-
-  cout << endl;
-}
-
-
-void printArgTypes(int * argTypes) {
-  cout << " Printing argTypes: " ;
-
-  unsigned num = countNumOfArgTypes(argTypes);
-
-  for(int i = 0; i < num; i++){
-    cout << argTypes[i] << ", ";
-  }
-  cout << endl;
-}
-
-
-void printArgs(int * argTypes, void  ** args) {
-  cout << "Printing args: " << endl;
-
-  // Parses the argument from the buffer
-  unsigned numOfArgs = countNumOfArgTypes(argTypes) - 1;
-
-  cout<< "Number of args: " << numOfArgs << endl;
-
-  for (unsigned int i = 0; i < numOfArgs; i++) {
-    int argType = argTypes[i];
-    int argTypeInformation =
-      (argType & ARG_TYPE_INFORMATION_MASK) >> ARG_TYPE_INFORMATION_SHIFT_AMOUNT;
-    int argTypeArrayLength = argType & ARG_TYPE_ARRAY_LENGTH_MASK;
-    argTypeArrayLength = (argTypeArrayLength == 0) ? 1: argTypeArrayLength;
-    void *arg = args[i];
-
-    switch (argTypeInformation) {
-      case ARG_CHAR: {
-        cout << "Printing ARG_CHAR: " << endl;
-        char *argCharArray = (char *) arg;
-        cout << argCharArray << endl;
-        break;
-      }
-
-      case ARG_SHORT: {
-        cout << "Printing ARG_SHORT: " << endl;
-        short *argShortArray = (short *) arg;
-        for (int j = 0; j < argTypeArrayLength; j++) {
-          cout << argShortArray[i] << ", ";
-        }
-        cout << endl;
-        break;
-      }
-
-      case ARG_INT: {
-        cout << "Printing ARG_INT: " << endl;
-        int *argIntArray = (int *) arg;
-        for (int j = 0; j < argTypeArrayLength; j++) {
-          cout << argIntArray[j] << ", ";
-        }
-        cout << endl;
-        break;
-      }
-
-      case ARG_LONG: {
-        cout << "Printing ARG_LONG: " << endl;
-        long *argLongArray = (long *) arg;
-        for (int j = 0; j < argTypeArrayLength; j++) {
-          cout << argLongArray[j] << ",";
-        }
-        cout << endl;
-        break;
-      }
-
-      case ARG_DOUBLE: {
-        cout << "Printing ARG_DOUBLE: " << endl;
-        double *argDoubleArray = (double *) arg;
-        for (int j = 0; j < argTypeArrayLength; j++) {
-          cout << argDoubleArray[j] << ", ";
-        }
-        cout << endl;
-        break;
-      }
-
-      case ARG_FLOAT: {
-        cout << "Printing ARG_FLOAT: " << endl;
-        float *argFloatArray = (float *) arg;
-        for (int j = 0; j < argTypeArrayLength; j++) {
-          cout << argFloatArray[j] << ", ";
-        }
-        cout << endl;
-        break;
-      }
-    }
-  }
-  cout << endl;
-}
 
 // See interface (header file).
 int rpcInit() {
