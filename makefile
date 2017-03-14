@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -Wall -MMD -lpthread
+CXXFLAGS = -Wall -MMD
 AR = ar
 ARFLAGS = rcs
 MAKEFILE_NAME = ${firstword ${MAKEFILE_LIST}}
@@ -13,6 +13,8 @@ network.o
 BINDEREXEC = binder
 SERVEROBJECTS = server.o server_functions.o server_function_skels.o
 SERVEREXEC = server
+CLIENTOBJECTS = client.o
+CLIENTEXEC = client
 RPCOBJECTS = \
 rpc.o segment.o message.o loc_request_message.o loc_success_message.o \
 loc_failure_message.o execute_request_message.o execute_success_message.o \
@@ -20,9 +22,9 @@ execute_failure_message.o register_request_message.o register_success_message.o 
 register_failure_message.o terminate_message.o constants.o helper_functions.o \
 network.o
 RPCLIB = librpc.a
-OBJECTS = ${BINDEROBJECTS} ${SERVEROBJECTS}
+OBJECTS = ${BINDEROBJECTS} ${SERVEROBJECTS} ${CLIENTOBJECTS}
 DEPENDS = ${OBJECTS:.o=.d}
-EXECS = ${BINDEREXEC} ${SERVEREXEC}
+EXECS = ${BINDEREXEC} ${SERVEREXEC} ${CLIENTEXEC}
 TAR = tar
 TARFLAGS = cvzpf
 TARNAME = a3.tar.gz
@@ -33,12 +35,15 @@ TARINCLUDEDSOURCES = $(filter-out $(TAREXCLUDEDSOURCES), $(wildcard *.h)) \
 .PHONY: all clean tar
 
 all: ${RPCLIB} ${EXECS}
-	${CXX} -c -lpthread rpc.cc serverA.c serverB.c client.c clientA.c server_functions.c server_function_skels.c
+	${CXX} -c -lpthread rpc.cc serverA.c serverB.c clientA.c server_functions.c server_function_skels.c
 
 ${BINDEREXEC}: ${BINDEROBJECTS}
 	${CXX} ${CXXFLAGS} $^ -o $@
 
 ${SERVEREXEC}: ${SERVEROBJECTS}
+	${CXX} ${CXXFLAGS} -L. $^ -lrpc -lpthread -o $@
+
+${CLIENTEXEC}: ${CLIENTOBJECTS}
 	${CXX} ${CXXFLAGS} -L. $^ -lrpc -lpthread -o $@
 
 ${RPCLIB}: ${RPCOBJECTS}
