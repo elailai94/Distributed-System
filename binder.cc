@@ -151,7 +151,7 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
       bool serverExist = false;
       for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
 
-        if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
+        if( (*it)->server_identifier == new_msg_loc->server_identifier && (*it)->port == new_msg_loc->port &&  (*it)->socket == new_msg_loc->socket){
         //if( (*it)->port == new_msg_loc->port &&  (*it)->socket == new_msg_loc->socket){
             cout << "new_msg_loc->port" << new_msg_loc->port  << ", " << (*it)->port  << endl;
             serverExist = true;
