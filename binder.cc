@@ -229,8 +229,8 @@ void location_request_handler(LocRequestMessage * message, int sock){
   }
 }
 
-
-void binder_terminate_handler() {
+// Handles a termination request from the client
+void handleTerminationRequest() {
   cout << "Binder set to execute" << endl;
 
   for (list<server_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
@@ -241,31 +241,34 @@ void binder_terminate_handler() {
     sleep(1);
   }
 
+  // Signals the binder to terminate
   isTerminated = true;
 }
 
 // Handles a request from the client/server
-int handleRequest(Segment * segment, int sock){
-  int retval = 0;
-  if(segment->getType() == MSG_TYPE_REGISTER_REQUEST){
-    Message * cast1 = segment->getMessage();
-    RegisterRequestMessage * rrm = dynamic_cast<RegisterRequestMessage*>(cast1);
+int handleRequest(Segment *segment, int socket) {
+  switch (segment->getType()) {
+    case MSG_TYPE_REGISTER_REQUEST: {
+      RegisterRequestMessage *messageFromServer =
+        dynamic_cast<RegisterRequestMessage *>(segment->getMessage());
+      registration_request_handler(messageFromServer, socket);
+      break;
+    }
 
-    registration_request_handler(rrm, sock);
+    case MSG_TYPE_LOC_REQUEST: {
+      LocRequestMessage *messageFromClient =
+        dynamic_cast<LocRequestMessage *>(segment->getMessage());
+      location_request_handler(messageFromClient, socket);
+      break;
+    }
 
-  }else if (segment->getType() == MSG_TYPE_LOC_REQUEST){
-
-    Message * cast2 = segment->getMessage();
-    LocRequestMessage * lqm = dynamic_cast<LocRequestMessage*>(cast2);
-
-    location_request_handler(lqm, sock);
-
-  }else if (segment->getType() == MSG_TYPE_TERMINATE){
-
-    binder_terminate_handler();
+    case MSG_TYPE_TERMINATE: {
+      handleTerminationRequest();
+      break;
+    }
   }
 
-	return retval;
+	return SUCCESS_CODE;
 }
 
 int main() {
@@ -372,4 +375,6 @@ int main() {
 
   // Destroys the welcome socket
   destroySocket(welcomeSocket);
+
+  return SUCCESS_CODE;
 }
