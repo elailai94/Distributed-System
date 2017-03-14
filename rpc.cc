@@ -5,9 +5,7 @@
 #include <unistd.h>
 #include <pthread.h>
 #include <vector>
-#include <list>
 #include <map>
-#include <algorithm>
 
 #include "segment.h"
 #include "message.h"
@@ -184,8 +182,6 @@ int rpcInit(){
     return result;
   }
 
-  cout << "This servers serverBinderSocket is: " << serverBinderSocket << endl;
-
   return SUCCESS_CODE;
 }
 
@@ -267,10 +263,6 @@ int rpcCall(char *name, int *argTypes, void **args) {
   if (result < 0) {
     return result;
   }
-
-  cout << "Server Socket: " << serverSocket << endl;
-  cout << "Server Address: " << serverAddress << endl;
-  cout << "Server Port: " << serverPort << endl;
 
   /*
    * Sends an execute request message to the server to execute the
@@ -389,8 +381,12 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
   return result;
 }
 
-//
+// Handles the execution request from the client
 void *executeSkeleton(void *args) {
+  /*
+   * Unpacks the single parameter passed to this function into multiple
+   * arguments
+   */
   void **argsArray = (void **) args;
   string skelName = *((string *) argsArray[0]);
   int *skelArgTypes = (int *) argsArray[1];
@@ -403,6 +399,11 @@ void *executeSkeleton(void *args) {
   printArgs(skelArgTypes, skelArgs);
   cout << "Skel Socket: " << skelSocket << endl;
 
+  /*
+   * Hands over control to the skeleton, which is expected to unmarshall
+   * the message, call the appropriate procedures as requested by the
+   * clients, and marshall the returns
+   */
   int result = skelSkeleton(skelArgTypes, skelArgs);
 
   if (result == SUCCESS_CODE) {
