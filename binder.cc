@@ -95,6 +95,16 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
     bool serverExist = false;
     for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
 
+      cout << "(*it)->server_identifier" << (*it)->server_identifier << endl;
+      cout << "entry->server_identifier" << entry->server_identifier << endl;
+
+      if ((*it)->server_identifier == entry->server_identifier){
+        cout << "The same " << endl;
+      } else {
+        coust << "is different" << endl;
+      }
+
+
       //if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
         if( (*it)->port == entry->port &&  (*it)->socket == entry->socket){
           cout << "entry->port" << entry->port  << ", " << (*it)->port  << endl;
