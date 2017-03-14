@@ -177,7 +177,7 @@ int main() {
   args5[2] = (void *)&b5;
 
   /* rpcCalls */
-  int s5 = rpcCall("g0", argTypes5, args5);
+  int s5 = rpcCall("g5", argTypes5, args5);
   /* test the return f0 */
   printf("\nEXPECTED return of g5 is: %d\n", a5 * b5);
   if (s5 >= 0) {
