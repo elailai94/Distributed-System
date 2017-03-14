@@ -39,3 +39,4 @@ clean:
 	find . -name "*.o" -delete
 	find . -name "*.d" -delete
 	find . -name ${BINDEREXEC} -delete
+	find . -name ${TARNAME} -delete
