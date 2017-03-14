@@ -7,7 +7,9 @@ SOURCES = $(wildcard *.cc)
 TAR = tar
 TARFLAGS = cvzpf
 TARNAME = a3.tar.gz
-TARSOURCES = $(wildcard *.cc) README $(wildcard *.pdf)
+TAREXCLUDEDSOURCES = server_function_skels.h server_functions.h
+TARINCLUDEDSOURCES = $(filter-out $(TAREXCLUDEDSOURCES), $(wildcard *.h)) \
+                     $(wildcard *.cc) README $(wildcard *.pdf)
 
 OBJECTS1 = binder.o segment.o message.o loc_request_message.o loc_success_message.o loc_failure_message.o execute_request_message.o execute_success_message.o execute_failure_message.o register_request_message.o register_success_message.o register_failure_message.o terminate_message.o constants.o helper_functions.o network.o
 
@@ -31,7 +33,7 @@ ${OBJECTS}: ${MAKEFILE_NAME}
 -include ${DEPENDS}
 
 tar:
-	${TAR} ${TARFLAGS} ${TARNAME} ${TARSOURCES}
+	${TAR} ${TARFLAGS} ${TARNAME} ${TARINCLUDEDSOURCES}
 
 clean:
 	find . -name "*.o" -delete
