@@ -230,10 +230,10 @@ void handleLocationRequest(LocRequestMessage *message, int sock) {
     while (i != roundRobinList.end()){
         //bool isActive = (*i)->update();
 
-      cout << "(*it)->server_identifier" << (*it)->server_identifier << endl;
+      cout << "(*i)->server_identifier" << (*i)->server_identifier << endl;
       cout << "serverIdToPushBack" << serverIdToPushBack << endl;
 
-      if ((*it)->server_identifier == serverIdToPushBack){
+      if ((*i)->server_identifier == serverIdToPushBack){
         cout << "The same " << endl;
       } else {
         cout << "is different" << endl;
