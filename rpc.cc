@@ -2,7 +2,6 @@
 #include <cstdlib>
 #include <cstring>
 #include <iostream>
-#include <sstream>
 #include <unistd.h>
 #include <pthread.h>
 #include <vector>
@@ -35,7 +34,7 @@ static string serverIdentifier;
 static int port = -1;
 static int welcomeSocket = -1;
 static int serverBinderSocket = -1;
-static bool onSwitch = true;
+static bool isTerminated = false;
 
 void mapPrint(){
   cout << "procSkeleDict size: "<<procSkeleDict.size() << endl;
@@ -65,13 +64,12 @@ void printArgTypes(int * argTypes){
 
 
 void printArgs(int * argTypes, void  ** args){
-  cout << "Printing args: " ;
+  cout << "Printing args: " << endl;
 
   // Parses the argument from the buffer
   unsigned numOfArgs = countNumOfArgTypes(argTypes) - 1;
 
-
-  cout<<"Number of args: " << numOfArgs << endl;
+  cout<< "Number of args: " << numOfArgs << endl;
 
   for (unsigned int i = 0; i < numOfArgs; i++) {
     int argType = argTypes[i];
@@ -326,9 +324,6 @@ int rpcCall(char *name, int *argTypes, void **args) {
   return result;
 }
 
-// TODO:
-// CREATE SERVER
-// CONNECT TO BINDER
 // See interface (header file).
 int rpcRegister(char *name, int *argTypes, skeleton f){
   cout << "Running rpcRegister..." << endl;
@@ -394,6 +389,7 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
   return result;
 }
 
+//
 void *executeSkeleton(void *args) {
   void **argsArray = (void **) args;
   string skelName = *((string *) argsArray[0]);
@@ -478,7 +474,7 @@ int rpcExecute(){
   FD_SET(welcomeSocket, &allSockets);
   int maxSocket = welcomeSocket;
 
-  while (onSwitch) {
+  while (!isTerminated) {
     readSockets = allSockets;
 
     // Checks if some of the sockets are ready to be read from
@@ -538,14 +534,12 @@ int rpcExecute(){
             procedure_signature *ps =
               new procedure_signature(messageFromClient->getName(),
                 messageFromClient->getArgTypes());
-
             skeleton skel = procSkeleDict[*ps];
 
-            if (skel == 0) {
-              cout << "Skel is null" << endl;
-            }
-
-            // Prepares executeSkeletonArgs
+            /*
+             * Packs the arguments into a single parameter to be passed
+             * to the new thread
+             */
             void **executeSkeletonArgs = new void*[5]();
             executeSkeletonArgs[0] = (void *) new string(messageFromClient->getName());
             executeSkeletonArgs[1] = (void *) messageFromClient->getArgTypes();
@@ -553,8 +547,10 @@ int rpcExecute(){
             executeSkeletonArgs[3] = (void *) i;
             executeSkeletonArgs[4] = (void *) &skel;
 
-            cout << "skelSocket before pthread_create: " << i << endl;
-
+            /*
+             * Creates a new thread to handle the execution request
+             * from the client
+             */
             pthread_t newThread;
             pthread_create(&newThread, 0, executeSkeleton, (void *) executeSkeletonArgs);
             allThreads.push_back(newThread);
@@ -573,7 +569,9 @@ int rpcExecute(){
               pthread_join(allThreads[i], 0);
             }
 
-            onSwitch = false;
+            // Signals the server to terminate
+            isTerminated = true;
+
             break;
           }
         }
