@@ -3,12 +3,15 @@
 
 #include <string>
 
+/*************** Argument types utility functions **************/
+// Compares two arrays to see if they have the same elements
 bool compareArr(const int *array1, const int *array2);
 
 // Returns a count of the number of argument types
 unsigned int countNumOfArgTypes(int* argTypes);
 
-int *copyArgTypes(int argTypes[]);
+// Returns a copy of argument types
+int *copyArgTypes(int *argTypes);
 
 /****************** Type conversion functions ******************/
 // Converts an unsigned integer to a string

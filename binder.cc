@@ -60,7 +60,8 @@ void serverListPrint(){
   }
 }
 
-void registration_request_handler(RegisterRequestMessage * message, int sock){
+// Handles a registration request from the server
+void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
   const char * name = message->getName().c_str();
   int * argTypes = message->getArgTypes();
   string server_identifier = message->getServerIdentifier();
@@ -74,6 +75,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
 
   //if 'key' dosnt exist in map, add it to the map and round robin
 	if (procLocDict.find(key) == procLocDict.end()) {
+
     //The purpose of this function is so we can have copy of the argTypes that not the original
     int *memArgTypes = copyArgTypes(argTypes);
 
@@ -105,7 +107,6 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
       serverList.push_back(entry);
     }
 
-
   } else {
     bool sameLoc = false;
     list<server_info *> hostList = procLocDict[key];
@@ -122,7 +123,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
       }
     }
 
-  	if(!sameLoc){ //same procedure different socket
+  	if (!sameLoc) { //same procedure different socket
       cout << "same proc different loc" << endl;
 
       server_info * new_msg_loc = new server_info(server_identifier, port, sock);
@@ -148,8 +149,7 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
           }
       }
 
-      if(!serverExist){
-        cout << "why doesnt this work" << endl;
+      if (!serverExist) {
         serverList.push_back(new_msg_loc);
       }
     }
@@ -164,23 +164,15 @@ void registration_request_handler(RegisterRequestMessage * message, int sock){
   cout << "sock: " << sock << endl;
 }
 
-/*
-TODO:
-USE ROUND ROBIN TO ACCESS THE CORRECT SERVER/FUNCTION FOR THE CLIENT
-*/
-void location_request_handler(LocRequestMessage * message, int sock){
-
+// Handles a location request from the client
+void handleLocationRequest(LocRequestMessage *message, int sock) {
   bool exist = false;
   string serverIdToPushBack;
   int portToPushBack;
   int socketToPushBack;
 
-  //cout << "Hunted name names: " << message->getName() << endl;
-
-
 	for (list<server_function_info *>::iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
     //If the name are the same and argTypes
-    //cout << "Iterator names: " << (*it)->ps->name << endl;
 
     if((*it)->ps->name == message->getName() && compareArr((*it)->ps->argTypes, message->getArgTypes() )){
       exist = true;
@@ -233,7 +225,9 @@ void location_request_handler(LocRequestMessage * message, int sock){
 void handleTerminationRequest() {
   // Informs all the servers to terminate
   for (list<server_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
-    cout << "Terminating server: " << (*it)->server_identifier << ", " <<  (*it)->port << ", " <<  (*it)->socket<< endl;
+    cout << "Terminating server: " << (*it)->server_identifier;
+    cout << ", " <<  (*it)->port;
+    cout << ", " <<  (*it)->socket << endl;
     TerminateMessage messageToServer = TerminateMessage();
     Segment segmentToServer =
       Segment(messageToServer.getLength(), MSG_TYPE_TERMINATE,
@@ -251,14 +245,14 @@ void handleRequest(Segment *segment, int socket) {
     case MSG_TYPE_REGISTER_REQUEST: {
       RegisterRequestMessage *messageFromServer =
         dynamic_cast<RegisterRequestMessage *>(segment->getMessage());
-      registration_request_handler(messageFromServer, socket);
+      handleRegistrationRequest(messageFromServer, socket);
       break;
     }
 
     case MSG_TYPE_LOC_REQUEST: {
       LocRequestMessage *messageFromClient =
         dynamic_cast<LocRequestMessage *>(segment->getMessage());
-      location_request_handler(messageFromClient, socket);
+      handleLocationRequest(messageFromClient, socket);
       break;
     }
 
