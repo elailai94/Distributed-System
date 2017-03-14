@@ -561,6 +561,8 @@ int rpcExecute(){
             executeSkeletonArgs[3] = (void *) &i;
             executeSkeletonArgs[4] = (void *) &skel;
 
+            cout << "skelSocket before pthread_create: " << i << endl;
+
             pthread_t newThread;
             pthread_create(&newThread, 0, executeSkeleton, (void *) executeSkeletonArgs);
             allThreads.push_back(newThread);
