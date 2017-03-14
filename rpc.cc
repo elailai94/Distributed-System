@@ -141,8 +141,6 @@ void printArgs(int * argTypes, void  ** args){
 
 // See interface (header file).
 int rpcInit(){
-	cout << "Running rpcInit..." << endl;
-
 	/*
    * Creates a welcome socket to be used for accepting connections
 	 * from clients
@@ -187,8 +185,6 @@ int rpcInit(){
 
 // See interface (header file).
 int rpcCall(char *name, int *argTypes, void **args) {
-  cout << "Running rpcCall..." << endl;
-
 	string serverAddress;
 	unsigned int serverPort = 0;
 
@@ -318,8 +314,6 @@ int rpcCall(char *name, int *argTypes, void **args) {
 
 // See interface (header file).
 int rpcRegister(char *name, int *argTypes, skeleton f){
-  cout << "Running rpcRegister..." << endl;
-
   /*
    * Checks if this server is connected to the binder already
    * (i.e.: rpcInit is called before rpcRegister)
@@ -366,7 +360,6 @@ int rpcRegister(char *name, int *argTypes, skeleton f){
        */
       struct procedure_signature k = procedure_signature(string(name), argTypes);
       procSkeleDict[k] = f;
-      cout << "k: " << k.name << ", "<< f << endl;
       break;
     }
 
@@ -393,12 +386,7 @@ void *handleExecutionRequest(void *args) {
   void **skelArgs = (void **) argsArray[2];
   long skelSocket = (long) argsArray[3];
   skeleton skelSkeleton = *((skeleton *) argsArray[4]);
-
-  cout << "Skel Name: " << skelName << endl;
-  printArgTypes(skelArgTypes);
-  printArgs(skelArgTypes, skelArgs);
-  cout << "Skel Socket: " << skelSocket << endl;
-
+  
   /*
    * Hands over control to the skeleton, which is expected to unmarshall
    * the message, call the appropriate procedures as requested by the
@@ -431,7 +419,6 @@ void *handleExecutionRequest(void *args) {
 
 // See interface (header file).
 int rpcExecute(){
-  cout << "Running rpcExecute..." << endl;
   /*
    * Checks if this server has created a welcome socket already
    * (i.e.: rpcInit is called before rpcExecute)
@@ -598,8 +585,6 @@ int rpcCacheCall() {
 
 // See interface (header file).
 int rpcTerminate() {
-	cout << "Running rpcTerminate..." << endl;
-
   // Opens a connection to the binder
   int clientBinderSocket = createSocket();
   if (clientBinderSocket < 0) {
