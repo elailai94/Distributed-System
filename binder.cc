@@ -34,20 +34,6 @@ ADD FUNCTION TO ROUND ROBIN
 IF FUNCTION EXISTS IN ROUND ROBIN DELETE OLD REPLACE WITH NEW (where)
 */
 
-void roundRobinPrint(){
-  cout << "roundRobin Print: ";
-  for(list<server_function_info *> ::const_iterator it = roundRobinList.begin(); it != roundRobinList.end(); it++){
-    cout <<(*it)->si->server_identifier << ", "<<(*it)->si->port << ", "<<(*it)->ps->name << endl;
-  }
-}
-
-void serverListPrint(){
-  cout << "serverList Print: " << endl;
-  for(list<server_info *> ::const_iterator it = serverList.begin(); it != serverList.end(); it++){
-    cout << (*it)->server_identifier << ", " <<  (*it)->port << ", " <<  (*it)->socket<< endl;
-  }
-}
-
 // Handles a registration request from the server
 void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
   const char * name = message->getName().c_str();
