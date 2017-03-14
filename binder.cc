@@ -105,12 +105,12 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
       }
 
 
-      //if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
-        if( (*it)->port == entry->port &&  (*it)->socket == entry->socket){
-          cout << "entry->port" << entry->port  << ", " << (*it)->port  << endl;
-          serverExist = true;
-          break;
-        }
+      if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
+        //if( (*it)->port == entry->port &&  (*it)->socket == entry->socket){
+        cout << "entry->port" << entry->port  << ", " << (*it)->port  << endl;
+        serverExist = true;
+        break;
+      }
     }
 
     if (!serverExist) {
@@ -122,8 +122,8 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
     list<server_info *> hostList = procLocDict[key];
 
     for (list<server_info *>::iterator it = hostList.begin(); it != hostList.end(); it++) {
-      //if((*it)->server_identifier == server_identifier && (*it)->port == port  && (*it)->socket == sock){
-      if((*it)->port == port  && (*it)->socket == sock){
+      if((*it)->server_identifier == server_identifier && (*it)->port == port  && (*it)->socket == sock){
+      //if((*it)->port == port  && (*it)->socket == sock){
 
         //If they have the same socket, then must be same server_address/port
         //The same procedure signature already exists on the same location
@@ -151,8 +151,8 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
       bool serverExist = false;
       for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
 
-        //if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
-          if( (*it)->port == new_msg_loc->port &&  (*it)->socket == new_msg_loc->socket){
+        if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
+        //if( (*it)->port == new_msg_loc->port &&  (*it)->socket == new_msg_loc->socket){
             cout << "new_msg_loc->port" << new_msg_loc->port  << ", " << (*it)->port  << endl;
             serverExist = true;
             break;
@@ -208,8 +208,8 @@ void handleLocationRequest(LocRequestMessage *message, int sock) {
 
     while (i != roundRobinList.end()){
         //bool isActive = (*i)->update();
-        //if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
-        if ((*i)->si->port == portToPushBack && (*i)->si->socket == socketToPushBack){
+        if((*i)->si->server_identifier == serverIdToPushBack && (*i)->si->port == portToPushBack && (*i)->si->socket == socketToPushBack){
+        //if ((*i)->si->port == portToPushBack && (*i)->si->socket == socketToPushBack){
           tempList.push_back(*i);
           roundRobinList.erase(i++);  // alternatively, i = items.erase(i);
         }else{
