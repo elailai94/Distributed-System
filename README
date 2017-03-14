@@ -7,7 +7,7 @@ user IDs of the group members are ahlai and y25dai.
 Yes our library requries the pthread library
 
 So when compiling the client and Server please use something like the following:
-g++ -L. client.o -lrpc -lpthread -o client 
+g++ -L. client.o -lrpc -lpthread -o client  
 g++ -L. server_functions.o server_function_skels.o server.o -lrpc -lpthread -o server && 
 
 
