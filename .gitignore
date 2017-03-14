@@ -20,6 +20,9 @@
 *.mod
 *.smod
 
+# Tar files
+*.tar.gz
+
 # Compiled Static libraries
 *.lai
 *.la
