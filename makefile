@@ -3,7 +3,6 @@ CXXFLAGS = -Wall -MMD
 AR = ar
 ARFLAGS = rcs
 MAKEFILE_NAME = ${firstword ${MAKEFILE_LIST}}
-SOURCES = $(wildcard *.cc)
 BINDEROBJECTS = \
 binder.o segment.o message.o loc_request_message.o loc_success_message.o \
 loc_failure_message.o execute_request_message.o execute_success_message.o \
