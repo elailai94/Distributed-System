@@ -27,13 +27,6 @@ static list<server_function_info *> roundRobinList;
 static list<server_info *> serverList;
 static bool isTerminated = false;
 
-/*
-TODO:
-ADD FUNCTION TO MAP
-ADD FUNCTION TO ROUND ROBIN
-IF FUNCTION EXISTS IN ROUND ROBIN DELETE OLD REPLACE WITH NEW (where)
-*/
-
 // Handles a registration request from the server
 void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
   const char * name = message->getName().c_str();
