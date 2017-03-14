@@ -429,6 +429,8 @@ void *executeSkeleton(void *args) {
 
   }
 
+  cout << "executeSkeleton done executing..." << endl;
+
   // Terminates the current thread
   pthread_exit(0);
 }
@@ -589,7 +591,7 @@ int rpcExecute(){
   destroySocket(welcomeSocket);
   cout << "We are destroying the welcomeSocket: " << welcomeSocket << endl;
 
-  return SUCCESS_CODE;
+  pthread_exit(SUCCESS_CODE);
 }
 
 // See interface (header file).
