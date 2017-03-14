@@ -67,8 +67,6 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
   string server_identifier = message->getServerIdentifier();
   int port = message->getPort();
 
-  cout << "We are trying to register: " << name  << ", " << server_identifier << ", " << port << endl;
-
   procedure_signature key(name, argTypes);
 
   int status = 0;
@@ -95,12 +93,10 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
     bool serverExist = false;
     for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
 
-      //if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
-        if( (*it)->port == entry->port &&  (*it)->socket == entry->socket){
-          cout << "entry->port" << entry->port  << ", " << (*it)->port  << endl;
-          serverExist = true;
-          break;
-        }
+      if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
+        serverExist = true;
+        break;
+      }
     }
 
     if (!serverExist) {
@@ -112,19 +108,18 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
     list<server_info *> hostList = procLocDict[key];
 
     for (list<server_info *>::iterator it = hostList.begin(); it != hostList.end(); it++) {
-      //if((*it)->server_identifier == server_identifier && (*it)->port == port  && (*it)->socket == sock){
-      if((*it)->port == port  && (*it)->socket == sock){
+
+      if((*it)->server_identifier == server_identifier && (*it)->port == port  && (*it)->socket == sock){
+      //if((*it)->port == port  && (*it)->socket == sock){
 
         //If they have the same socket, then must be same server_address/port
         //The same procedure signature already exists on the same location
         //TODO: Move to end of round robin or something, maybe we should keep
-        cout << "Exact same proc and loc" << endl;
         sameLoc = true;
       }
     }
 
   	if (!sameLoc) { //same procedure different socket
-      cout << "same proc different loc" << endl;
 
       server_info * new_msg_loc = new server_info(server_identifier, port, sock);
       hostList.push_back(new_msg_loc);
@@ -141,12 +136,10 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
       bool serverExist = false;
       for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
 
-        //if( (*it)->server_identifier == entry->server_identifier && (*it)->port == entry->port &&  (*it)->socket == entry->socket){
-          if( (*it)->port == new_msg_loc->port &&  (*it)->socket == new_msg_loc->socket){
-            cout << "new_msg_loc->port" << new_msg_loc->port  << ", " << (*it)->port  << endl;
-            serverExist = true;
-            break;
-          }
+        if( (*it)->server_identifier == new_msg_loc->server_identifier && (*it)->port == new_msg_loc->port &&  (*it)->socket == new_msg_loc->socket){
+          serverExist = true;
+          break;
+        }
       }
 
       if (!serverExist) {
@@ -155,13 +148,12 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
     }
   }
 
-  serverListPrint();
+  //serverListPrint();
 
   RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
   Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
   regSuccessSeg.send(sock);
 
-  cout << "sock: " << sock << endl;
 }
 
 // Handles a location request from the client
@@ -176,8 +168,6 @@ void handleLocationRequest(LocRequestMessage *message, int sock) {
 
     if((*it)->ps->name == message->getName() && compareArr((*it)->ps->argTypes, message->getArgTypes() )){
       exist = true;
-
-      cout << "Sending to server: " << (*it)->si->server_identifier << ", "<< (*it)->si->port<< endl;
 
       serverIdToPushBack = (*it)->si->server_identifier;
       portToPushBack = (*it)->si->port;
@@ -197,19 +187,18 @@ void handleLocationRequest(LocRequestMessage *message, int sock) {
     list<server_function_info *> tempList;
 
     while (i != roundRobinList.end()){
-        //bool isActive = (*i)->update();
-        //if((*it)->si->server_identifier == serverIdToPushBack && (*it)->si->port == portToPushBack && (*it)->si->socket == socketToPushBack){
-        if ((*i)->si->port == portToPushBack && (*i)->si->socket == socketToPushBack){
-          tempList.push_back(*i);
-          roundRobinList.erase(i++);  // alternatively, i = items.erase(i);
-        }else{
-          ++i;
-        }
+      if((*i)->si->server_identifier == serverIdToPushBack && (*i)->si->port == portToPushBack && (*i)->si->socket == socketToPushBack){
+        tempList.push_back(*i);
+        roundRobinList.erase(i++);  // alternatively, i = items.erase(i);
+      }else{
+        ++i;
+      }
     }
 
     roundRobinList.splice(roundRobinList.end(), tempList);
 
-    roundRobinPrint();
+    //roundRobinPrint();
+
   } else {
     LocFailureMessage locFailMsg =
       LocFailureMessage(ERROR_CODE_PROCEDURE_NOT_FOUND);
@@ -222,9 +211,6 @@ void handleLocationRequest(LocRequestMessage *message, int sock) {
 void handleTerminationRequest() {
   // Informs all the servers to terminate
   for (list<server_info *>::const_iterator it = serverList.begin(); it != serverList.end(); it++) {
-    cout << "Terminating server: " << (*it)->server_identifier;
-    cout << ", " <<  (*it)->port;
-    cout << ", " <<  (*it)->socket << endl;
     TerminateMessage messageToServer = TerminateMessage();
     Segment segmentToServer =
       Segment(messageToServer.getLength(), MSG_TYPE_TERMINATE,
