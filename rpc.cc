@@ -11,7 +11,6 @@
 #include <map>
 #include <pthread.h>
 
-
 #include "segment.h"
 #include "message.h"
 #include "loc_success_message.h"
@@ -559,11 +558,7 @@ int rpcExecute(){
             executeSkeletonArgs[2] = (void *) messageFromClient->getArgs();
             executeSkeletonArgs[3] = (void *) &i;
             executeSkeletonArgs[4] = (void *) &skel;
-            
-            //executeSkeleton(executeSkeletonArgs);
-            pthread_t sendingThread ;
-            pthread_create(&sendingThread, NULL, &executeSkeleton, (void *)executeSkeletonArgs);
-            _runningThreads[sendingThread] = true;
+            executeSkeleton(executeSkeletonArgs);
 
             break;
           }
