@@ -399,7 +399,7 @@ void *executeSkeleton(void *args) {
   string skelName = *((string *) argsArray[0]);
   int *skelArgTypes = (int *) argsArray[1];
   void **skelArgs = (void **) argsArray[2];
-  int skelSocket = *((int *) argsArray[3]);
+  int skelSocket = (int) argsArray[3];
   skeleton skelSkeleton = *((skeleton *) argsArray[4]);
 
   cout << "Skel Name: " << skelName << endl;
@@ -558,7 +558,7 @@ int rpcExecute(){
             executeSkeletonArgs[0] = (void *) new string(messageFromClient->getName());
             executeSkeletonArgs[1] = (void *) messageFromClient->getArgTypes();
             executeSkeletonArgs[2] = (void *) messageFromClient->getArgs();
-            executeSkeletonArgs[3] = (void *) &i;
+            executeSkeletonArgs[3] = (void *) i;
             executeSkeletonArgs[4] = (void *) &skel;
 
             cout << "skelSocket before pthread_create: " << i << endl;
