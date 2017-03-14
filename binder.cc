@@ -101,7 +101,7 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
       if ((*it)->server_identifier == entry->server_identifier){
         cout << "The same " << endl;
       } else {
-        coust << "is different" << endl;
+        cout << "is different" << endl;
       }
 
 
