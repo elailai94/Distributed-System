@@ -16,6 +16,9 @@ g++ -L. server_functions.o server_function_skels.o server.o -lrpc -lpthread -o s
 You can compile the source code for the library and binder executable
 by running: make
 
+- How To Run The Binder Executable?
+You can run the binder executable by running: ./binder
+
 - How To Clean Build?
 You can clean build by running: make clean
 
