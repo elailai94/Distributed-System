@@ -33,13 +33,14 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
   int * argTypes = message->getArgTypes();
   string server_identifier = message->getServerIdentifier();
   int port = message->getPort();
-
+  bool failFlag = false;
   procedure_signature key(name, argTypes);
 
   int status = 0;
+  try {
 
-  //if 'key' dosnt exist in map, add it to the map and round robin
-	if (procLocDict.find(key) == procLocDict.end()) {
+    //if 'key' dosnt exist in map, add it to the map and round robin
+	  if (procLocDict.find(key) == procLocDict.end()) {
 
     //The purpose of this function is so we can have copy of the argTypes that not the original
     int *memArgTypes = copyArgTypes(argTypes);
@@ -70,7 +71,7 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
       serverList.push_back(entry);
     }
 
-  } else {
+    } else {
     bool sameLoc = false;
     list<server_info *> hostList = procLocDict[key];
 
@@ -113,11 +114,21 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
         serverList.push_back(new_msg_loc);
       }
     }
-  }
+    }
 
-  RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
-  Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
-  regSuccessSeg.send(sock);
+  } catch (int errorOccur) {
+      failFlag = true;
+  }  
+
+  if(failFlag){
+    RegisterFailureMessage regFailureMsg = RegisterFailureMessage(status);
+    Segment regFailureSeg = Segment(regFailureMsg.getLength(), MSG_TYPE_REGISTER_FAILURE, &regFailureMsg);
+    regFailureSeg.send(sock);  
+  } else {
+    RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
+    Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
+    regSuccessSeg.send(sock);
+  }
 
 }
 
