@@ -68,22 +68,6 @@
 /* Binder error codes */
 #define ERROR_CODE_PROCEDURE_NOT_FOUND         -17
 
-/* Message codes */
-/*
-//Server
-#define FUNCTION_OVERRIDDEN = 2
-#define EXECUTE_SKELETON_UNKNOWN = -7
-
-//Binder
-#define RECEIVE_INVALID_NAME =  -8
-#define RECEIVE_INVALID_ARGTYPE = -9
-#define RECEIVE_INVALID_PORT =  -10
-#define RECEIVE_INVALID_SERVERADDRESS = -11
-#define BINDER_ADDRESS_NOT_EXIST = -12
-#define BINDER_PORT_NOT_EXIST = -13
-#define BINDER_SOCKET_NOT_EXIST = -14
-*/
-
 // Object definitions needed by binder
 struct server_info {
   std::string server_identifier;
