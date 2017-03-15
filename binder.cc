@@ -39,7 +39,7 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
   try {
 
     // If 'key' doesn't exist in map, add it to the map and round robin
-	  if (procLocDict.find(key) == procLocDict.end()) {
+    if (procLocDict.find(key) == procLocDict.end()) {
 
       /*
        * The purpose of this function is so we can have copy of the argTypes
@@ -92,7 +92,7 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
         }
       }
 
-    	if (!sameLoc) { // Same procedure but different socket
+      if (!sameLoc) { // Same procedure but different socket
 
         server_info *new_msg_loc = new server_info(server_identifier, port, sock);
         hostList.push_back(new_msg_loc);
