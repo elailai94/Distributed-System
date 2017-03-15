@@ -38,7 +38,7 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
 
   int status = SUCCESS_CODE;
 
-  // if 'key' doesn't exist in map, add it to the map and round robin
+  // If 'key' doesn't exist in map, add it to the map and round robin
 	if (procLocDict.find(key) == procLocDict.end()) {
 
     /*
@@ -92,7 +92,7 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
       }
     }
 
-  	if (!sameLoc) { // same procedure different socket
+  	if (!sameLoc) { // Same procedure but different socket
 
       server_info *new_msg_loc = new server_info(server_identifier, port, sock);
       hostList.push_back(new_msg_loc);
