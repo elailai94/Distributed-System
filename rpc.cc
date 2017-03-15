@@ -350,12 +350,12 @@ int rpcExecute() {
   FD_ZERO(&readSockets);
 
   /*
-   * Adds the welcome socket to the all sockets set and sets
-   * it as the maximum socket so far
+   * Adds the welcome socket and the binder socket to the all sockets set
+	 * and sets the binder socket as the maximum socket so far
    */
+	FD_SET(welcomeSocket, &allSockets);
   FD_SET(serverBinderSocket, &allSockets);
-  FD_SET(welcomeSocket, &allSockets);
-  int maxSocket = welcomeSocket;
+  int maxSocket = serverBinderSocket;
 
   while (!isTerminated) {
     readSockets = allSockets;
@@ -466,6 +466,9 @@ int rpcExecute() {
       }
     }
   }
+
+  // Closes the connection to the binder
+	destroySocket(serverBinderSocket);
 
   // Destroys the welcome socket
   destroySocket(welcomeSocket);
