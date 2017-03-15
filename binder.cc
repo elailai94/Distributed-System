@@ -33,10 +33,8 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
   int *argTypes = message->getArgTypes();
   string server_identifier = message->getServerIdentifier();
   int port = message->getPort();
-  bool failFlag = false;
   procedure_signature key(name, argTypes);
-
-  int status = SUCCESS_CODE;
+  int result = SUCCESS_CODE;
 
   try {
 
@@ -90,7 +88,7 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
           // If they have the same socket, then must be same server_address/port
           // The same procedure signature already exists on the same location
           sameLoc = true;
-          status = WARNING_CODE_DUPLICATED_PROCEDURE;
+          result = WARNING_CODE_DUPLICATED_PROCEDURE;
         }
       }
 
@@ -124,18 +122,23 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
         }
       }
     }
-  } catch (int errorOccur) {
-      failFlag = true;
-  }  
 
-  if(failFlag){
-    RegisterFailureMessage regFailureMsg = RegisterFailureMessage(status);
-    Segment regFailureSeg = Segment(regFailureMsg.getLength(), MSG_TYPE_REGISTER_FAILURE, &regFailureMsg);
-    regFailureSeg.send(sock);  
+  } catch (...) {
+    result = ERROR_CODE_PROCEDURE_REGISTRATION_FAILED;
+  }
+
+  if (result >= 0) {
+    RegisterSuccessMessage messageToServer = RegisterSuccessMessage(result);
+    Segment segmentToServer =
+      Segment(messageToServer.getLength(), MSG_TYPE_REGISTER_SUCCESS,
+        &messageToServer);
+    segmentToServer.send(sock);
   } else {
-    RegisterSuccessMessage regSuccessMsg = RegisterSuccessMessage(status);
-    Segment regSuccessSeg = Segment(regSuccessMsg.getLength(), MSG_TYPE_REGISTER_SUCCESS, &regSuccessMsg);
-    regSuccessSeg.send(sock);
+    RegisterFailureMessage messageToServer = RegisterFailureMessage(result);
+    Segment segmentToServer =
+      Segment(messageToServer.getLength(), MSG_TYPE_REGISTER_FAILURE,
+        &messageToServer);
+    segmentToServer.send(sock);
   }
 }
 
