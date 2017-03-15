@@ -40,69 +40,23 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
 
   try {
 
-    //if 'key' dosnt exist in map, add it to the map and round robin
+    // If 'key' doesn't exist in map, add it to the map and round robin
 	  if (procLocDict.find(key) == procLocDict.end()) {
 
-    /*
-     * The purpose of this function is so we can have copy of the argTypes
-     * that is not the original
-     */
-    int *memArgTypes = copyArgTypes(argTypes);
+      /*
+       * The purpose of this function is so we can have copy of the argTypes
+       * that is not the original
+       */
+      int *memArgTypes = copyArgTypes(argTypes);
 
-    key = procedure_signature(name, memArgTypes);
-    procLocDict[key] = list<server_info *>();
+      key = procedure_signature(name, memArgTypes);
+      procLocDict[key] = list<server_info *>();
 
-    // This is bad we shouldn't need a newKey and we should be able to use the key above
-    // due to &* reasones I made a variable newKey for the 'info' object
-    procedure_signature *newKey = new procedure_signature(name, memArgTypes);
-    server_info *entry = new server_info(server_identifier, port, sock);
-    server_function_info *info = new server_function_info(entry, newKey);
-
-    // Adding to roundRobinList if server is not found
-    roundRobinList.push_back(info);
-
-    // Adding to serverList if server is not found
-    bool serverExist = false;
-    for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
-
-      if ((*it)->server_identifier == entry->server_identifier &&
-         (*it)->port == entry->port &&
-         (*it)->socket == entry->socket) {
-        serverExist = true;
-        break;
-      }
-    }
-
-    if (!serverExist) {
-      serverList.push_back(entry);
-    }
-
-    } else {
-    bool sameLoc = false;
-    list<server_info *> hostList = procLocDict[key];
-
-    for (list<server_info *>::iterator it = hostList.begin(); it != hostList.end(); it++) {
-
-      if((*it)->server_identifier == server_identifier &&
-         (*it)->port == port &&
-         (*it)->socket == sock) {
-
-        // If they have the same socket, then must be same server_address/port
-        // The same procedure signature already exists on the same location
-        sameLoc = true;
-        status = WARNING_CODE_DUPLICATED_PROCEDURE;
-      }
-    }
-
-  	if (!sameLoc) { // same procedure different socket
-
-      server_info *new_msg_loc = new server_info(server_identifier, port, sock);
-      hostList.push_back(new_msg_loc);
-
-      int *newArgTypes = copyArgTypes(argTypes);
-
-      procedure_signature *useFulKey = new procedure_signature(name, newArgTypes);
-      server_function_info *info = new server_function_info(new_msg_loc, useFulKey);
+      // This is bad we shouldn't need a newKey and we should be able to use the key above
+      // due to &* reasones I made a variable newKey for the 'info' object
+      procedure_signature *newKey = new procedure_signature(name, memArgTypes);
+      server_info *entry = new server_info(server_identifier, port, sock);
+      server_function_info *info = new server_function_info(entry, newKey);
 
       // Adding to roundRobinList if server is not found
       roundRobinList.push_back(info);
@@ -111,19 +65,65 @@ void handleRegistrationRequest(RegisterRequestMessage *message, int sock) {
       bool serverExist = false;
       for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
 
-        if ((*it)->server_identifier == new_msg_loc->server_identifier &&
-           (*it)->port == new_msg_loc->port &&
-           (*it)->socket == new_msg_loc->socket) {
+        if ((*it)->server_identifier == entry->server_identifier &&
+           (*it)->port == entry->port &&
+           (*it)->socket == entry->socket) {
           serverExist = true;
           break;
         }
       }
 
       if (!serverExist) {
-        serverList.push_back(new_msg_loc);
+        serverList.push_back(entry);
+      }
+
+    } else {
+      bool sameLoc = false;
+      list<server_info *> hostList = procLocDict[key];
+
+      for (list<server_info *>::iterator it = hostList.begin(); it != hostList.end(); it++) {
+
+        if((*it)->server_identifier == server_identifier &&
+           (*it)->port == port &&
+           (*it)->socket == sock) {
+
+          // If they have the same socket, then must be same server_address/port
+          // The same procedure signature already exists on the same location
+          sameLoc = true;
+          status = WARNING_CODE_DUPLICATED_PROCEDURE;
+        }
+      }
+
+    	if (!sameLoc) { // Same procedure but different socket
+
+        server_info *new_msg_loc = new server_info(server_identifier, port, sock);
+        hostList.push_back(new_msg_loc);
+
+        int *newArgTypes = copyArgTypes(argTypes);
+
+        procedure_signature *useFulKey = new procedure_signature(name, newArgTypes);
+        server_function_info *info = new server_function_info(new_msg_loc, useFulKey);
+
+        // Adding to roundRobinList if server is not found
+        roundRobinList.push_back(info);
+
+        // Adding to serverList if server is not found
+        bool serverExist = false;
+        for (list<server_info *>::iterator it = serverList.begin(); it != serverList.end(); it++) {
+
+          if ((*it)->server_identifier == new_msg_loc->server_identifier &&
+             (*it)->port == new_msg_loc->port &&
+             (*it)->socket == new_msg_loc->socket) {
+            serverExist = true;
+            break;
+          }
+        }
+
+        if (!serverExist) {
+          serverList.push_back(new_msg_loc);
+        }
       }
     }
-  
   } catch (int errorOccur) {
       failFlag = true;
   }  

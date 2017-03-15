@@ -29,14 +29,13 @@ TARFLAGS = cvzpf
 TARNAME = a3.tar.gz
 TAREXCLUDEDSOURCES = server_function_skels.h server_functions.h
 TARINCLUDEDSOURCES = $(filter-out $(TAREXCLUDEDSOURCES), $(wildcard *.h)) \
-                     $(wildcard *.cc) README $(wildcard *.pdf)
+                     $(wildcard *.cc) makefile README $(wildcard *.pdf)
 
 .PHONY: all clean tar
 
 all: ${RPCLIB} ${BINDEREXEC}
 
 test: ${RPCLIB} ${EXECS}
-	${CXX} -c -lrpc -lpthread serverA.c serverB.c clientA.c server_functions.c server_function_skels.c
 
 ${BINDEREXEC}: ${BINDEROBJECTS}
 	${CXX} ${CXXFLAGS} $^ -o $@
