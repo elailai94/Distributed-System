@@ -1,4 +1,4 @@
-# Distributed-System
+# Distributed System
 ### About
 This repository contains a simple distributed system to execute remote procedure calls. It is written entirely in C++.
 
